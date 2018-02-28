@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
@@ -98,6 +99,10 @@ class HcRoot extends React.Component {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
+  closeDrawer = () => {
+    this.setState({mobileOpen: false });
+  }
+
   render() {
     const { classes, theme } = this.props;
 
@@ -106,18 +111,22 @@ class HcRoot extends React.Component {
       <div>
         <div className={classes.drawerHeader} />
         <div>
-          <ListItem button>
-            <ListItemIcon>
-              <DesktopWindows />
-            </ListItemIcon>
-            <ListItemText primary="1080 x 1920" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <MouseIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logitch G502" />
-          </ListItem>
+          <Link to="/" onClick={this.closeDrawer}>
+            <ListItem button>
+              <ListItemIcon>
+                <DesktopWindows />
+              </ListItemIcon>
+              <ListItemText primary="1080 x 1920" />
+            </ListItem>
+          </Link>
+          <Link to="/test" onClick={this.closeDrawer}>
+            <ListItem button>
+              <ListItemIcon>
+                <MouseIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logitch G502" />
+            </ListItem>
+          </Link>
           <ListItem button>
             <ListItemIcon>
               <CompareArrows />
