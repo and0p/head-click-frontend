@@ -34,14 +34,13 @@ const theme = createMuiTheme({
     },
   },
 });
+
 const drawerWidth = 240;
-
-
 
 const styles = theme => ({
   root: {
     width: '100%',
-    //height: '100%',
+    height: '100%',
     //marginTop: theme.spacing.unit * 3,
     zIndex: 1,
     overflow: 'hidden',
@@ -184,7 +183,7 @@ class HcRoot extends React.Component {
             </Drawer>
           </Hidden>
           <main className={classes.content}>
-            <Typography noWrap>test: {this.props.model.model2}</Typography>
+            {this.props.children}
           </main>
         </div>
       </div>
