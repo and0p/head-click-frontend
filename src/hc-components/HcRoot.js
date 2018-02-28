@@ -12,29 +12,14 @@ import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+// Utility imports
+import theme from '../theme.js'
 // Icons
 import DesktopWindows from 'material-ui-icons/DesktopWindows'
 import MouseIcon from 'material-ui-icons/Mouse'
 import CompareArrows from 'material-ui-icons/CompareArrows'
 import AddCircleOutline from 'material-ui-icons/AddCircleOutline'
 import { createMuiTheme } from 'material-ui/styles';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      light: '#7500e8',
-      main: '#3f00b5',
-      dark: '#000084',
-      contrastText: '#fff',
-    },
-    secondary: {
-      light: '#ff7961',
-      main: '#f44336',
-      dark: '#ba000d',
-      contrastText: '#000',
-    },
-  },
-});
 
 const drawerWidth = 240;
 
