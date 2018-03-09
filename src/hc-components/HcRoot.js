@@ -1,17 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from "react-router-dom";
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import List from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+// Component imports
+import SidebarButton from './SidebarButton'
+// Redux imports
+import { connect } from 'react-redux'
+import * as Symbols from '../hc-redux/HcSymbols'
 // Utility imports
 import theme from '../theme.js'
 // Icons
@@ -19,7 +22,6 @@ import DesktopWindows from 'material-ui-icons/DesktopWindows'
 import MouseIcon from 'material-ui-icons/Mouse'
 import CompareArrows from 'material-ui-icons/CompareArrows'
 import AddCircleOutline from 'material-ui-icons/AddCircleOutline'
-import { createMuiTheme } from 'material-ui/styles';
 
 const drawerWidth = 240;
 
@@ -76,51 +78,48 @@ class HcRoot extends React.Component {
     super(props);
   }
 
-  state = {
-    mobileOpen: false,
-  };
-
-  handleDrawerToggle = () => {
-    this.setState({ mobileOpen: !this.state.mobileOpen });
-  };
-
-  closeDrawer = () => {
-    this.setState({mobileOpen: false });
-  }
-
   render() {
     const { classes, theme } = this.props;
+
+    // Games list HTML
+    const sidebarGamesList = (
+      this.props.ownedGames.map((game) =>
+        <SidebarButton
+          link={"/game/" + game.alias}
+          icon={<DesktopWindows/>}
+          text={game.name}
+          innerClick={() => { this.props.selectSidebarItem(0) }}
+          />
+      )
+    ) 
 
     // Drawer HTML, used in both responsive and static
     const drawer = (
       <div>
         <div className={classes.drawerHeader} />
         <div>
-          <Link to="/" onClick={this.closeDrawer}>
-            <ListItem button>
-              <ListItemIcon>
-                <DesktopWindows />
-              </ListItemIcon>
-              <ListItemText primary="1080 x 1920" />
-            </ListItem>
-          </Link>
-          <Link to="/test" onClick={this.closeDrawer}>
-            <ListItem button>
-              <ListItemIcon>
-                <MouseIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logitch G502" />
-            </ListItem>
-          </Link>
-          <ListItem button>
-            <ListItemIcon>
-              <CompareArrows />
-            </ListItemIcon>
-            <ListItemText primary="5.0" />
-          </ListItem>
+          <SidebarButton 
+            link="/"
+            icon={<DesktopWindows/>}
+            text={this.props.selectedMonitor.name}
+            innerClick={() => { this.props.selectSidebarItem(0) }}
+            />
+          <SidebarButton 
+            link="/test"
+            icon={<MouseIcon/>}
+            text={this.props.selectedMouse.name}
+            innerClick={() => { this.props.selectSidebarItem(0) }}
+            />
+          <SidebarButton 
+            link="/mouse"
+            icon={<CompareArrows/>}
+            text={this.props.selectedSensitivity + "cm"}
+            innerClick={() => { this.props.selectSidebarItem(0) }}
+            />
         </div>
         <Divider />
         <div>
+        {sidebarGamesList}
         <ListItem button>
             <ListItemIcon>
               <AddCircleOutline />
@@ -139,7 +138,7 @@ class HcRoot extends React.Component {
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
-                onClick={this.handleDrawerToggle}
+                onClick={this.props.openSidebar}
                 className={classes.navIconHide}
               >
                 <MenuIcon />
@@ -153,11 +152,11 @@ class HcRoot extends React.Component {
             <Drawer
               variant="temporary"
               anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.state.mobileOpen}
+              open={this.props.open}
               classes={{
                 paper: classes.drawerPaper,
               }}
-              onClose={this.handleDrawerToggle}
+              onClose={this.props.closeSidebar}
               ModalProps={{
                 keepMounted: true, // Better open performance on mobile.
               }}
@@ -187,8 +186,33 @@ class HcRoot extends React.Component {
 
 HcRoot.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  model: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(HcRoot);
+const mapStateToProps = (state) => {
+  return {
+    open: state.sidebarState.mobileMenuOpen,
+    selectedItem: state.sidebarState.selectSidebarItem,
+    selectedMonitor: state.profileState.monitor,
+    selectedMouse: state.profileState.mouse,
+    selectedSensitivity: state.profileState.sensitivity,
+    ownedGames: state.profileState.ownedGames
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    selectSidebarItem : itemID => dispatch({
+      type: Symbols.SELECT_SIDEBAR_ITEM,
+      value: itemID
+    }),
+    openSidebar : () => dispatch({
+      type: Symbols.OPEN_SIDEBAR
+    }),
+    closeSidebar : () => dispatch({
+      type: Symbols.CLOSE_SIDEBAR
+    })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(HcRoot));
