@@ -16,7 +16,7 @@ class SidebarButton extends React.Component {
                 <ListItemIcon>
                    {this.props.icon}
                 </ListItemIcon>
-                <ListItemText primary={this.props.text} />
+                <ListItemText primary={this.props.text} secondary={this.props.subtext} />
                 </ListItem>
             </Link>
         );

@@ -83,7 +83,7 @@ class HcRoot extends React.Component {
 
     // Games list HTML
     const sidebarGamesList = (
-      this.props.ownedGames.map((game) =>
+      this.props.profile.ownedGames.map((game) =>
         <SidebarButton
           link={"/game/" + game.alias}
           icon={<DesktopWindows/>}
@@ -101,19 +101,21 @@ class HcRoot extends React.Component {
           <SidebarButton 
             link="/"
             icon={<DesktopWindows/>}
-            text={this.props.selectedMonitor.name}
+            text={this.props.profile.monitor.name}
+            subtext={this.props.profile.refreshRate + "hz"}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
           <SidebarButton 
             link="/test"
             icon={<MouseIcon/>}
-            text={this.props.selectedMouse.name}
+            text={this.props.profile.dPI + " dpi"}
+            subtext={this.props.profile.mouse.name}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
           <SidebarButton 
             link="/mouse"
             icon={<CompareArrows/>}
-            text={this.props.selectedSensitivity + "cm"}
+            text={this.props.profile.sensitivity + " cm/360°"}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
         </div>
@@ -192,11 +194,7 @@ HcRoot.propTypes = {
 const mapStateToProps = (state) => {
   return {
     open: state.sidebarState.mobileMenuOpen,
-    selectedItem: state.sidebarState.selectSidebarItem,
-    selectedMonitor: state.profileState.monitor,
-    selectedMouse: state.profileState.mouse,
-    selectedSensitivity: state.profileState.sensitivity,
-    ownedGames: state.profileState.ownedGames
+    profile: state.profileState,
   }
 }
 

@@ -10,8 +10,10 @@ const initialSidebarState = {
 
 const initialProfileState = {
     monitor: HcModel.monitors["800x600"],
+    refreshRate: 144,
     mouse: HcModel.mice["Logitech MX 400"],
-    sensitivity: 30,
+    dPI: 1200,
+    sensitivity: 34,
     ownedGames: [HcModel.games["overwatch"], HcModel.games["r6siege"]]
 }
 

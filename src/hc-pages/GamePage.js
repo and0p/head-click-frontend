@@ -1,7 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import HcModel from '../hc-model/HcModel'
+import HcModel from '../hc-model/HcModel';
+import { getSettingForDCm } from '../util'
 
 class GamePage extends React.Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class GamePage extends React.Component {
             let game = HcModel.games[gameAlias]
             return (
                 <div>
-                    {game.name}
+                    {game.name}<br />
+                    {getSettingForDCm(game, this.props.profile, this.props.profile.sensitivity)}
                 </div>
             )
         }
@@ -31,9 +33,11 @@ class GamePage extends React.Component {
     }
 }
 
+// TODO propTypes
+
 const mapStateToProps = (state) => {
     return {
-      
+      profile: state.profileState
     }
   }
   
