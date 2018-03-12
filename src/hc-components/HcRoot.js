@@ -194,7 +194,7 @@ HcRoot.propTypes = {
 const mapStateToProps = (state) => {
   return {
     open: state.sidebarState.mobileMenuOpen,
-    profile: state.profileState,
+    profile: state.profileState
   }
 }
 

@@ -3,7 +3,6 @@ export const getSettingForDCm = (game, profile, targetDCm) => {
     console.log(profile)
     // Get 360 / (dpi * yaw)
     let calc = 360 / (profile.dPI * game.math.sensitivity.yaw)
-    console.log(calc)
     // Convert from inches to cm
     calc *= 2.54
     // Multiply if needed, in game
