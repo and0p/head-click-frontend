@@ -80,7 +80,7 @@ class HcRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-
+    console.log(this.props)
     // Games list HTML
     const sidebarGamesList = (
       this.props.profile.ownedGames.map((game) =>
