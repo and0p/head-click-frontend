@@ -1,3 +1,12 @@
+import Game from './Game'
+import gameData from './games/GameData'
+
+export const games = {}
+for(var key in gameData) {
+    games[key] = new Game(gameData[key])
+}
+
+
 const HcModel = {
     monitors: {
         "640x480": {
@@ -45,7 +54,7 @@ const HcModel = {
     games: {
         "overwatch": {
             name: "Overwatch",
-            shortName: "OverWatch",
+            shortName: "Overwatch",
             alias: "overwatch",
             logo: "http://someurl.com/test.png",
             math: {
@@ -55,7 +64,7 @@ const HcModel = {
                     default: 103,
                     recommended: 103,
                     horizontal: true,
-                    basedOnSD: false,
+                    basedOnSD: false
                 },
                 sensitivity: {
                     min: 1,
@@ -84,7 +93,7 @@ const HcModel = {
                     default: 90,
                     recommended: 90,
                     horizontal: true,
-                    basedOnSD: false,
+                    basedOnSD: false
                 },
                 sensitivity: {
                     min: 1,
@@ -100,7 +109,7 @@ const HcModel = {
                     yaw: 0.022
                 }
             }
-        },
+        }
     }
 }
 

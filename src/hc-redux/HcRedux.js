@@ -1,6 +1,7 @@
 import { applyMiddleware, combineReducers, createStore, } from 'redux';
 import * as Symbols from './HcSymbols'
 import HcModel from '../hc-model/HcModel'
+import Game from '../hc-model/Game'
 
 // States
 const initialSidebarState = {

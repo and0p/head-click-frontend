@@ -45,6 +45,7 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
+    backgroundColor: "#25252f"
   },
   navIconHide: {
     [theme.breakpoints.up('md')]: {
@@ -80,7 +81,6 @@ class HcRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-    console.log(this.props)
     // Games list HTML
     const sidebarGamesList = (
       this.props.profile.ownedGames.map((game) =>
@@ -135,7 +135,7 @@ class HcRoot extends React.Component {
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
-          <AppBar className={classes.appBar}>
+          <AppBar className={classes.appBar} color="default">
             <Toolbar>
               <IconButton
                 color="inherit"
@@ -169,6 +169,7 @@ class HcRoot extends React.Component {
           <Hidden smDown implementation="css">
             <Drawer
               variant="permanent"
+              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
               open
               classes={{
                 paper: classes.drawerPaper,
