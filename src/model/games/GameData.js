@@ -28,14 +28,21 @@ const gameData = [
             }
         },
         settings: {
-            optimization: {
-                0: {
-                    text: "Triple Buffering: Off",
+            optimization: [
+                {
+                    text: "Triple Buffering: OFF",
                     subtext: "Options ~ Display ~ Triple Buffering",
-                    info: "Triple buffering is the worst. Read more..."
+                    info: "Triple buffering is the worst. Read more...",
+                    critical: true
+                },
+                {
+                    text: "Reduce Buffer: ON",
+                    subtext: "Options ~ Display ~ Reduce Buffering",
+                    info: "This option reduces input lag by not pre-rendering frames.",
+                    critical: false
                 }
-            },
-            gameplay: {}
+            ],
+            gameplay: []
         }
     },
     {
@@ -65,6 +72,10 @@ const gameData = [
                 accelerationDefault: false,
                 yaw: 0.022
             }
+        },
+        settings: {
+            optimization: [],
+            gameplay: []
         }
     }
 ]

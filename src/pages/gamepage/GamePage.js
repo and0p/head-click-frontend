@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { games } from '../../model/HcModel';
 import Game from '../../model/Game'
+import SettingListItem from './components/SettingListItem'
 // Material imports
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
@@ -32,7 +33,6 @@ class GamePage extends React.Component {
    
     render() {
         const { classes, theme } = this.props;
-        console.log(games)
 
         let gameAlias = this.props.match.params.name
         // See if we have this game
@@ -61,31 +61,23 @@ class GamePage extends React.Component {
                                     Field of View:{" "}
                                     {game.getIdealFOV(this.props.profile)}
                                 </Typography><br />
-                                <Divider /><br />
                                 {/* Other settings */}
                                 <List subheader={<li />}>
-                                    <ListItem>
-                                        <ListItemText primary="Test" secondary="Settings -> Controls -> Mouse Sensitivity" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText primary="Test" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText primary="Test" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemText primary="Test" />
-                                    </ListItem>
+                                    {
+                                        game.settings.optimization.map((setting) => 
+                                            <SettingListItem setting={setting} />
+                                        )
+                                    }
                                 </List>
                             </Paper>
                         </Grid>
                         <Grid item sm={12} md={6}>
                             <Paper className={classes.paper}>
                                 <Typography variant="headline" component="h3">
-                                Settings
+                                Stats
                                 </Typography>
                                 <Typography variant="body2">
-                                    game.getSettingForDCm(this.props.profile).toFixed(2)}
+                                    {game.getSettingForDCm(this.props.profile).toFixed(2)}
                                 </Typography>
                             </Paper>
                         </Grid>
