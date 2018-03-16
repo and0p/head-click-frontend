@@ -1,5 +1,5 @@
-const gameData = {
-    "overwatch": {
+const gameData = [
+    {
         name: "Overwatch",
         shortName: "Overwatch",
         alias: "overwatch",
@@ -28,7 +28,7 @@ const gameData = {
             }
         }
     },
-    "r6siege": {
+    {
         name: "Rainbow Six Siege",
         shortName: "R6 Siege",
         alias: "r6siege",
@@ -57,6 +57,6 @@ const gameData = {
             }
         }
     }
-}
+]
 
 export default gameData

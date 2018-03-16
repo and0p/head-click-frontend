@@ -1,6 +1,6 @@
 import { applyMiddleware, combineReducers, createStore, } from 'redux';
 import * as Symbols from './HcSymbols'
-import HcModel from '../hc-model/HcModel'
+import { games, mice, monitors } from '../hc-model/HcModel'
 import Game from '../hc-model/Game'
 
 // States
@@ -10,12 +10,12 @@ const initialSidebarState = {
 }
 
 const initialProfileState = {
-    monitor: HcModel.monitors["800x600"],
+    monitor: monitors["800x600"],
     refreshRate: 144,
-    mouse: HcModel.mice["Logitech MX 400"],
+    mouse: mice["Logitech MX 400"],
     dPI: 1200,
     sensitivity: 34,
-    ownedGames: [HcModel.games["overwatch"], HcModel.games["r6siege"]]
+    ownedGames: [games["overwatch"], games["r6siege"]]
 }
 
 // Reducers

@@ -1,5 +1,3 @@
-import gameData from './games/GameData'
-
 class Game {
     constructor(gameJson) {
         Object.assign(this, gameJson);
