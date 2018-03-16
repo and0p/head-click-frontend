@@ -6,14 +6,13 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 // Utility imports
-import HcRedux from './hc-redux/HcRedux'
+import HcRedux from './redux/HcRedux'
 import theme from './theme.js'
-import HcModel from './hc-model/HcModel'
 // Pages & styles
-import HcRoot from './hc-components/HcRoot'
-import WizardHome from './hc-pages/WizardHome'
-import RoutingTestPage from './hc-pages/RoutingTestPage'
-import GamePage from './hc-pages/GamePage'
+import MaterialRoot from './pages/materialroot/MaterialRoot'
+import GamePage from './pages/gamepage/GamePage'
+import WizardHome from './pages/WizardHome'
+import RoutingTestPage from './pages/RoutingTestPage'
 import styles from './index.css'
 
 // Create Redux store from reducers in HcRedux
@@ -27,25 +26,18 @@ const unsubscribe = store.subscribe(() => {
 
 class App extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      openPage: "test"
-    }
-  }
-
   render() {
     return(
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
         <Router>
-          <HcRoot model={HcModel}>
+          <MaterialRoot>
             <div>
               <Route exact path="/" component={WizardHome} />
               <Route path="/test" component={RoutingTestPage} />
               <Route path="/game/:name" component={GamePage} />
             </div>
-          </HcRoot>
+          </MaterialRoot>
         </Router>
       </Provider>
     </MuiThemeProvider>

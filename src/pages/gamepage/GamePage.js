@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import HcModel, {games} from '../hc-model/HcModel';
-import Game from '../hc-model/Game'
-import { getSettingForDCm } from '../util'
+import { games } from '../../model/HcModel';
+import Game from '../../model/Game'
 // Material imports
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
@@ -37,9 +36,9 @@ class GamePage extends React.Component {
 
         let gameAlias = this.props.match.params.name
         // See if we have this game
-        if(HcModel.games.hasOwnProperty(gameAlias)) {
+        if(games.hasOwnProperty(gameAlias)) {
             // Grab Game object
-            let game = new Game(HcModel.games[gameAlias])
+            let game = new Game(games[gameAlias])
             return (
                 <div className={classes.root}>
                     <Typography variant="display3" gutterBottom>

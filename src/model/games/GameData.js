@@ -26,6 +26,16 @@ const gameData = [
                 accelerationDefault: false,
                 yaw: 0.022
             }
+        },
+        settings: {
+            optimization: {
+                0: {
+                    text: "Triple Buffering: Off",
+                    subtext: "Options ~ Display ~ Triple Buffering",
+                    info: "Triple buffering is the worst. Read more..."
+                }
+            },
+            gameplay: {}
         }
     },
     {
@@ -58,5 +68,7 @@ const gameData = [
         }
     }
 ]
+
+// →►
 
 export default gameData

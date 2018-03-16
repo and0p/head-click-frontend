@@ -11,12 +11,12 @@ import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 // Component imports
-import SidebarButton from './SidebarButton'
+import SidebarButton from './components/SidebarButton'
 // Redux imports
 import { connect } from 'react-redux'
-import * as Symbols from '../hc-redux/HcSymbols'
+import * as Symbols from '../../redux/HcSymbols'
 // Utility imports
-import theme from '../theme.js'
+import theme from '../../theme.js'
 // Icons
 import DesktopWindows from 'material-ui-icons/DesktopWindows'
 import MouseIcon from 'material-ui-icons/Mouse'
@@ -74,7 +74,7 @@ const styles = theme => ({
   },
 });
 
-class HcRoot extends React.Component {
+class MaterialRoot extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -187,7 +187,7 @@ class HcRoot extends React.Component {
   }
 }
 
-HcRoot.propTypes = {
+MaterialRoot.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired
 };
@@ -214,4 +214,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(HcRoot));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(MaterialRoot));
