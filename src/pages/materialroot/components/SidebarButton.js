@@ -11,14 +11,12 @@ class SidebarButton extends React.Component {
 
     render() {
         return(
-            <Link to={this.props.link} onClick={this.props.innerClick}>
-                <ListItem button>
+            <ListItem component={Link} to={this.props.link} button onClick={this.props.innerClick}>
                 <ListItemIcon>
-                   {this.props.icon}
+                    {this.props.icon}
                 </ListItemIcon>
                 <ListItemText primary={this.props.text} secondary={this.props.subtext} />
-                </ListItem>
-            </Link>
+            </ListItem>
         );
     }
 }

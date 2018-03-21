@@ -10,6 +10,7 @@ import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { withRouter } from "react-router-dom";
 // Component imports
 import SidebarButton from './components/SidebarButton'
 // Redux imports
@@ -27,51 +28,44 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
-    width: '100%',
+    flexGrow: 1,
     height: '100%',
-    //marginTop: theme.spacing.unit * 3,
     zIndex: 1,
-    overflow: 'hidden',
-  },
-  appFrame: {
-    position: 'relative',
+    overflow: 'auto',
+    //position: 'relative',
     display: 'flex',
     width: '100%',
-    height: '100%',
   },
   appBar: {
-    position: 'absolute',
     marginLeft: drawerWidth,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    backgroundColor: "#25252f"
+    backgroundColor: theme.palette.background.paper
   },
   navIconHide: {
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
   },
-  drawerHeader: theme.mixins.toolbar,
+  toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    width: 250,
+    width: drawerWidth,
     [theme.breakpoints.up('md')]: {
-      width: drawerWidth,
       position: 'relative',
-      height: '100%',
     },
   },
   content: {
+    flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    width: '100%',
     padding: theme.spacing.unit * 3,
-    height: 'calc(100% - 56px)',
-    marginTop: 56,
-    [theme.breakpoints.up('sm')]: {
-      height: 'calc(100% - 64px)',
-      marginTop: 64,
-    },
+    height: '100%',
+    maxWidth: '100%',
+    boxSizing: 'inherit'
   },
+  title: {
+    paddingLeft: theme.spacing.unit * 3
+  }
 });
 
 class MaterialRoot extends React.Component {
@@ -81,6 +75,7 @@ class MaterialRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
+
     // Games list HTML
     const sidebarGamesList = (
       this.props.profile.ownedGames.map((game) =>
@@ -91,13 +86,12 @@ class MaterialRoot extends React.Component {
           innerClick={() => { this.props.selectSidebarItem(0) }}
           />
       )
-    ) 
+    );
 
     // Drawer HTML, used in both responsive and static
     const drawer = (
       <div>
-        <div className={classes.drawerHeader} />
-        <div>
+        <div className={classes.toolbar} />
           <SidebarButton 
             link="/"
             icon={<DesktopWindows/>}
@@ -118,70 +112,66 @@ class MaterialRoot extends React.Component {
             text={this.props.profile.sensitivity + " cm/360°"}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
-        </div>
-        <Divider />
-        <div>
-        {sidebarGamesList}
-        <ListItem button>
+          <Divider />
+          {sidebarGamesList}
+          <ListItem button>
             <ListItemIcon>
               <AddCircleOutline />
             </ListItemIcon>
             <ListItemText primary="Add Game" />
           </ListItem>
-        </div>
       </div>
     );
 
     return (
       <div className={classes.root}>
-        <div className={classes.appFrame}>
-          <AppBar className={classes.appBar} color="default">
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.props.openSidebar}
-                className={classes.navIconHide}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="title" color="inherit" noWrap>
-                Head.Click
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Hidden mdUp>
-            <Drawer
-              variant="temporary"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.props.open}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              onClose={this.props.closeSidebar}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
+        <AppBar className={classes.appBar} color="default">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={this.props.openSidebar}
+              className={classes.navIconHide}
             >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          <Hidden smDown implementation="css">
-            <Drawer
-              variant="permanent"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          <main className={classes.content}>
-            {this.props.children}
-          </main>
-        </div>
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="title" color="inherit" noWrap className={classes.title}>
+              Head.Click
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Hidden mdUp>
+          <Drawer
+            variant="temporary"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open={this.props.open}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            onClose={this.props.closeSidebar}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden smDown implementation="css">
+          <Drawer
+            variant="permanent"
+            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+            open
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          {this.props.children}
+        </main>
       </div>
     );
   }
@@ -214,4 +204,6 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles, { withTheme: true })(MaterialRoot));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(
+    withStyles(styles, { withTheme: true })(MaterialRoot)));

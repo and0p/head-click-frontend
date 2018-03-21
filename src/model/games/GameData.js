@@ -30,19 +30,44 @@ const gameData = [
         settings: {
             optimization: [
                 {
-                    text: "Triple Buffering: OFF",
+                    text: "Triple Buffering - OFF",
                     subtext: "Options ~ Display ~ Triple Buffering",
                     info: "Triple buffering is the worst. Read more...",
                     critical: true
                 },
                 {
-                    text: "Reduce Buffer: ON",
+                    text: "Reduce Buffer - ON",
                     subtext: "Options ~ Display ~ Reduce Buffering",
                     info: "This option reduces input lag by not pre-rendering frames.",
+                    critical: true
+                },
+                {
+                    text: "VSYNC - OFF*",
+                    subtext: "Options ~ Display ~ VSYNC",
+                    info: "Only use VSYNC in a competitive FPS if your machine can comfortably render with it at your monitor's maximum refresh rate. Otherwise you could experience input lag.",
+                    critical: false
+                },
+                {
+                    text: "Limit FPS - OFF*",
+                    subtext: "Options ~ Display ~ Limit FPS",
+                    info: "Set this to OFF, or at least reasonably higher than your monitor's refresh rate.",
+                    critical: false
+                },
+                {
+                    text: "Render Scale - 100%",
+                    subtext: "Options ~ Display ~ Graphics Quality ~ Advanced ~ Render Scale",
+                    info: "Render the game at your full resolution, improving clarity. Lower this for improved performance as a last resort.",
                     critical: false
                 }
             ],
-            gameplay: []
+            gameplay: [
+                {
+                    text: "Mercy - Beam Toggle - ON",
+                    subtext: "Options ~ Controls ~ Mercy ~ Beam Toggle",
+                    info: "This keeps your beam going without having to hold the button.",
+                    critical: false
+                }
+            ]
         }
     },
     {

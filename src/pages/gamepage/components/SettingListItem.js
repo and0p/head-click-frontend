@@ -1,12 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types'
+import { withStyles } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
 import { List, ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import Collapse from 'material-ui/transitions/Collapse'
 import InfoOutline from 'material-ui-icons/InfoOutline';
 
+// function for replacing tilde with unicode arrows
 const replaceSettingArrows = text => {
     return text.replace(/~/g, "→")
 }
+
+const styles = theme => ({
+    infoIcon: {
+        color: '#999999'
+    },
+    infoListItem: {
+        padding: '0px 16px',
+        marginBottom: theme.spacing.unit
+    }
+  });
 
 class SettingListItem extends React.Component {
     constructor(props) {
@@ -18,19 +31,19 @@ class SettingListItem extends React.Component {
 
     toggleOpen = () => {
         this.setState({ open: !this.state.open})
-        console.log(this.state.open)
     }
 
     render() {
+        const { classes, theme } = this.props;
         // Make sure we have a setting JSON passed in
         if("setting" in this.props)
         {
             // See if we have info
-            const infoHtml = <ListItemIcon><InfoOutline /></ListItemIcon>
+            const infoHtml = <ListItemIcon className={classes.infoIcon} onClick={this.toggleOpen}><InfoOutline /></ListItemIcon>
             const infoIcon = this.props.setting.hasOwnProperty("info") ? infoHtml : null
             return (
                 <div>
-                    <ListItem onClick={this.toggleOpen}>
+                    <ListItem>
                         <ListItemText 
                             primary={this.props.setting.text}
                             secondary={replaceSettingArrows(this.props.setting.subtext)}
@@ -38,7 +51,11 @@ class SettingListItem extends React.Component {
                         {infoIcon}
                     </ListItem>
                     <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-                        <ListItem>text</ListItem>
+                        <ListItem className={classes.infoListItem}>
+                            <Typography variant="caption">
+                                {this.props.setting.info}
+                            </Typography>
+                        </ListItem>
                     </Collapse>
                 </div>
             )
@@ -50,12 +67,8 @@ class SettingListItem extends React.Component {
     }
 }
 
-{/* <ListItemIcon>
-<Warning />
-</ListItemIcon> */}
-
 SettingListItem.propTypes = {
     setting: PropTypes.object.isRequired
 };
 
-export default SettingListItem
+export default withStyles(styles)(SettingListItem)

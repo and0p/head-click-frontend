@@ -17,6 +17,12 @@ const initialProfileState = {
     ownedGames: [games["overwatch"], games["r6siege"]]
 }
 
+const initialWizardState = {
+    wizardCompleted: false,
+    wizardPageNum: 0,
+    nextPageReady: false
+}
+
 // Reducers
 function profileState (state = initialProfileState, action) {
     switch(action.type) {
@@ -53,12 +59,29 @@ function sidebarState (state = initialSidebarState, action) {
             })
             break;
         default:
-            return state
+            return state;
     }
 }
 
-// Export
-export default combineReducers({
-    profileState,
-    sidebarState
-})
+function wizardState (state = initialWizardState, action) {
+    switch(action.type) {
+        case Symbols.SET_WIZARD_NEXT_READY:
+            console.log("Setting next page as: " + action.value)
+            return Object.assign({}, state, {
+                nextPageReady: action.value,
+            })
+            break;
+        default:
+            return state;
+    }
+}
+
+const reducers = {profileState, sidebarState, wizardState }
+
+export default reducers
+
+// export default combineReducers({
+//     profileState,
+//     sidebarState,
+//     wizardState
+// })

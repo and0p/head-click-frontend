@@ -5,7 +5,8 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { games } from '../../model/HcModel';
 import Game from '../../model/Game'
-import SettingListItem from './components/SettingListItem'
+import SettingCategory from './components/SettingCategory'
+//import SettingListItem from './components/SettingListItem'
 // Material imports
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
@@ -22,10 +23,10 @@ const styles = theme => ({
       textAlign: 'left',
       color: theme.palette.text.secondary,
     },
-    primaryPaper: {
+    primaryListItem: {
         padding: theme.spacing.unit * 2,
         textAlign: 'left',
-        backgroundColor: '#8941af'
+        backgroundColor: theme.palette.primary
     }
   });
 
@@ -63,11 +64,18 @@ class GamePage extends React.Component {
                                 </Typography><br />
                                 {/* Other settings */}
                                 <List subheader={<li />}>
-                                    {
-                                        game.settings.optimization.map((setting) => 
-                                            <SettingListItem setting={setting} />
-                                        )
-                                    }
+                                    <SettingCategory
+                                        name="Optimization"
+                                        open
+                                        color="purple"
+                                        settings={game.settings.optimization}
+                                    />
+                                    <SettingCategory
+                                        name="Gameplay"
+                                        open
+                                        color="teal"
+                                        settings={game.settings.gameplay}
+                                    />
                                 </List>
                             </Paper>
                         </Grid>
@@ -107,7 +115,7 @@ const mapStateToProps = (state) => {
     }
   }
   
-  const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
     return {
 
     }
