@@ -10,12 +10,17 @@ const styles = theme => ({
 
 });
 
+const MonitorButton = () => {
+    return <div />
+}
+
 class MonitorSelect extends React.Component {
 
     render() {
         return(
             <div>
-                <Typography variant="headline">Monitor select!</Typography>
+                <Typography variant="headline" gutterBottom>Monitor select!</Typography>
+                <Typography variant="body1">Test</Typography>
             </div>
         )
     }
