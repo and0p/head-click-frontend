@@ -18,9 +18,10 @@ const initialProfileState = {
 }
 
 const initialWizardState = {
-    wizardCompleted: false,
-    wizardPageNum: 0,
-    nextPageReady: false
+    completed: false,
+    activePage: 0,
+    pagesReady: [true, false, false, false],
+    monitorConcern: false
 }
 
 // Reducers
@@ -65,12 +66,24 @@ function sidebarState (state = initialSidebarState, action) {
 
 function wizardState (state = initialWizardState, action) {
     switch(action.type) {
-        case Symbols.SET_WIZARD_NEXT_READY:
-            console.log("Setting next page as: " + action.value)
-            return Object.assign({}, state, {
-                nextPageReady: action.value,
-            })
-            break;
+        case Symbols.SET_WIZARD_READY:
+            state.pagesReady[action.value] = true
+            return Object.assign({}, state)
+        case Symbols.SET_WIZARD_NOT_READY:
+            state.pagesReady[action.value] = false
+            return Object.assign({}, state)
+        case Symbols.WIZARD_NEXT:
+            if(state.activePage < 4 && state.pagesReady[state.activePage]) {
+                return Object.assign({}, state, {
+                    activePage: state.activePage + 1
+                })
+            }
+        case Symbols.WIZARD_BACK:
+            if(state.activePage > 0) {
+                return Object.assign({}, state, {
+                    activePage: state.activePage - 1
+                })
+            }
         default:
             return state;
     }

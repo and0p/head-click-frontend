@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
+import * as Symbols from '../../../redux/HcSymbols'
 
 const styles = theme => ({
 
@@ -12,7 +13,6 @@ const styles = theme => ({
 class MonitorSelect extends React.Component {
 
     render() {
-        this.props.setReady(false)
         return(
             <div>
                 <Typography variant="headline">Monitor select!</Typography>
@@ -22,4 +22,28 @@ class MonitorSelect extends React.Component {
     
 }
 
-export default withStyles(styles)(MonitorSelect)
+const mapStateToProps = (state) => {
+    
+}
+  
+const mapDispatchToProps = dispatch => {
+    return {
+        selectMonitor: monitor => dispatch({
+            type: Symbols.SELECT_MONITOR,
+            value: monitor
+        }),
+        setReady: () => dispatch({
+            type: Symbols.SET_WIZARD_READY,
+            value: 1
+        }),
+        setNotReady: () => dispatch({
+            type: Symbols.SET_WIZARD_NOT_READY,
+            value: 1
+        }),
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withStyles(styles)(MonitorSelect))

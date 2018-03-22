@@ -15,7 +15,6 @@ import theme from './theme.js'
 import MaterialRoot from './pages/materialroot/MaterialRoot'
 import GamePage from './pages/gamepage/GamePage'
 import Wizard from './pages/wizard/Wizard'
-import RoutingTestPage from './pages/RoutingTestPage'
 import styles from './index.css'
 
 console.log(...reducers)
@@ -47,13 +46,12 @@ class App extends React.Component {
         <MuiThemeProvider theme={theme}>
           <MaterialRoot>
             <Route exact path="/" render={() => <Wizard theme={theme} />}/>
-            <Route path="/test" component={RoutingTestPage} />
             <Route path="/game/:name" component={GamePage} />
           </MaterialRoot>
         </MuiThemeProvider>
       </ConnectedRouter>
     </Provider>
-  );
+    );
   }
 
 }

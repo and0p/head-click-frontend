@@ -18,38 +18,25 @@ const styles = theme => ({
 
 class Wizard extends React.Component {
 
-    handleNext = () => {
-
-    }
-
     render() {
         const { classes, theme } = this.props;
 
         let page = <div />
-        switch(this.props.wizardPageNum) {
+        switch(this.props.activePage) {
             case 0:
-                page = <WizardSplash setReady={this.props.setNextPageReady} />
+                page = <WizardSplash />
                 break;
             case 1:
-                page = <MonitorSelect setReady={this.props.setNextPageReady} />
+                page = <MonitorSelect />
                 break;
             default:
                 page = <div />
                 break;
         }
-
         return (
             <div>
                 {page}
-                <WizardStepper
-                    nextEnabled={this.props.nextPageReady}
-                    backEnabled={false}
-                    nextFunction={() => {console.log("pressed!")}}
-                    nextIsFinish={false}
-                    nextIsConcern={false}
-                    pageNum={this.props.wizardPageNum} 
-                    theme={theme}
-                />
+                <WizardStepper theme={theme} />
             </div>
         );
     }
@@ -58,21 +45,12 @@ class Wizard extends React.Component {
 const mapStateToProps = (state) => {
     return {
       profile: state.profileState,
-      wizardPageNum: state.wizardState.wizardPageNum,
-      nextPageReady: state.wizardState.nextPageReady
+      activePage: state.wizardState.activePage
     }
   }
   
   const mapDispatchToProps = dispatch => {
     return {
-        changePageRelative: pageNum => dispatch({
-            type: Symbols.WIZARD_PAGE_CHANGE_RELATIVE,
-            value: pageNum
-        }),
-        setNextPageReady: ready => dispatch({
-            type: Symbols.SET_WIZARD_NEXT_READY,
-            value: ready
-        })
     }
 }
 

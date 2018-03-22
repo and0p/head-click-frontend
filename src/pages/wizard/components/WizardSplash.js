@@ -12,7 +12,6 @@ const styles = theme => ({
 class WizardSplash extends React.Component {
 
     render() {
-        this.props.setReady(true)
         return(
             <div>
                 <Typography variant="headline">Welcome!</Typography>

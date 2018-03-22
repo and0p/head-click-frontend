@@ -1,4 +1,6 @@
 import React from 'react';
+import { render } from 'react-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
@@ -8,6 +10,7 @@ import Button from 'material-ui/Button';
 import KeyboardArrowLeft from 'material-ui-icons/KeyboardArrowLeft';
 import KeyboardArrowRight from 'material-ui-icons/KeyboardArrowRight';
 import Hidden from 'material-ui/Hidden';
+import * as Symbols from '../../../redux/HcSymbols'
 
 const styles = theme => ({
     desktopRoot: {
@@ -26,42 +29,66 @@ const styles = theme => ({
     },
   });
 
-  // function getSteps() {
-  //   return ['Select master blaster campaign settings', 'Create an ad group', 'Create an ad'];
-  // }
-
   class WizardStepper extends React.Component {
 
+    isNextEnabled = () => {
+      if(this.props.activePage < 4 && this.props.pagesReady[this.props.activePage]) {
+        return true
+      }
+      else {
+        return false
+      }
+    }
+
+    isBackEnabled = () => {
+      if(this.props.activePage > 0) {
+        return true
+      }
+      else {
+        return false
+      }
+    }
+
     handleNext = () => {
-      
+      if(this.isNextEnabled()) {
+        this.props.nextPage()
+      }
     }
 
     handleBack = () => {
-      
+      if(this.isBackEnabled())
+        this.props.goBack()
+    }
+
+    getNextText = () => {
+      if(this.props.activePage === 3)
+        return "FINISH"
+      else
+        return "NEXT"
     }
     
     render() {
       const { classes, theme } = this.props;
-      console.log("pagenum: " + this.props.pageNum)
+      const nextText = "Next" // Will eventually calculate as "finish"
       return(
         <div>
-          <Hidden smUp>
+          <Hidden mdUp>
             <MobileStepper
               variant="dots"
               steps={4}
               position="static"
-              activeStep={this.props.pageNum}
+              activeStep={this.props.activePage}
               className={classes.mobileRoot}
               nextButton={
-                <Button size="small" onClick={this.props.nextFunction} disabled={!this.props.nextEnabled}>
-                  Next
+                <Button size="small" onClick={this.handleNext} disabled={!this.isNextEnabled()}>
+                  {this.getNextText()}
                   {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                 </Button>
               }
               backButton={
-                <Button size="small" onClick={this.handleBack} disabled={!this.props.backEnabled}>
+                <Button size="small" onClick={this.handleBack} disabled={!this.isBackEnabled()}>
                   {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                  Back
+                  BACK
                 </Button>
               }
               />
@@ -71,4 +98,26 @@ const styles = theme => ({
     }
   }
 
-  export default withStyles(styles)(WizardStepper)
+  const mapStateToProps = (state) => {
+    return {
+      activePage: state.wizardState.activePage,
+      pagesReady: state.wizardState.pagesReady,
+      monitorConcern: state.wizardState.monitorConcern
+    }
+  }
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+        nextPage: () => dispatch({
+            type: Symbols.WIZARD_NEXT,
+        }),
+        goBack: () => dispatch({
+          type: Symbols.WIZARD_BACK
+        })
+    }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(WizardStepper))
