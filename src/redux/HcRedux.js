@@ -9,7 +9,7 @@ const initialSidebarState = {
 }
 
 const initialProfileState = {
-    monitor: monitors["800x600"],
+    monitor: monitors["4:3"]["800x600"],
     refreshRate: 144,
     mouse: mice["Logitech MX 400"],
     dPI: 1200,
