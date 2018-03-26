@@ -183,9 +183,10 @@ MaterialRoot.propTypes = {
 };
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
-    open: state.sidebarState.mobileMenuOpen,
-    profile: state.profileState
+    open: state.sidebar.mobileMenuOpen,
+    profile: state.profile
   }
 }
 

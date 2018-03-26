@@ -17,7 +17,7 @@ const styles = theme => ({
       width: '90%',
     },
     mobileRoot: {
-      maxWidth: 600,
+      //maxWidth: 600,
       flexGrow: 1,
     },
     backButton: {
@@ -76,7 +76,7 @@ const styles = theme => ({
             <MobileStepper
               variant="dots"
               steps={4}
-              position="static"
+              position="bottom"
               activeStep={this.props.activePage}
               className={classes.mobileRoot}
               nextButton={
@@ -100,9 +100,9 @@ const styles = theme => ({
 
   const mapStateToProps = (state) => {
     return {
-      activePage: state.wizardState.activePage,
-      pagesReady: state.wizardState.pagesReady,
-      monitorConcern: state.wizardState.monitorConcern
+      activePage: state.wizard.activePage,
+      pagesReady: state.wizard.pagesReady,
+      monitorConcern: state.wizard.monitorConcern
     }
   }
   

@@ -19,4 +19,4 @@ for(var i in mouseData) {
 // Export monitor list
 export const monitors = monitorData
 
-export const refreshRates = [ 60, 75, 120, 144 ]
+export const refreshRates = [ 60, 75, 100, 120, 144 ]

@@ -44,8 +44,8 @@ class Wizard extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-      profile: state.profileState,
-      activePage: state.wizardState.activePage
+      profile: state.profile,
+      activePage: state.wizard.activePage
     }
   }
   

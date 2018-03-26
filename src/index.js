@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { ConnectedRouter, routerReducer, routerMiddleware, push} from 'react-router-redux'
 import createHistory from 'history/createBrowserHistory'
 // Utility imports
-import reducers from './redux/HcRedux'
+import HcRedux from './redux/HcRedux'
 import theme from './theme.js'
 // Pages & styles
 import MaterialRoot from './pages/materialroot/MaterialRoot'
@@ -17,17 +17,13 @@ import GamePage from './pages/gamepage/GamePage'
 import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
 
-console.log(...reducers)
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createHistory()
 // Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history)
 // Create Redux store from reducers in HcRedux
 let store = createStore(
-  combineReducers({
-    ...reducers,
-    router:routerReducer
-  }),
+  HcRedux,
   applyMiddleware(middleware)
 );
 // Log initial state

@@ -7,6 +7,7 @@ export const SELECT_SIDEBAR_ITEM = Symbol('SELECT_SIDEBAR_ITEM');
 export const SELECT_MONITOR = Symbol('SELECT_MONITOR');
 export const SELECT_MOUSE = Symbol('SELECT_MOUSE');
 export const SELECT_SENSITIVITY = Symbol('SELECT_SENSITIVITY');
+export const SELECT_REFRESH_RATE = Symbol('SELECT_REFRESH_RATE')
 
 export const SET_WIZARD_READY = Symbol('SET_WIZARD_READY');
 export const SET_WIZARD_NOT_READY = Symbol('SET_WIZARD_NOT_READY');

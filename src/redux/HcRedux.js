@@ -1,87 +1,113 @@
 import { applyMiddleware, combineReducers, createStore, } from 'redux';
+import reduceReducers from 'reduce-reducers'
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors } from '../model/HcModel'
+import update from 'immutability-helper';
 
 // States
-const initialSidebarState = {
-    mobileMenuOpen: false,
-    selectedMenuItem: Symbols.HOME_MENU,
-}
-
-const initialProfileState = {
-    monitor: monitors["4:3"]["800x600"],
-    refreshRate: 144,
-    mouse: mice["Logitech MX 400"],
-    dPI: 1200,
-    sensitivity: 34,
-    ownedGames: [games["overwatch"], games["r6siege"]]
-}
-
-const initialWizardState = {
-    completed: false,
-    activePage: 0,
-    pagesReady: [true, false, false, false],
-    monitorConcern: false
+const initalState = {
+    sidebar: {
+        mobileMenuOpen: false,
+        selectedMenuItem: Symbols.HOME_MENU
+    },
+    profile: {
+        monitor: monitors["4:3"]["800x600"],
+        refreshRate: 144,
+        mouse: mice["Logitech MX 400"],
+        dPI: 1200,
+        sensitivity: 34,
+        ownedGames: [games["overwatch"], games["r6siege"]]
+    },
+    wizard: {
+        wizardCompleted: false,
+        activePage: 0,
+        pagesReady: [true, false, false, false],
+        monitorConcern: false,
+        monitorSelected: false,
+    }
 }
 
 // Reducers
-function profileState (state = initialProfileState, action) {
+function profileState (state = initalState, action) {
     switch(action.type) {
         case Symbols.SELECT_MONITOR:
-            return Object.assign({}, state, {
-                monitor: action.value,
+            if(action.value != null)
+                return update(state, {
+                    profile: {
+                        monitor: { $set: action.value }
+                    }
+                })
+        case Symbols.SELECT_REFRESH_RATE:
+            if(action.value != null)
+            return update(state, {
+                profile: {
+                    refreshRate: { $set: action.value }
+                }
             })
         case Symbols.SELECT_MOUSE:
-            return Object.assign({}, state, {
-                mouse: action.value,
+            if(action.value != null)
+            return update(state, {
+                profile: {
+                    mouse: { $set: action.value }
+                }
             })
         default:
             return state
     }
 }
 
-function sidebarState (state = initialSidebarState, action) {
+function sidebarState (state = initalState, action) {
     switch(action.type) {
         case Symbols.OPEN_SIDEBAR:
-            return Object.assign({}, state, {
-                mobileMenuOpen: true,
+            return update(state, {
+                sidebar: {
+                    mobileMenuOpen: { $set: true }
+                }
             })
-            break;
         case Symbols.CLOSE_SIDEBAR:
-            return Object.assign({}, state, {
-                mobileMenuOpen: false
+            return update(state, {
+                sidebar: {
+                    mobileMenuOpen: { $set: false }
+                }
             })
-            break;
         case Symbols.SELECT_SIDEBAR_ITEM:
-            console.log(action.type)
-            return Object.assign({}, state, {
-                mobileMenuOpen: false,
-                selectedMenuItem: action.value
+            return update(state, {
+                sidebar: {
+                    mobileMenuOpen: { $set: false },
+                    selectedMenuItem: { $set: action.value}
+                }
             })
-            break;
         default:
             return state;
     }
 }
 
-function wizardState (state = initialWizardState, action) {
+function wizardState (state = initalState, action) {
     switch(action.type) {
-        case Symbols.SET_WIZARD_READY:
-            state.pagesReady[action.value] = true
-            return Object.assign({}, state)
-        case Symbols.SET_WIZARD_NOT_READY:
-            state.pagesReady[action.value] = false
-            return Object.assign({}, state)
+        case Symbols.SELECT_MONITOR:
+            if(state.profile.monitor != "undefined" && state.profile.refreshRate != "undefined")
+                return update(state, {
+                    wizard: {
+                        pagesReady: {
+                            1: { $set: true }
+                        }
+                    }
+                })
+            return state
         case Symbols.WIZARD_NEXT:
-            if(state.activePage < 4 && state.pagesReady[state.activePage]) {
-                return Object.assign({}, state, {
-                    activePage: state.activePage + 1
+            if(state.wizard.activePage < 4 && state.wizard.pagesReady[state.wizard.activePage]) {
+                return update(state, {
+                    wizard: {
+                        activePage: { $set: state.wizard.activePage + 1 }
+                    }
                 })
             }
         case Symbols.WIZARD_BACK:
-            if(state.activePage > 0) {
-                return Object.assign({}, state, {
-                    activePage: state.activePage - 1
+            if(state.wizard.activePage > 0) {
+                return update(state, {
+                    wizard: {
+                        activePage: { $set: state.wizard.activePage - 1 }
+                    }
                 })
             }
         default:
@@ -89,12 +115,16 @@ function wizardState (state = initialWizardState, action) {
     }
 }
 
-const reducers = {profileState, sidebarState, wizardState }
-
-export default reducers
-
-// export default combineReducers({
+// const reducers = {
 //     profileState,
-//     sidebarState,
-//     wizardState
-// })
+//     wizardState, 
+//     sidebarState 
+// }
+
+// export default reducers
+
+export default reduceReducers(
+    profileState,
+    sidebarState,
+    wizardState
+)
