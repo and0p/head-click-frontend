@@ -111,7 +111,7 @@ GamePage.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-      profile: state.profileState
+      profile: state.profile
     }
   }
   

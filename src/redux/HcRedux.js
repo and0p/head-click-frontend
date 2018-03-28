@@ -11,8 +11,8 @@ const initalState = {
         selectedMenuItem: Symbols.HOME_MENU
     },
     profile: {
-        monitor: monitors["4:3"]["800x600"],
-        refreshRate: 144,
+        monitor: monitors["16:9"]["1080p"],
+        refreshRate: 60,
         mouse: mice["Logitech MX 400"],
         dPI: 1200,
         sensitivity: 34,

@@ -13,7 +13,7 @@ const replaceSettingArrows = text => {
 
 const styles = theme => ({
     infoIcon: {
-        color: '#999999'
+        color: '#555555'
     },
     infoListItem: {
         padding: '0px 16px',

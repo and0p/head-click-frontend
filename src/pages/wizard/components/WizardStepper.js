@@ -72,7 +72,7 @@ const styles = theme => ({
       const nextText = "Next" // Will eventually calculate as "finish"
       return(
         <div>
-          <Hidden mdUp>
+          {/*<Hidden mdUp>*/}
             <MobileStepper
               variant="dots"
               steps={4}
@@ -92,7 +92,7 @@ const styles = theme => ({
                 </Button>
               }
               />
-            </Hidden>
+            {/*</Hidden>*/}
           </div>
       )
     }
