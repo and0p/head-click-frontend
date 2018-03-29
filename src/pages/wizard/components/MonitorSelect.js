@@ -89,7 +89,7 @@ class MonitorSelect extends React.Component {
                         </div>
                     ))}
                 </div>
-                <div className={classes.section}>
+                {/*<div className={classes.section}>
                     <Typography variant="display1" gutterBottom>Select your refresh rate:</Typography>
                     <RadioGroup
                         aria-label="Refresh Rate"
@@ -103,7 +103,7 @@ class MonitorSelect extends React.Component {
                             return(<FormControlLabel key={refreshRate} value={rr} control={<Radio />} label={rr} />)
                         })}
                     </RadioGroup>
-                </div>
+                </div>*/}
             </div>
         )
     }

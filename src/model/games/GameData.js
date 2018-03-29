@@ -105,6 +105,11 @@ const gameData = [
     }
 ]
 
+export const gameNamesByPopularity = [
+    "r6siege",
+    "overwatch"
+]
+
 // →►
 
 export default gameData

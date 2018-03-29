@@ -10,6 +10,7 @@ import Typography from 'material-ui/Typography';
 import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
 import MonitorSelect from './components/MonitorSelect'
+import GameSelect from './components/GameSelect'
 import * as Symbols from '../../redux/HcSymbols'
 
 const styles = theme => ({
@@ -30,7 +31,7 @@ class Wizard extends React.Component {
                 page = <MonitorSelect />
                 break;
             default:
-                page = <div />
+                page = <GameSelect />
                 break;
         }
         return (

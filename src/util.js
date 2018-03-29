@@ -11,6 +11,12 @@ export const getSettingForDCm = (game, profile, targetDCm) => {
     return calc / targetDCm
 }
 
+export const isValid = (anything) => { return(anything != "undefined" && anything != null) }
+
+export const isInArray = (arr, value) => {
+    return (arr.indexOf(value) > -1)
+}
+
 /*
     math: {
         fov: {
