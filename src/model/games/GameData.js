@@ -3,7 +3,7 @@ const gameData = [
         name: "Overwatch",
         shortName: "Overwatch",
         alias: "overwatch",
-        logo: "http://someurl.com/test.png",
+        hasLogo: true,
         math: {
             fov: {
                 min: 50,
@@ -25,6 +25,11 @@ const gameData = [
                 accelerationPossible: true,
                 accelerationDefault: false,
                 yaw: 0.022
+            },
+            recommended: {
+                ideal: 34,
+                min: 15,
+                max: 46
             }
         },
         settings: {
@@ -74,7 +79,7 @@ const gameData = [
         name: "Rainbow Six Siege",
         shortName: "R6 Siege",
         alias: "r6siege",
-        logo: "http://someurl.com/test.png",
+        hasLogo: false,
         math: {
             fov: {
                 min: 60,
@@ -96,6 +101,125 @@ const gameData = [
                 accelerationPossible: false,
                 accelerationDefault: false,
                 yaw: 0.022
+            },
+            recommended: {
+                ideal: 34,
+                max: 46
+            }
+        },
+        recommended: {
+            ideal: 34,
+            min: 15,
+            max: 46
+        }
+    },
+    {
+        name: "Fortnite",
+        shortName: "Fortnite",
+        alias: "fortnite",
+        hasLogo: false,
+        math: {
+            fov: {
+                min: 60,
+                max: 90,
+                default: 90,
+                recommended: 90,
+                horizontal: true,
+                basedOnSD: false
+            },
+            sensitivity: {
+                min: 1,
+                max: 25,
+                default: 10,
+                linear: true,   // scale: 1 instead?
+                multiplier: 1,
+                affectedByResolution: false,
+                affectedByFov: false,
+                rawInput: true,
+                accelerationPossible: false,
+                accelerationDefault: false,
+                yaw: 0.022
+            },
+            recommended: {
+                ideal: 34,
+                min: 15,
+                max: 46
+            }
+        },
+        settings: {
+            optimization: [],
+            gameplay: []
+        }
+    },
+    {
+        name: "Player Unknown's Battlegrounds",
+        shortName: "PUBG",
+        alias: "pubg",
+        hasLogo: false,
+        math: {
+            fov: {
+                min: 60,
+                max: 90,
+                default: 90,
+                recommended: 90,
+                horizontal: true,
+                basedOnSD: false
+            },
+            sensitivity: {
+                min: 1,
+                max: 25,
+                default: 10,
+                linear: true,   // scale: 1 instead?
+                multiplier: 1,
+                affectedByResolution: false,
+                affectedByFov: false,
+                rawInput: true,
+                accelerationPossible: false,
+                accelerationDefault: false,
+                yaw: 0.022
+            },
+            recommended: {
+                ideal: 34,
+                min: 15,
+                max: 46
+            }
+        },
+        settings: {
+            optimization: [],
+            gameplay: []
+        }
+    },
+    {
+        name: "Counter-Strike: Global Offensive",
+        shortName: "CS:GO",
+        alias: "csgo",
+        hasLogo: false,
+        math: {
+            fov: {
+                min: 60,
+                max: 90,
+                default: 90,
+                recommended: 90,
+                horizontal: true,
+                basedOnSD: false
+            },
+            sensitivity: {
+                min: 1,
+                max: 25,
+                default: 10,
+                linear: true,   // scale: 1 instead?
+                multiplier: 1,
+                affectedByResolution: false,
+                affectedByFov: false,
+                rawInput: true,
+                accelerationPossible: false,
+                accelerationDefault: false,
+                yaw: 0.022
+            },
+            recommended: {
+                ideal: 34,
+                min: 15,
+                max: 46
             }
         },
         settings: {
@@ -106,9 +230,51 @@ const gameData = [
 ]
 
 export const gameNamesByPopularity = [
-    "r6siege",
-    "overwatch"
+    "fortnite",
+    "pubg",
+    "overwatch",
+    "csgo",
+    "r6siege"
 ]
+
+// Add test games
+for (var i = 0; i < 40; i++) {
+    let testGame = {
+        name: "Test Game " + i,
+        shortName: "Test " + i,
+        alias: "test" + i,
+        hasLogo: false,
+        math: {
+            fov: {
+                min: 60,
+                max: 90,
+                default: 90,
+                recommended: 90,
+                horizontal: true,
+                basedOnSD: false
+            },
+            sensitivity: {
+                min: 1,
+                max: 25,
+                default: 10,
+                linear: true,   // scale: 1 instead?
+                multiplier: 1,
+                affectedByResolution: false,
+                affectedByFov: false,
+                rawInput: true,
+                accelerationPossible: false,
+                accelerationDefault: false,
+                yaw: 0.022
+            }
+        },
+        settings: {
+            optimization: [],
+            gameplay: []
+        }
+    }
+    gameData.push(testGame);
+    gameNamesByPopularity.push(testGame.alias)
+}
 
 // →►
 

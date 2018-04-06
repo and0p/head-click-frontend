@@ -1,3 +1,6 @@
+import * as stats from 'stats-lite'
+import gaussian from 'gaussian'
+
 export const getSettingForDCm = (game, profile, targetDCm) => {
     console.log(game)
     console.log(profile)
@@ -17,27 +20,26 @@ export const isInArray = (arr, value) => {
     return (arr.indexOf(value) > -1)
 }
 
-/*
-    math: {
-        fov: {
-            min: 50,
-            max: 103,
-            default: 103,
-            recommended: 103,
-            horizontal: true,
-            basedOnSD: false,
-        },
-        sensitivity: {
-            min: 1,
-            max: 25,
-            default: 10,
-            linear: true,   // scale: 1 instead
-            multiplier: (10/3),
-            affectedByResolution: false,
-            affectedByFov: false,
-            rawInput: true,
-            accelerationPossible: true,
-            accelerationDefault: false
-        }
+export const assetPath = 'file:///C:/Users/Andrew/Pictures/head.click/'
+
+export const getRecommendedDpi = games => {
+    if(games.length > 0)
+    {
+        // Get average from all games
+        let allRecommended = []
+        games.forEach(game => {
+            allRecommended.push(game.math.recommended.ideal)
+        })
+        return stats.mean(allRecommended)
     }
-*/
+    else
+    {
+        return 0
+    }
+}
+
+export const emptyArray = []
+for(let i = 0; i < 200; i++)
+{
+    emptyArray.push(0)
+}

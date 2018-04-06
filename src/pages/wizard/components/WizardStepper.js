@@ -32,7 +32,7 @@ const styles = theme => ({
   class WizardStepper extends React.Component {
 
     isNextEnabled = () => {
-      if(this.props.activePage < 4 && this.props.pagesReady[this.props.activePage]) {
+      if(this.props.activePage < 5 && this.props.pagesReady[this.props.activePage]) {
         return true
       }
       else {
@@ -61,7 +61,7 @@ const styles = theme => ({
     }
 
     getNextText = () => {
-      if(this.props.activePage === 3)
+      if(this.props.activePage === 4)
         return "FINISH"
       else
         return "NEXT"
@@ -75,7 +75,7 @@ const styles = theme => ({
           {/*<Hidden mdUp>*/}
             <MobileStepper
               variant="dots"
-              steps={4}
+              steps={5}
               position="bottom"
               activeStep={this.props.activePage}
               className={classes.mobileRoot}

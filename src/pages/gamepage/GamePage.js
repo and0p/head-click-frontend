@@ -13,6 +13,7 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Divider from 'material-ui/Divider';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import BigValue from '../../components/BigValue'
 
 const styles = theme => ({
     root: {
@@ -54,10 +55,8 @@ class GamePage extends React.Component {
                                 Settings
                                 </Typography>
                                 <Divider /><br />
-                                <Typography variant="headline">
-                                    Sensitivity:{" "}
-                                    {game.getSettingForDCm(this.props.profile).toFixed(2)}
-                                </Typography>
+                                <BigValue name="Sensitivity" value={game.getSettingForDCm(this.props.profile).toFixed(2)} color="purple"/> 
+                                <BigValue name="FOV" value={game.getIdealFOV(this.props.profile)} color="yellow"/> 
                                 <Typography variant="headline">
                                     Field of View:{" "}
                                     {game.getIdealFOV(this.props.profile)}

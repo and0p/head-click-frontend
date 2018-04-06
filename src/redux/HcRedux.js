@@ -3,7 +3,7 @@ import reduceReducers from 'reduce-reducers'
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors } from '../model/HcModel'
 import update from 'immutability-helper';
-import { isValid } from '../util'
+import { isValid, getRecommendedDpi } from '../util'
 
 // States
 const initialState = {
@@ -14,17 +14,27 @@ const initialState = {
     profile: {
         monitor: monitors["16:9"]["1080p"],
         refreshRate: 60,
-        mouse: mice["Logitech MX 400"],
-        dPI: 1200,
-        sensitivity: 34,
-        ownedGames: [games["overwatch"], games["r6siege"]]
+        dpi: {
+            actual: 1200,
+            recommended: 1200
+        },
+        sensitivity: {
+            actual: 34,
+            recommended: 34
+        },
+        toggle: {
+            actual: null,
+            recommended: null
+        },
+        ownedGames: [],
     },
     wizard: {
         wizardCompleted: false,
         activePage: 0,
-        pagesReady: [true, false, false, false],
+        pagesReady: [true, false, true, false, true],
         monitorConcern: false,
-        monitorSelected: false
+        monitorSelected: false,
+        gamePagesRevealed: 1
     },
     ui: {
         contentComponent: null,
@@ -39,14 +49,17 @@ function profileReducer (state = initialState, action) {
             if(action.value != null)
             {
                 // Update dpi if still doing wizard
-                let newMouseDpi = state.profile.dPI
+                let newMouseDpi = state.profile.dpi
                 if(!state.wizard.wizardCompleted) {
                     newMouseDpi = action.value.recommendedDpi
                 }
                 return update(state, {
                     profile: {
                         monitor: { $set: action.value },
-                        dPI: { $set: newMouseDpi }
+                        dpi: { 
+                            actual: { $set: newMouseDpi },
+                            recommended: {$set: newMouseDpi }
+                        }
                     }
                 })
             }
@@ -61,13 +74,6 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             else return state
-        case Symbols.SELECT_MOUSE:
-            if(action.value != null)
-            return update(state, {
-                profile: {
-                    mouse: { $set: action.value }
-                }
-            })
         case Symbols.TOGGLE_GAME:
             if(isValid(action.value) && games.hasOwnProperty(action.value.alias)) {
                 // See if we have this game already
@@ -90,6 +96,20 @@ function profileReducer (state = initialState, action) {
                 }
             }
             else return state
+        case Symbols.WIZARD_NEXT:
+            if(state.wizard.activePage == 3)
+            {
+                let recommendedSensitivity = getRecommendedDpi(state.profile.ownedGames)
+                console.log("rec sens of: " + recommendedSensitivity)
+                return update(state, {
+                    profile: {
+                        sensitivity: {
+                            actual: { $set: recommendedSensitivity},
+                            recommended: { $set: recommendedSensitivity }
+                        }
+                    }
+                })
+            }
         default:
             return state
     }
@@ -134,27 +154,59 @@ function wizardReducer (state = initialState, action) {
                 })
             return state
         case Symbols.WIZARD_NEXT:
-            let newAlert = null
-            if(state.wizard.activePage == 1)
-                newAlert = Symbols.DPI_ASSIGN_ALERT
             if(state.wizard.activePage < 4 && state.wizard.pagesReady[state.wizard.activePage]) {
+                // Set the next page
                 return update(state, {
                     wizard: {
-                        activePage: { $set: state.wizard.activePage + 1 }
-                    },
-                    ui: {
-                        alert: { $set: newAlert }
+                        activePage: { $set: state.wizard.activePage + 1 },
+                        gamePagesRevealed: { $set: 1}
                     }
                 })
             }
+            else if(state.wizard.activePage == 4 && state.wizard.pagesReady[state.wizard.activePage])
+            {
+                // Finish the wizard
+                return update(state, {
+                    wizard: {
+                        wizardCompleted: { $set: true }
+                    }
+                })
+            }
+            else
+                return state
         case Symbols.WIZARD_BACK:
             if(state.wizard.activePage > 0) {
                 return update(state, {
                     wizard: {
-                        activePage: { $set: state.wizard.activePage - 1 }
+                        activePage: { $set: state.wizard.activePage - 1 },
+                        gamePagesRevealed: { $set: 1}
                     }
                 })
             }
+        case Symbols.SHOW_MORE_GAMES:
+            let newValue = state.wizard.gamePagesRevealed + 1
+            return update(state, {
+                wizard: {
+                    gamePagesRevealed: { $set: newValue }
+                }
+            })
+        case Symbols.TOGGLE_GAME:
+            if(state.profile.ownedGames.length < 1)
+                return update(state, {
+                    wizard: {
+                        pagesReady: {
+                            3: { $set: false }
+                        }
+                    }
+                })
+            else
+                return update(state, {
+                    wizard: {
+                        pagesReady: {
+                            3: { $set: true }
+                        }
+                    }
+                })
         default:
             return state;
     }

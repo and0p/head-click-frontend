@@ -82,7 +82,7 @@ class MaterialRoot extends React.Component {
         <SidebarButton
           link={"/game/" + game.alias}
           icon={<DesktopWindows/>}
-          text={game.name}
+          text={game.shortName}
           innerClick={() => { this.props.selectSidebarItem(0) }}
           />
       )
@@ -96,20 +96,20 @@ class MaterialRoot extends React.Component {
             link="/"
             icon={<DesktopWindows/>}
             text={this.props.profile.monitor.name}
-            subtext={this.props.profile.refreshRate + "hz"}
+            //subtext={this.props.profile.refreshRate + "hz"}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
           <SidebarButton 
             link="/test"
             icon={<MouseIcon/>}
-            text={this.props.profile.dPI + " dpi"}
-            subtext={this.props.profile.mouse.name}
+            text={this.props.profile.dpi.actual + " dpi"}
+            //subtext={this.props.profile.mouse.name}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
           <SidebarButton 
             link="/mouse"
             icon={<CompareArrows/>}
-            text={this.props.profile.sensitivity + " cm/360°"}
+            text={this.props.profile.sensitivity.actual + " cm/360°"}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
           <Divider />

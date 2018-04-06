@@ -1,3 +1,7 @@
+import { assetPath, emptyArray } from '../util'
+import * as stats from 'stats-lite'
+import gaussian from 'gaussian'
+
 class Game {
     constructor(gameJson) {
         Object.assign(this, gameJson);
@@ -5,13 +9,13 @@ class Game {
 
     getSettingForDCm = profile => {
         // Get 360 / (dpi * yaw)
-        let calc = 360 / (profile.dPI * this.math.sensitivity.yaw)
+        let calc = 360 / (profile.dpi.actual * this.math.sensitivity.yaw)
         // Convert from inches to cm
         calc *= 2.54
         // Multiply if needed, in game
         calc *= this.math.sensitivity.multiplier
         // Divide by target cm/360
-        return calc / profile.sensitivity
+        return calc / profile.sensitivity.actual
     }
 
     getIdealFOV = profile => {
@@ -21,35 +25,29 @@ class Game {
     getName() {
         return(this.name + " test")
     }
+
+    getAssetPath() {
+        return assetPath + 'games/' + this.alias + '/'
+    }
+
+    getPercentileArray = type => {
+        if(this.stats.hasOwnProperty(type))
+        {
+            let stats = this.stats[type]
+            if(stats.processed)
+            {
+                return stats.normalizedArray
+            }
+            else
+            {
+                
+            }
+            let data = []
+            let dist = gaussian(stats.mean())
+        }
+        else
+            return emptyArray
+    }
 }
 
 export default Game;
-
-// "overwatch": {
-//     name: "Overwatch",
-//     shortName: "Overwatch",
-//     alias: "overwatch",
-//     logo: "http://someurl.com/test.png",
-//     math: {
-//         fov: {
-//             min: 50,
-//             max: 103,
-//             default: 103,
-//             recommended: 103,
-//             horizontal: true,
-//             basedOnSD: false
-//         },
-//         sensitivity: {
-//             min: 1,
-//             max: 25,
-//             default: 10,
-//             linear: true,   // scale: 1 instead
-//             multiplier: (10/3),
-//             affectedByResolution: false,
-//             affectedByFov: false,
-//             rawInput: true,
-//             accelerationPossible: true,
-//             accelerationDefault: false,
-//             yaw: 0.022
-//         }
-//     }

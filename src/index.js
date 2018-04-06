@@ -12,6 +12,7 @@ import createHistory from 'history/createBrowserHistory'
 import HcRedux from './redux/HcRedux'
 import theme from './theme.js'
 // Pages & styles
+import Dashboard from './pages/dashboard/Dashboard'
 import MaterialRoot from './pages/materialroot/MaterialRoot'
 import GamePage from './pages/gamepage/GamePage'
 import Wizard from './pages/wizard/Wizard'
@@ -34,6 +35,13 @@ const unsubscribe = store.subscribe(() => {
   console.log(store.getState())
 })
 
+const homeComponent = state => {
+  if(state.wizard.wizardCompleted)
+    return <Dashboard />
+  else
+    return <Wizard theme={theme} />
+}
+
 class App extends React.Component {
 
   render() {
@@ -42,7 +50,7 @@ class App extends React.Component {
       <ConnectedRouter history={history}>
         <MuiThemeProvider theme={theme}>
           <MaterialRoot>
-            <Route exact path="/" render={() => <Wizard theme={theme} />}/>
+            <Route exact path="/" render={() => homeComponent(store.getState())}/>
             <Route path="/game/:name" component={GamePage} />
           </MaterialRoot>
           <DpiAlert />

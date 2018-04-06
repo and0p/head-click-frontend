@@ -41,7 +41,7 @@ class DpiAlert extends React.Component {
                         </DialogContentText>
                     </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.props.close} color="primary">
+                    <Button variant="raised" onClick={this.props.close} color="primary">
                         Got it
                     </Button>   
                 </DialogActions>

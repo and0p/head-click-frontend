@@ -10,7 +10,9 @@ import Typography from 'material-ui/Typography';
 import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
 import MonitorSelect from './components/MonitorSelect'
+import DpiAssignment from './components/DpiAssignment'
 import GameSelect from './components/GameSelect'
+import SensitivityAssignment from './components/SensitivityAssignment'
 import * as Symbols from '../../redux/HcSymbols'
 
 const styles = theme => ({
@@ -26,13 +28,22 @@ class Wizard extends React.Component {
         switch(this.props.activePage) {
             case 0:
                 page = <WizardSplash />
-                break;
+                break
             case 1:
                 page = <MonitorSelect />
-                break;
-            default:
+                break
+            case 2:
+                page = <DpiAssignment />
+                break
+            case 3:
                 page = <GameSelect />
-                break;
+                break
+            case 4:
+                page = <SensitivityAssignment />
+                break
+            default:
+                page = <div />
+                break
         }
         return (
             <div>

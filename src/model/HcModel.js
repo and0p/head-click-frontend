@@ -1,5 +1,6 @@
 import Game from './Game'
 import gameData, { gameNamesByPopularity } from './games/GameData'
+import gameStats from './games/GameStats'
 import Mouse from './Mouse'
 import mouseData from './mice/MouseData'
 import monitorData from './monitors/MonitorData'
