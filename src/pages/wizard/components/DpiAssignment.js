@@ -4,11 +4,15 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
 import Typography from 'material-ui/Typography';
+import constants from '../../../constants'
 
 const styles = theme => ({
     root: {
         flex: 1,
-        textAlign: 'center'
+        textAlign: 'center',
+        maxWidth: constants.wizardPageWidth,
+        marginLeft: 'auto',
+        marginRight: 'auto'
     },
     headline: {
         color: '#FFFFFF'
@@ -18,6 +22,10 @@ const styles = theme => ({
     },
     subtle: {
         color: '#999999'
+    },
+    image: {
+        marginTop: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit * 2
     }
 });
 
@@ -26,17 +34,17 @@ const DpiAssignment = props => {
     return (
     <div className={classes.root}>
         <Typography variant="display1" className={classes.headline}>
-            We've assigned you a mouse DPI of {props.dpiAssigned}
+            We've assigned you a DPI of {props.dpiAssigned}
         </Typography>
         <Typography variant="body1" className={classes.subtle} gutterBottom>
             (You can change this at any time from the dashboard)
         </Typography>
-        <Typography variant="headline" className={classes.subheader} gutterBottom>
+        <img className={classes.image} src="http://placehold.it/500x300&text=assignment_notification" />
+        <Typography variant="headline" className={classes.subheader}>
             We recommend DPI based on desktop resolution.
         </Typography>
         <Typography variant="body1" className={classes.subtle}>
-            Due to the way modern mice work, there's really no benefit to having a lower DPI versus lower in-game sensitivity.<br/>
-            And with the increasing resolution of desktop monitors, using 400 DPI becoming harder to use.
+            Due to the way modern mice work, there's no benefit to having a lower DPI over lower in-game sensitivity. And with monitor resolutions increasing, lower DPI makes everyday desktop usage or RTS / MOBA games difficult. Read more...
         </Typography>
     </div>
     )
