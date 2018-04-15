@@ -119,9 +119,9 @@ class InfoCard extends React.Component {
                 </div>
                 <div className={classes.infoDiv}>
                     <div className={classes.infoDivInner}>
-                        <ReactFitText minFontSize={28} maxFontSize={36}>
-                            <Typography variant="display2">{this.props.value}</Typography>
-                        </ReactFitText>
+                        {/*<ReactFitText minFontSize={28} maxFontSize={36}>*/}
+                            <Typography variant="display1">{this.props.value}</Typography>
+                        {/*</ReactFitText>*/}
                         <Typography variant="headline" className={classes.name}>{this.props.name}</Typography>
                     </div>
                 </div>
