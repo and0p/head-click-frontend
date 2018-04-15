@@ -20,6 +20,8 @@ import * as Symbols from '../../redux/HcSymbols'
 import theme from '../../theme.js'
 // Icons
 import MenuIcon from 'material-ui-icons/Menu'
+// Assets
+import ResponsiveAsset from '../../assets'
 
 const drawerWidth = 240;
 const mobileAppBarHeight = '56px'
@@ -68,6 +70,19 @@ const styles = theme => ({
       height: mobileAppBarHeight
     }
   },
+  logo: {
+    height: '40px',
+    [theme.breakpoints.up('sm')]: {
+      marginTop: '12px'
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '8px'
+    }
+  },
+  barLogo: {
+    marginTop: '-6px',
+    marginLeft: '24px'
+  },
   content: {
     [theme.breakpoints.up('md')]: {
       marginLeft: drawerWidth,
@@ -108,7 +123,7 @@ class MaterialRoot extends React.Component {
     const drawer = (
       <div>
           <Paper elevation={4} className={classes.drawerHeader}>
-            HEAD.CLICK
+            <ResponsiveAsset asset="logo" className={classes.logo} />
           </Paper>
           <SidebarButton 
             link="/"
@@ -148,9 +163,7 @@ class MaterialRoot extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" noWrap className={classes.title}>
-              Head.Click
-            </Typography>
+            <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset asset="logo" className={classes.logo} /></Hidden></div>
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
