@@ -4,7 +4,8 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
 import Typography from 'material-ui/Typography'
-import BigValue from '../../../components/BigValue'
+import InfoCard from '../../../components/InfoCard'
+import Grid from 'material-ui/Grid'
 
 const styles = theme => ({
 
@@ -16,7 +17,6 @@ class WizardSplash extends React.Component {
         return(
             <div>
                 <Typography variant="headline">Welcome!</Typography>
-                <BigValue name='d/cm' value={34.5} />
             </div>
         )
     }

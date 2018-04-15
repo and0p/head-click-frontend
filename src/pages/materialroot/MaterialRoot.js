@@ -8,7 +8,7 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
-import MenuIcon from 'material-ui-icons/Menu';
+import Paper from 'material-ui/Paper'
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { withRouter } from "react-router-dom";
 // Component imports
@@ -19,12 +19,11 @@ import * as Symbols from '../../redux/HcSymbols'
 // Utility imports
 import theme from '../../theme.js'
 // Icons
-import DesktopWindows from 'material-ui-icons/DesktopWindows'
-import MouseIcon from 'material-ui-icons/Mouse'
-import CompareArrows from 'material-ui-icons/CompareArrows'
-import AddCircleOutline from 'material-ui-icons/AddCircleOutline'
+import MenuIcon from 'material-ui-icons/Menu'
 
 const drawerWidth = 240;
+const mobileAppBarHeight = '56px'
+const desktopAppBarHeight = '64px'
 
 const styles = theme => ({
   root: {
@@ -52,16 +51,32 @@ const styles = theme => ({
   drawerPaper: {
     width: drawerWidth,
     [theme.breakpoints.up('md')]: {
-      position: 'relative',
+      position: 'fixed',
     },
+    borderRight: '0px'
+  },
+  drawerHeader: {
+    color: '#333333',
+    textAlign: 'center',
+    backgroundColor: theme.palette.primary.main,
+    fontSize: '1.5em',
+    lineHeight: '1.5em',
+    [theme.breakpoints.up('sm')]: {
+      height: desktopAppBarHeight
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: mobileAppBarHeight
+    }
   },
   content: {
+    [theme.breakpoints.up('md')]: {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-    height: '100%',
-    maxWidth: '100%',
-    boxSizing: 'inherit'
+    width: '100%'
   },
   title: {
     paddingLeft: theme.spacing.unit * 3
@@ -75,15 +90,16 @@ class MaterialRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-
+    console.log(theme.mixins.toolbar);
     // Games list HTML
     const sidebarGamesList = (
       this.props.profile.ownedGames.map((game) =>
         <SidebarButton
           link={"/game/" + game.alias}
-          icon={<DesktopWindows/>}
+          icon="videogame_asset"
           text={game.shortName}
-          innerClick={() => { this.props.selectSidebarItem(0) }}
+          innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
+          enabled={ this.props.profile.ready }
           />
       )
     );
@@ -91,35 +107,32 @@ class MaterialRoot extends React.Component {
     // Drawer HTML, used in both responsive and static
     const drawer = (
       <div>
-        <div className={classes.toolbar} />
+          <Paper elevation={4} className={classes.drawerHeader}>
+            HEAD.CLICK
+          </Paper>
           <SidebarButton 
             link="/"
-            icon={<DesktopWindows/>}
-            text={this.props.profile.monitor.name}
-            //subtext={this.props.profile.refreshRate + "hz"}
+            icon="home"
+            text="Dashboard"
+            enabled={true}
             innerClick={() => { this.props.selectSidebarItem(0) }}
             />
           <SidebarButton 
-            link="/test"
-            icon={<MouseIcon/>}
-            text={this.props.profile.dpi.actual + " dpi"}
-            //subtext={this.props.profile.mouse.name}
+            link="/"
+            icon="insert_chart"
+            text="Stats"
+            enabled={this.props.profile.ready}
             innerClick={() => { this.props.selectSidebarItem(0) }}
-            />
-          <SidebarButton 
-            link="/mouse"
-            icon={<CompareArrows/>}
-            text={this.props.profile.sensitivity.actual + " cm/360°"}
-            innerClick={() => { this.props.selectSidebarItem(0) }}
-            />
+          />
           <Divider />
           {sidebarGamesList}
-          <ListItem button>
-            <ListItemIcon>
-              <AddCircleOutline />
-            </ListItemIcon>
-            <ListItemText primary="Add Game" />
-          </ListItem>
+          <SidebarButton 
+            link="/add_game"
+            icon="add_circle_outline"
+            text="Add Game"
+            enabled={this.props.profile.ready}
+            innerClick={() => { this.props.selectSidebarItem(0) }}
+          />
       </div>
     );
 

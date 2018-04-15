@@ -15,8 +15,17 @@ import GameSelect from './components/GameSelect'
 import SensitivityAssignment from './components/SensitivityAssignment'
 import * as Symbols from '../../redux/HcSymbols'
 
-const styles = theme => ({
+const desktopStepperHeight = '150px' 
 
+const styles = theme => ({
+    root: {
+        maxWidth: '1000px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        [theme.breakpoints.up('md')]: {
+            marginBottom: desktopStepperHeight
+        }
+    }
 });
 
 class Wizard extends React.Component {
@@ -46,7 +55,7 @@ class Wizard extends React.Component {
                 break
         }
         return (
-            <div>
+            <div className={classes.root}>
                 {page}
                 <WizardStepper theme={theme} />
             </div>

@@ -14,6 +14,8 @@ import Typography from 'material-ui/Typography';
 import Divider from 'material-ui/Divider';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import BigValue from '../../components/BigValue'
+import InfoCard from '../../components/InfoCard'
+import ComingSoon from '../../components/ComingSoon'
 
 const styles = theme => ({
     root: {
@@ -24,10 +26,16 @@ const styles = theme => ({
       textAlign: 'left',
       color: theme.palette.text.secondary,
     },
+    openPaper: {
+        padding: theme.spacing.unit * 2,
+    },
     primaryListItem: {
         padding: theme.spacing.unit * 2,
         textAlign: 'left',
         backgroundColor: theme.palette.primary
+    },
+    sectionHeaderOpen: {
+        //marginLeft: theme.spacing.unit
     }
   });
 
@@ -46,46 +54,58 @@ class GamePage extends React.Component {
                     <Typography variant="display3" gutterBottom>
                         {game.name}
                     </Typography>
-                    <Grid container spacing={24}>
-                        {/* Sensitivity card */}
-                        <Grid item xs={12} md={6}>
-                            <Paper className={classes.paper}>
-                                {/* Main settings */}
-                                <Typography variant="display1" component="h3" gutterBottom>
-                                Settings
-                                </Typography>
-                                <Divider /><br />
-                                <BigValue name="Sensitivity" value={game.getSettingForDCm(this.props.profile).toFixed(2)} color="purple"/> 
-                                <BigValue name="FOV" value={game.getIdealFOV(this.props.profile)} color="yellow"/> 
-                                <Typography variant="headline">
-                                    Field of View:{" "}
-                                    {game.getIdealFOV(this.props.profile)}
-                                </Typography><br />
-                                {/* Other settings */}
-                                <List subheader={<li />}>
-                                    <SettingCategory
-                                        name="Optimization"
-                                        open
+                    <Grid container>
+                        <Grid item xs={12} lg={6}>
+                            {/* Main settings */}
+                            <div>
+                                <div className={classes.openPaper}>
+                                    <Typography variant="subheading" className={classes.sectionHeaderOpen} gutterBottom>
+                                        Aim Settings
+                                    </Typography>
+                                    <InfoCard 
+                                        name="Sensitivity"
+                                        value={game.getSettingForDCm(this.props.profile).toFixed(2)}
                                         color="purple"
-                                        settings={game.settings.optimization}
-                                    />
-                                    <SettingCategory
-                                        name="Gameplay"
-                                        open
-                                        color="teal"
-                                        settings={game.settings.gameplay}
-                                    />
-                                </List>
-                            </Paper>
+                                        icon='settings_ethernet'
+                                    /> 
+                                    <InfoCard
+                                        name="FOV"
+                                        value={game.getIdealFOV(this.props.profile)} 
+                                        color="blue"
+                                        icon='videocam'
+                                    /> 
+                                </div>
+                            </div>
+                            {/* Other settings */}
+                            <div>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" gutterBottom>
+                                        Other Settings
+                                    </Typography>
+                                    <List subheader={<li />}>
+                                        <SettingCategory
+                                            name="Optimization"
+                                            open
+                                            color="neutral"
+                                            settings={game.settings.optimization}
+                                        />
+                                        <SettingCategory
+                                            name="Gameplay"
+                                            open
+                                            color="neutral"
+                                            settings={game.settings.gameplay}
+                                        />
+                                    </List>
+                                </Paper>
+                            </div>
                         </Grid>
-                        <Grid item sm={12} md={6}>
+                        {/* Stats */}
+                        <Grid item sm={12} lg={6}>
                             <Paper className={classes.paper}>
-                                <Typography variant="headline" component="h3">
-                                Stats
+                                <Typography variant="subheading" gutterBottom>
+                                    Stats
                                 </Typography>
-                                <Typography variant="body2">
-                                    {game.getSettingForDCm(this.props.profile).toFixed(2)}
-                                </Typography>
+                                <ComingSoon />
                             </Paper>
                         </Grid>
                     </Grid>

@@ -26,8 +26,8 @@ const styles = theme => ({
         marginBottom: theme.spacing.unit * 3
     },
     monitorButton: {
-        width: '120px',
-        height: '60px',
+        width: '100%',
+        height: '80px',
         padding: theme.spacing.unit * 1,
         textAlign: 'center',
         color: theme.palette.text.secondary,
@@ -35,13 +35,22 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper
     },
     monitorButtonSelected: {
-        width: '120px',
-        height: '60px',
+        width: '100%',
+        height: '80px',
         padding: theme.spacing.unit * 1,
         textAlign: 'center',
         color: theme.palette.text.secondary,
         verticalAlign: 'middle',
         backgroundColor: theme.palette.primary.main
+    },
+    showMoreButton: {
+        width: '100%',
+        height: '80px',
+        padding: theme.spacing.unit * 1,
+        textAlign: 'center',
+        color: '#888888',
+        verticalAlign: 'middle',
+        backgroundColor: theme.palette.background.light
     },
     subtle: {
         color: "#888888"
@@ -49,7 +58,7 @@ const styles = theme => ({
 });
 
 const MonitorButton = (props) => (
-    <Grid item>
+    <Grid item xs={3}>
         <Button 
             onClick={props.selectMonitor}
             key={props.monitor.name}
@@ -58,6 +67,18 @@ const MonitorButton = (props) => (
             <Typography variant="subheading">{props.monitor.name}</Typography>
         </Button>
     </Grid>
+)
+
+const ShowMoreButton = props => (
+    <Grid item xs={3}>
+    <Button 
+        onClick={props.func}
+        className={props.classes.showMoreButton}
+    >
+        <Typography variant="subheading">Show More..</Typography>
+    </Button>
+</Grid>
+
 )
 
 class MonitorSelect extends React.Component {
@@ -75,8 +96,10 @@ class MonitorSelect extends React.Component {
                     {Object.keys(monitors).map((key) => (
                         <div key={key}>
                             <Typography variant="body2" className={classes.ratioText}>{key}</Typography>
-                            <Grid container spacing={16} className={classes.gridRoot}>
-                                {Object.values(monitors[key]).map((monitor) => (
+                            <Grid container className={classes.gridRoot}>
+                                {Object.values(monitors[key]).map((monitor) => {
+                                    if(monitor.common || this.props.expanded[key])
+                                        return(
                                         <MonitorButton
                                             key= {monitor.name}
                                             selectMonitor={() => this.props.selectMonitor(monitor)}
@@ -84,36 +107,25 @@ class MonitorSelect extends React.Component {
                                             monitor={monitor}
                                             selected={this.props.selectedMonitor === monitor}
                                         />
-                                ))}
+                                        )
+                                    else
+                                        return(null)
+                                })}
+                                {this.props.expanded[key] ? null : <ShowMoreButton classes={classes} func={() => this.props.expandCategory(key)} /> }
                             </Grid>
                         </div>
                     ))}
                 </div>
-                {/*<div className={classes.section}>
-                    <Typography variant="display1" gutterBottom>Select your refresh rate:</Typography>
-                    <RadioGroup
-                        aria-label="Refresh Rate"
-                        name="refresh rate"
-                        value={String(this.props.selectedRefreshRate)}
-                        onChange={this.handleRefreshRatePick}
-                        row
-                    >
-                        {refreshRates.map((refreshRate) => {
-                            let rr = String(refreshRate)
-                            return(<FormControlLabel key={refreshRate} value={rr} control={<Radio />} label={rr} />)
-                        })}
-                    </RadioGroup>
-                </div>*/}
             </div>
         )
     }
-    
 }
 
 const mapStateToProps = (state) => {
     return {
         selectedMonitor: state.profile.monitor,
-        selectedRefreshRate: state.profile.refreshRate
+        selectedRefreshRate: state.profile.refreshRate,
+        expanded: state.wizard.monitorsExpanded
     }
 }
   
@@ -126,6 +138,10 @@ const mapDispatchToProps = dispatch => {
         selectRefreshRate: refreshRate => dispatch({
             type: Symbols.SELECT_REFRESH_RATE,
             value: refreshRate
+        }),
+        expandCategory: category => dispatch({
+            type: Symbols.EXPAND_MONITOR_SECTION,
+            value: category
         })
     }
 }

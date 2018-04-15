@@ -19,6 +19,7 @@ export const SET_WIZARD_NOT_READY = Symbol('SET_WIZARD_NOT_READY')
 export const WIZARD_NEXT = Symbol('WIZARD_NEXT')
 export const WIZARD_BACK = Symbol('WIZARD_BACK')
 export const SHOW_MORE_GAMES = Symbol('SHOW_MORE_GAMES')
+export const EXPAND_MONITOR_SECTION = Symbol('EXPAND_MONITOR_SECTION')
 
 export const HOME_MENU = Symbol('HOME_MENU')
 export const MONITOR_MENU = Symbol('MONITOR_MENU')

@@ -27,6 +27,7 @@ const initialState = {
             recommended: null
         },
         ownedGames: [],
+        ready: false
     },
     wizard: {
         wizardCompleted: false,
@@ -34,7 +35,8 @@ const initialState = {
         pagesReady: [true, false, true, false, true],
         monitorConcern: false,
         monitorSelected: false,
-        gamePagesRevealed: 1
+        gamePagesRevealed: 1,
+        monitorsExpanded: { "4:3":false, "16:9": false, "16:10":false, "21:9": true }
     },
     ui: {
         contentComponent: null,
@@ -169,6 +171,9 @@ function wizardReducer (state = initialState, action) {
                 return update(state, {
                     wizard: {
                         wizardCompleted: { $set: true }
+                    },
+                    profile: {
+                        ready: {$set: true }
                     }
                 })
             }
@@ -183,6 +188,20 @@ function wizardReducer (state = initialState, action) {
                     }
                 })
             }
+        case Symbols.EXPAND_MONITOR_SECTION:
+            if(action.value != "undefined")
+            {
+                let category = String(action.value)
+                console.log(category)
+                return update(state, {
+                    wizard: {
+                        monitorsExpanded: {
+                            [category]: {$set: true}
+                        }
+                    }
+                })
+            }
+            return state
         case Symbols.SHOW_MORE_GAMES:
             let newValue = state.wizard.gamePagesRevealed + 1
             return update(state, {

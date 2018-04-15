@@ -6,7 +6,8 @@ const monitorData = {
             height: 480,
             aspectRatio: "4:3",
             recommendedDpi: 400,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: false
         },
         "800x600": {
             name: "800x600",
@@ -14,7 +15,8 @@ const monitorData = {
             height: 600,
             aspectRatio: "4:3",
             recommendedDpi: 400,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         },
         "1024x768": {
             name: "1024x768",
@@ -23,6 +25,8 @@ const monitorData = {
             aspectRatio: "4:3",
             recommendedDpi: 400,
             nonDescriptiveName: false
+            ,
+            common: true
         },
         "1280x960": {
             name: "1280x960",
@@ -30,7 +34,8 @@ const monitorData = {
             height: 960,
             aspectRatio: "4:3",
             recommendedDpi: 800,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         },
         "1440x1080": {
             name: "1440x1080",
@@ -38,7 +43,8 @@ const monitorData = {
             height: 1080,
             aspectRatio: "4:3",
             recommendedDpi: 800,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: false
         }
     },
     "16:9": {
@@ -48,7 +54,8 @@ const monitorData = {
             height: 720,
             aspectRatio: "16:9",
             recommendedDpi: 800,
-            nonDescriptiveName: true
+            nonDescriptiveName: true,
+            common: false
         },
         "1366x768": {
             name: "1366x768",
@@ -56,7 +63,8 @@ const monitorData = {
             height: 768,
             aspectRatio: "16:9",
             recommendedDpi: 800,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: false
         },
         "1080p": {
             name: "1080p",
@@ -64,7 +72,8 @@ const monitorData = {
             height: 1080,
             aspectRatio: "16:9",
             recommendedDpi: 800,
-            nonDescriptiveName: true
+            nonDescriptiveName: true,
+            common: true
         },
         "2K (WQHD)": {
             name: "2K (WQHD)",
@@ -72,7 +81,8 @@ const monitorData = {
             height: 1440,
             aspectRatio: "16:9",
             recommendedDpi: 1200,
-            nonDescriptiveName: true
+            nonDescriptiveName: true,
+            common: true
         },
         "4K (UHD-1)": {
             name: "4K (UHD-1)",
@@ -80,7 +90,8 @@ const monitorData = {
             height: 2160,
             aspectRatio: "16:9",
             recommendedDpi: 1600,
-            nonDescriptiveName: true
+            nonDescriptiveName: true,
+            common: true
         }
     },
     "16:10": {
@@ -90,7 +101,8 @@ const monitorData = {
             height: 800,
             aspectRatio: "16:10",
             recommendedDpi: 800,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: false
         },
         "1440x900": {
             name: "1440x900",
@@ -98,7 +110,8 @@ const monitorData = {
             height: 900,
             aspectRatio: "16:10",
             recommendedDpi: 800,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         },
         "1680x1050": {
             name: "1680x1050",
@@ -106,7 +119,8 @@ const monitorData = {
             height: 1050,
             aspectRatio: "16:10",
             recommendedDpi: 800,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         },
         "1920x1200": {
             name: "1920x1200",
@@ -114,7 +128,8 @@ const monitorData = {
             height: 1200,
             aspectRatio: "16:10",
             recommendedDpi: 1200,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         },
         "2560x1600": {
             name: "2560x1600",
@@ -122,7 +137,8 @@ const monitorData = {
             height: 1600,
             aspectRatio: "16:10",
             recommendedDpi: 1600,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: false
         }
     },
     "21:9": {
@@ -132,7 +148,8 @@ const monitorData = {
             height: 1080,
             aspectRatio: "21:9",
             recommendedDpi: 1200,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         },
         "3440x1440": {
             name: "3440x1440",
@@ -140,7 +157,8 @@ const monitorData = {
             height: 1440,
             aspectRatio: "21:9",
             recommendedDpi: 1600,
-            nonDescriptiveName: false
+            nonDescriptiveName: false,
+            common: true
         }
     }
 }

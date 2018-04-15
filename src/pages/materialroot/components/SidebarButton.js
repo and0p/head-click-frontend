@@ -1,8 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
 import { Link } from "react-router-dom";
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { connect } from 'react-redux'
+import Icon from 'material-ui/Icon'
+
+const styles = theme => {
+    subtle: {
+        color: '#888888'
+    }
+}
 
 class SidebarButton extends React.Component {
     constructor(props) {
@@ -10,12 +18,13 @@ class SidebarButton extends React.Component {
     }
 
     render() {
+        const { classes, theme } = this.props;
         return(
-            <ListItem component={Link} to={this.props.link} button onClick={this.props.innerClick}>
+            <ListItem component={this.props.enabled ? Link : 'ul'} to={this.props.link} button onClick={this.props.innerClick}>
                 <ListItemIcon>
-                    {this.props.icon}
+                    <Icon>{this.props.icon}</Icon>
                 </ListItemIcon>
-                <ListItemText primary={this.props.text} secondary={this.props.subtext} />
+                <ListItemText className={classes.subtle} primary={this.props.text} />
             </ListItem>
         );
     }
@@ -32,4 +41,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SidebarButton)
+  )(withStyles(styles)(SidebarButton))

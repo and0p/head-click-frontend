@@ -19,7 +19,7 @@ const styles = theme => ({
     },
     gridRoot: {
         flexGrow: 1,
-        maxWidth: 800
+        //maxWidth: 800
     },
     gameButton: {
         width: '100%',
@@ -77,7 +77,7 @@ const ButtonIcon = (props) => {
 }
 
 const GameButton = (props) => (
-    <Grid item xs={4} md={3}>
+    <Grid item xs={4} sm={3}>
         <ButtonBase
             onClick={props.click}
             key={props.game.name}
@@ -101,7 +101,7 @@ class GameSelect extends React.Component {
                         <GameButton 
                             key={game.name}
                             game={game} 
-                            selected={false} 
+                            selected={this.props.ownedGames.includes(game)} 
                             classes={classes}
                             click={() => this.props.toggleGame(game)}
                         />

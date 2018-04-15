@@ -30,6 +30,9 @@ const styles = theme => ({
     defaultCategory: {
         backgroundColor: theme.palette.primary.main
     },
+    neutralCategory: {
+        backgroundColor: theme.palette.background.light
+    },
     category: {
         marginBottom: theme.spacing.unit * 1
     }
@@ -66,6 +69,9 @@ class SettingCategory extends React.Component {
                 break
             case 'purple':
                 categoryClass = classes.purpleCategory
+                break
+            case 'neutral':
+                categoryClass = classes.neutralCategory
                 break
         }
         let upperName = this.props.name.toUpperCase()
