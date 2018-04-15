@@ -55,7 +55,7 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       position: 'fixed',
     },
-    borderRight: '0px'
+    borderRight: '0px',
   },
   drawerHeader: {
     color: '#333333',
@@ -69,6 +69,8 @@ const styles = theme => ({
     [theme.breakpoints.down('xs')]: {
       height: mobileAppBarHeight
     }
+  },
+  drawerContent: {
   },
   logo: {
 
@@ -90,9 +92,14 @@ const styles = theme => ({
       marginLeft: drawerWidth,
       width: `calc(100% - ${drawerWidth}px)`,
     },
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing.unit * 3,
+    },
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing.unit * 1,
+    },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
     width: '100%'
   },
   contentWrap: {
@@ -102,6 +109,17 @@ const styles = theme => ({
   },
   title: {
     paddingLeft: theme.spacing.unit * 3
+  },
+  drawerCategory: {
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 2,
+    color: "#888888",
+    fontWeight: 500,
+    fontSize: '0.875rem'
+  },
+  gameLogo: {
+    width: '24px'
   }
 });
 
@@ -118,7 +136,7 @@ class MaterialRoot extends React.Component {
       this.props.profile.ownedGames.map((game) =>
         <SidebarButton
           link={"/game/" + game.alias}
-          icon="videogame_asset"
+          image={<ResponsiveAsset category={game.alias} asset="logo_mini" className={classes.gameLogo} />}
           text={game.shortName}
           innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
           enabled={ this.props.profile.ready }
@@ -130,31 +148,34 @@ class MaterialRoot extends React.Component {
     const drawer = (
       <div>
           <Paper elevation={4} className={classes.drawerHeader}>
-            <ResponsiveAsset asset="logo" className={classes.logo} />
+            <ResponsiveAsset category="headclick" asset="logo" className={classes.logo} />
           </Paper>
-          <SidebarButton 
-            link="/"
-            icon="home"
-            text="Dashboard"
-            enabled={true}
-            innerClick={() => { this.props.selectSidebarItem(0) }}
+          <div className={classes.drawerContent}>
+            <SidebarButton 
+              link="/"
+              icon="home"
+              text="Dashboard"
+              enabled={true}
+              innerClick={() => { this.props.selectSidebarItem(0) }}
+              />
+            <SidebarButton 
+              link="/"
+              icon="insert_chart"
+              text="Stats"
+              enabled={this.props.profile.ready}
+              innerClick={() => { this.props.selectSidebarItem(0) }}
             />
-          <SidebarButton 
-            link="/"
-            icon="insert_chart"
-            text="Stats"
-            enabled={this.props.profile.ready}
-            innerClick={() => { this.props.selectSidebarItem(0) }}
-          />
-          <Divider />
-          {sidebarGamesList}
-          <SidebarButton 
-            link="/add_game"
-            icon="add_circle_outline"
-            text="Add Game"
-            enabled={this.props.profile.ready}
-            innerClick={() => { this.props.selectSidebarItem(0) }}
-          />
+            <Divider />
+            <div className={classes.drawerCategory}>GAMES</div>
+            {sidebarGamesList}
+            <SidebarButton 
+              link="/add_game"
+              icon="add_circle_outline"
+              text="Add Game"
+              enabled={this.props.profile.ready}
+              innerClick={() => { this.props.selectSidebarItem(0) }}
+            />
+          </div>
       </div>
     );
 
@@ -170,7 +191,7 @@ class MaterialRoot extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset asset="logo" className={classes.logo} /></Hidden></div>
+            <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset category="headclick" asset="logo" className={classes.logo} /></Hidden></div>
           </Toolbar>
         </AppBar>
         <Hidden mdUp>

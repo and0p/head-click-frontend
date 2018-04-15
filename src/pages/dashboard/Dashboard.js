@@ -39,7 +39,7 @@ class Dashboard extends React.Component {
         return(
             <div className={classes.root}>
                 <Typography variant="title" className={classes.pageHeader}>Dashboard</Typography>
-                <Grid container spacing={24}>
+                <Grid container spacing={16}>
                     {/* Profile card */}
                     <Grid item xs={12} className={classes.profileCard}>
                         <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>

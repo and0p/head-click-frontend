@@ -9,6 +9,7 @@ import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
 import Button from 'material-ui/Button'
 import ButtonBase from 'material-ui/ButtonBase';
+import ResponsiveAsset from '../../../assets'
 import * as Symbols from '../../../redux/HcSymbols'
 
 const gamesPerPage = 12
@@ -27,8 +28,8 @@ const styles = theme => ({
         padding: theme.spacing.unit * 1,
         textAlign: 'center',
         color: theme.palette.text.secondary,
-        verticalAlign: 'middle',
-        backgroundColor: theme.palette.background.paper
+        backgroundColor: theme.palette.background.paper,
+        display: 'block'
     },
     gameButtonSelected: {
         width: '100%',
@@ -36,8 +37,8 @@ const styles = theme => ({
         padding: theme.spacing.unit * 1,
         textAlign: 'center',
         color: theme.palette.text.secondary,
-        verticalAlign: 'middle',
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.primary.main,
+        display: 'block'
     },
     buttonIcon: {
         width: '75px',
@@ -47,6 +48,11 @@ const styles = theme => ({
     loadMoreButton: {
         margin: '8px',
         backgroundColor: theme.palette.background.paper
+    },
+    logo: {
+        height: '60px',
+        float: 'none',
+        marginTop: '5px'
     }
 });
 
@@ -65,16 +71,9 @@ const LoadMoreButton = (props) => {
         )
 }
 
-const ButtonIcon = (props) => {
-    console.log(props.game.hasLogo)
-    console.log(props.game.getAssetPath() + 'logo@half.png')
-    if(props.game.hasLogo)
-        return (
-            <img classname={props.classes.buttonIcon} src={'http://placehold.it/75x75&text=logo'} />
-        )
-    else
-        return (<div/>)
-}
+const ButtonIcon = (props) => (
+    <ResponsiveAsset category={props.game.alias} asset="logo" className={props.classes.logo} />
+)
 
 const GameButton = (props) => (
     <Grid item xs={4} sm={3}>

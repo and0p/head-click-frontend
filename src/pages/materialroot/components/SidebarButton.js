@@ -19,11 +19,10 @@ class SidebarButton extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
+        let icon = <ListItemIcon><Icon>{this.props.icon}</Icon></ListItemIcon>
         return(
             <ListItem component={this.props.enabled ? Link : 'ul'} to={this.props.link} button onClick={this.props.innerClick}>
-                <ListItemIcon>
-                    <Icon>{this.props.icon}</Icon>
-                </ListItemIcon>
+                {this.props.hasOwnProperty("image") ? this.props.image : icon}
                 <ListItemText className={classes.subtle} primary={this.props.text} />
             </ListItem>
         );

@@ -19,16 +19,16 @@ const styles = theme => ({
       maxWidth: '1000px',
       width: `calc(100% - ${drawerWidth}px)`,
       flexGrow: 1,
-      //left: drawerWidth,
-      //right: 0,
+      position: 'fixed',
       bottom: 0,
       zIndex: 1000,
-      position: 'fixed',
       paddingLeft: 0,
       paddingRight: 0,
-      //marginLeft: '-24px',
       paddingBottom: theme.spacing.unit * 2,
-      backgroundColor: theme.palette.background.default
+      backgroundColor: theme.palette.background.default,
+      [theme.breakpoints.only('md')]: {
+        marginLeft: '-24px',
+      }
     },
     mobileRoot: {
       [theme.breakpoints.up('md')]: {
@@ -118,6 +118,7 @@ const styles = theme => ({
     render() {
       const { classes, theme } = this.props;
       const nextText = "Next" // Will eventually calculate as "finish"
+      console.log(theme.breakpoints)
       return(
         <div>
           {/* Mobile stepper */}

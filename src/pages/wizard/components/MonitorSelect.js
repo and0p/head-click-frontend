@@ -75,7 +75,7 @@ const ShowMoreButton = props => (
         onClick={props.func}
         className={props.classes.showMoreButton}
     >
-        <Typography variant="subheading">Show More..</Typography>
+        <Typography variant="subheading">Show More</Typography>
     </Button>
 </Grid>
 

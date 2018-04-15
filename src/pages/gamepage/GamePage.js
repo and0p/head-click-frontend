@@ -27,7 +27,8 @@ const styles = theme => ({
       color: theme.palette.text.secondary,
     },
     openPaper: {
-        padding: theme.spacing.unit * 2,
+        //padding: theme.spacing.unit * 2,
+        paddingBottom: 0
     },
     primaryListItem: {
         padding: theme.spacing.unit * 2,
@@ -35,7 +36,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.primary
     },
     sectionHeaderOpen: {
-        //marginLeft: theme.spacing.unit
+        marginLeft: theme.spacing.unit
     }
   });
 
