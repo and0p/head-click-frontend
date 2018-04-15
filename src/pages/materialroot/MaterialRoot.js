@@ -71,12 +71,14 @@ const styles = theme => ({
     }
   },
   logo: {
-    height: '40px',
+
     [theme.breakpoints.up('sm')]: {
-      marginTop: '12px'
+      marginTop: '12px',
+      height: '40px'
     },
     [theme.breakpoints.down('xs')]: {
-      marginTop: '8px'
+      marginTop: '10px',
+      height: '36px'
     }
   },
   barLogo: {
@@ -92,6 +94,11 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
     width: '100%'
+  },
+  contentWrap: {
+    maxWidth: '1639px',
+    marginLeft: 'auto',
+    marginRight: 'auto'
   },
   title: {
     paddingLeft: theme.spacing.unit * 3
@@ -196,7 +203,9 @@ class MaterialRoot extends React.Component {
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          {this.props.children}
+            <div className={classes.contentWrap}>
+              {this.props.children}
+            </div>
         </main>
       </div>
     );

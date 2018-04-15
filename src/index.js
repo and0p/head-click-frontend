@@ -17,7 +17,7 @@ import MaterialRoot from './pages/materialroot/MaterialRoot'
 import GamePage from './pages/gamepage/GamePage'
 import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
-import DpiAlert from './pages/alerts/DpiAlert'
+import Alert from './components/Alert'
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createHistory()
@@ -53,7 +53,7 @@ class App extends React.Component {
             <Route exact path="/" render={() => homeComponent(store.getState())}/>
             <Route path="/game/:name" component={GamePage} />
           </MaterialRoot>
-          <DpiAlert />
+          <Alert />
         </MuiThemeProvider>
       </ConnectedRouter>
     </Provider>

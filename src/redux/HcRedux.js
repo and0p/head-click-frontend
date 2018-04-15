@@ -40,7 +40,12 @@ const initialState = {
     },
     ui: {
         contentComponent: null,
-        alert: null
+        alert: {
+            show: false,
+            text: "",
+            type: 0
+
+        }
     }
 }
 
@@ -233,10 +238,24 @@ function wizardReducer (state = initialState, action) {
 
 function uiReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.SELECT_SIDEBAR_ITEM:
+            if(!state.profile.ready)
+                return update(state, {
+                    ui: {
+                        alert: {
+                            open: { $set: true },
+                            text: { $set: "Please complete the wizard first!"}
+                        }
+                    }
+                })
+            else
+                return state
         case Symbols.CLOSE_ALERT:
             return update(state, {
                 ui: {
-                    alert: { $set: null }
+                    alert: {
+                        open: { $set: false }
+                    }
                 }
             })
         default:
