@@ -24,10 +24,10 @@ const styles = theme => ({
         color: theme.palette.text.secondary,
     },
     sectionHeaderOpen: {
-        marginLeft: theme.spacing.unit
+        marginLeft: theme.spacing.unit * 2
     },
     profileCard: {
-        paddingBottom: 0
+        //paddingBottom: theme.spacing.unit
     }
 });
 

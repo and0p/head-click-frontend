@@ -28,7 +28,7 @@ const styles = theme => ({
     },
     openPaper: {
         //padding: theme.spacing.unit * 2,
-        paddingBottom: 0
+        //paddingBottom: 0
     },
     primaryListItem: {
         padding: theme.spacing.unit * 2,
@@ -36,7 +36,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.primary
     },
     sectionHeaderOpen: {
-        marginLeft: theme.spacing.unit
+        marginLeft: theme.spacing.unit * 2
     }
   });
 
@@ -52,56 +52,64 @@ class GamePage extends React.Component {
             let game = new Game(games[gameAlias])
             return (
                 <div className={classes.root}>
-                    <Typography variant="display3" gutterBottom>
+                    <Typography variant="title" gutterBottom>
                         {game.name}
                     </Typography>
-                    <Grid container>
+                    <Grid container spacing={16}>
                         <Grid item xs={12} lg={6}>
-                            {/* Main settings */}
-                            <div>
-                                <div className={classes.openPaper}>
+                            <Grid container>
+                                <Grid item xs={12} className={classes.openPaper}>
+                                    {/* Main settings */}
                                     <Typography variant="subheading" className={classes.sectionHeaderOpen} gutterBottom>
                                         Aim Settings
                                     </Typography>
-                                    <InfoCard 
-                                        name="Sensitivity"
-                                        value={game.getSettingForDCm(this.props.profile).toFixed(2)}
-                                        color="purple"
-                                        icon='settings_ethernet'
-                                    /> 
-                                    <InfoCard
-                                        name="FOV"
-                                        value={game.getIdealFOV(this.props.profile)} 
-                                        color="blue"
-                                        icon='videocam'
-                                    /> 
-                                </div>
-                            </div>
-                            {/* Other settings */}
-                            <div>
-                                <Paper className={classes.paper}>
-                                    <Typography variant="subheading" gutterBottom>
-                                        Other Settings
-                                    </Typography>
-                                    <List subheader={<li />}>
-                                        <SettingCategory
-                                            name="Optimization"
-                                            open
-                                            color="neutral"
-                                            settings={game.settings.optimization}
-                                        />
-                                        <SettingCategory
-                                            name="Gameplay"
-                                            open
-                                            color="neutral"
-                                            settings={game.settings.gameplay}
-                                        />
-                                    </List>
-                                </Paper>
-                            </div>
+                                    <Grid container>
+                                            <Grid item xs={12}>
+                                                <InfoCard 
+                                                    name="Sensitivity"
+                                                    value={game.getSettingForDCm(this.props.profile).toFixed(2)}
+                                                    color="purple"
+                                                    icon='settings_ethernet'
+                                                /> 
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                            <InfoCard
+                                                name="FOV"
+                                                value={game.getIdealFOV(this.props.profile)} 
+                                                color="blue"
+                                                icon='videocam'
+                                            />
+                                            </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12}>   
+                                    {/* Other settings */}
+                                    <div>
+                                        <Paper className={classes.paper}>
+                                            <Typography variant="subheading" gutterBottom>
+                                                Other Settings
+                                            </Typography>
+                                            <List subheader={<li />}>
+                                                <SettingCategory
+                                                    name="Optimization"
+                                                    open
+                                                    color="neutral"
+                                                    settings={game.settings.optimization}
+                                                />
+                                                <SettingCategory
+                                                    name="Gameplay"
+                                                    open
+                                                    color="neutral"
+                                                    settings={game.settings.gameplay}
+                                                />
+                                            </List>
+                                        </Paper>
+                                    </div>
+                                </Grid>
+                            </Grid>
                         </Grid>
                         {/* Stats */}
-                        <Grid item sm={12} lg={6}>
+                        <Grid item xs={12} lg={6}>
                             <Paper className={classes.paper}>
                                 <Typography variant="subheading" gutterBottom>
                                     Stats

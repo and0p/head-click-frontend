@@ -10,7 +10,7 @@ import ReactFitText from 'react-fittext'
 
 const styles = theme => ({
     root: {
-        marginBottom: theme.spacing.unit,
+        //marginBottom: theme.spacing.unit,
         width: '100%',
         backgroundColor: theme.palette.background.paper,
         height: '100px',
