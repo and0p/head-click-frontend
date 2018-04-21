@@ -27,6 +27,7 @@ const styles = theme => ({
       color: theme.palette.text.secondary,
     },
     openPaper: {
+        marginTop: theme.spacing.unit
         //padding: theme.spacing.unit * 2,
         //paddingBottom: 0
     },

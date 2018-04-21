@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
-import BigValue from '../../components/BigValue'
 import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
 import InfoCard from '../../components/InfoCard'
+import ProfileEditDialog from '../../components/ProfileEditDialog'
 import ComingSoon from '../../components/ComingSoon'
 import constants from '../../constants'
 
@@ -57,6 +57,8 @@ class Dashboard extends React.Component {
                             </Grid>
                         </Grid>
                     </Grid>
+                    {/* Edit profile dialog */}
+                    <ProfileEditDialog />
                     {/* Gear card */}
                     <Grid item xs={12} xl={6}>
                         <Paper className={classes.paper}>

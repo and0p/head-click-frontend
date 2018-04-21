@@ -44,8 +44,8 @@ const initialState = {
             show: false,
             text: "",
             type: 0
-
-        }
+        },
+        editingProfile: true
     }
 }
 
@@ -107,7 +107,6 @@ function profileReducer (state = initialState, action) {
             if(state.wizard.activePage == 3)
             {
                 let recommendedSensitivity = getRecommendedDpi(state.profile.ownedGames)
-                console.log("rec sens of: " + recommendedSensitivity)
                 return update(state, {
                     profile: {
                         sensitivity: {
@@ -119,6 +118,23 @@ function profileReducer (state = initialState, action) {
             }
         default:
             return state
+        case Symbols.SAVE_PROFILE:
+            if(action.value != "undefined")
+            {
+                return update(state, {
+                    profile: {
+                        sensitivity: {
+                            actual: { $set: action.value.sensitivity }
+                        },
+                        dpi: {
+                            actual: { $set: action.value.dpi }
+                        },
+                        monitor: { $set: action.value.monitor }
+                    }
+                })
+            }
+            else
+                return state
     }
 }
 
@@ -197,7 +213,6 @@ function wizardReducer (state = initialState, action) {
             if(action.value != "undefined")
             {
                 let category = String(action.value)
-                console.log(category)
                 return update(state, {
                     wizard: {
                         monitorsExpanded: {
@@ -259,7 +274,19 @@ function uiReducer (state = initialState, action) {
                 }
             })
         default:
-            return state;
+            return state
+        case Symbols.CANCEL_EDIT_PROFILE:
+            return update(state, {
+                ui: {
+                    editingProfile: {$set: false}
+                }
+            })
+        case Symbols.SAVE_PROFILE:
+            return update(state, {
+                ui: {
+                    editingProfile: {$set: false}
+                }
+            })
     }
 }
 

@@ -4,10 +4,14 @@ export const OPEN_SIDEBAR = Symbol('OPEN_SIDEBAR')
 export const CLOSE_SIDEBAR = Symbol('CLOSE_SIDEBAR')
 export const SELECT_SIDEBAR_ITEM = Symbol('SELECT_SIDEBAR_ITEM')
 
+export const SELECT_SENSITIVITY = Symbol('SELECT_SENSITIVITY')
+export const SELECT_DPI = Symbol('SELECT_DPI')
 export const SELECT_MONITOR = Symbol('SELECT_MONITOR')
 export const SELECT_MOUSE = Symbol('SELECT_MOUSE')
-export const SELECT_SENSITIVITY = Symbol('SELECT_SENSITIVITY')
 export const SELECT_REFRESH_RATE = Symbol('SELECT_REFRESH_RATE')
+
+export const SAVE_PROFILE = Symbol('SAVE_PROFILE')
+export const CANCEL_EDIT_PROFILE = Symbol('CANCEL_EDIT_PROFILE')
 
 export const ADD_GAME = Symbol('ADD_GAME')
 export const REMOVE_GAME = Symbol('REMOVE_GAME')

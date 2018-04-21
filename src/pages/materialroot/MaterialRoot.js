@@ -130,7 +130,6 @@ class MaterialRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-    console.log(theme.mixins.toolbar);
     // Games list HTML
     const sidebarGamesList = (
       this.props.profile.ownedGames.map((game) =>
@@ -239,7 +238,6 @@ MaterialRoot.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
     open: state.sidebar.mobileMenuOpen,
     profile: state.profile
