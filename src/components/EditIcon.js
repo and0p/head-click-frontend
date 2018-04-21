@@ -5,16 +5,24 @@ import Icon from 'material-ui/Icon'
 
 const styles = theme => ({
     root: {
-        float: 'right'
+        float: 'right',
+        marginRight: theme.spacing.unit * 2
+    },
+    icon: {
+        "&:hover": {
+            color: '#FFFFFF'
+        },
+        transition: "all ease .3s",
+        color: '#888888'
     }
 })
 
 const EditIcon = props =>
 {
-    const { classes, theme } = this.props
+    const { classes, theme } = props
     return (
-        <div className= {classes.root}>
-         hi
+        <div className= {classes.root} onClick={props.onClick}>
+            <Icon className={classes.icon}>create</Icon>
         </div>
     )
 }

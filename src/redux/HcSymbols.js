@@ -11,6 +11,7 @@ export const SELECT_MOUSE = Symbol('SELECT_MOUSE')
 export const SELECT_REFRESH_RATE = Symbol('SELECT_REFRESH_RATE')
 
 export const SAVE_PROFILE = Symbol('SAVE_PROFILE')
+export const START_EDIT_PROFILE = Symbol('START_EDIT_PROFILE')
 export const CANCEL_EDIT_PROFILE = Symbol('CANCEL_EDIT_PROFILE')
 
 export const ADD_GAME = Symbol('ADD_GAME')

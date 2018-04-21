@@ -7,9 +7,11 @@ import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
 import InfoCard from '../../components/InfoCard'
+import EditIcon from '../../components/EditIcon'
 import ProfileEditDialog from '../../components/ProfileEditDialog'
 import ComingSoon from '../../components/ComingSoon'
 import constants from '../../constants'
+import * as Symbols from '../../redux/HcSymbols'
 
 const styles = theme => ({
     root: {
@@ -24,7 +26,8 @@ const styles = theme => ({
         color: theme.palette.text.secondary,
     },
     sectionHeaderOpen: {
-        marginLeft: theme.spacing.unit * 2
+        marginLeft: theme.spacing.unit * 2,
+        float: 'left'
     },
     profileCard: {
         //paddingBottom: theme.spacing.unit
@@ -45,6 +48,7 @@ class Dashboard extends React.Component {
                         <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
                             Profile
                         </Typography>
+                        <EditIcon onClick={this.props.editProfile}/>
                         <Grid container>
                             <Grid item xs={12} lg={4}>
                                 <InfoCard name={constants.cm360Text} value={this.props.profile.sensitivity.actual} icon='settings_ethernet' color="purple"/>
@@ -95,6 +99,9 @@ const mapStateToProps = (state) => {
   
 const mapDispatchToProps = dispatch => {
     return {
+        editProfile: () => dispatch({
+            type: Symbols.START_EDIT_PROFILE
+        })
     }
 }
 

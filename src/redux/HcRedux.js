@@ -273,20 +273,26 @@ function uiReducer (state = initialState, action) {
                     }
                 }
             })
+        case Symbols.START_EDIT_PROFILE:
+        return update(state, {
+            ui: {
+                editingProfile: {$set: true}
+            }
+        })
+        case Symbols.CANCEL_EDIT_PROFILE:
+        return update(state, {
+            ui: {
+                editingProfile: {$set: false}
+            }
+        })
+        case Symbols.SAVE_PROFILE:
+        return update(state, {
+            ui: {
+                editingProfile: {$set: false}
+            }
+        })
         default:
             return state
-        case Symbols.CANCEL_EDIT_PROFILE:
-            return update(state, {
-                ui: {
-                    editingProfile: {$set: false}
-                }
-            })
-        case Symbols.SAVE_PROFILE:
-            return update(state, {
-                ui: {
-                    editingProfile: {$set: false}
-                }
-            })
     }
 }
 
