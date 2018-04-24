@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import { monitors, refreshRates } from '../../../model/HcModel'
+import { monitors, customMonitor } from '../../../model/HcModel'
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
 import Button from 'material-ui/Button'
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
+import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider'
 import * as Symbols from '../../../redux/HcSymbols'
 
@@ -52,6 +53,16 @@ const styles = theme => ({
         verticalAlign: 'middle',
         backgroundColor: theme.palette.background.light
     },
+    resolutionAxisInput: {
+        marginTop: theme.spacing.unit,
+        maxWidth: '117px',
+        width: '100%'
+      },
+    resolutionAxisInputBox: {
+        border: '1px solid #888888',
+        paddingLeft: theme.spacing.unit,
+        width: '100%'
+      },
     subtle: {
         color: "#888888"
     }
@@ -71,20 +82,29 @@ const MonitorButton = (props) => (
 
 const ShowMoreButton = props => (
     <Grid item xs={3}>
-    <Button 
-        onClick={props.func}
-        className={props.classes.showMoreButton}
-    >
-        <Typography variant="subheading">Show More</Typography>
-    </Button>
-</Grid>
-
+        <Button 
+            onClick={props.func}
+            className={props.classes.showMoreButton}
+        >
+            <Typography variant="subheading">Show More</Typography>
+        </Button>
+    </Grid>
 )
 
 class MonitorSelect extends React.Component {
 
     handleRefreshRatePick = event => {
         this.props.selectRefreshRate(parseInt(event.target.value))
+    }
+
+    updateCustomSize = axis => event => {
+        if(this.props.selectedMonitor === customMonitor) {
+          if(axis == "width")
+            this.props.updateCustomWidth(event.target.value)
+          if(axis == "height")
+            this.props.updateCustomHeight(event.target.value)
+          this.setState({  })
+        }
     }
 
     render() {
@@ -115,6 +135,54 @@ class MonitorSelect extends React.Component {
                             </Grid>
                         </div>
                     ))}
+                    <Typography variant="body2" className={classes.ratioText}>Custom</Typography>
+                    <Grid container className={classes.gridRoot}>
+                        <MonitorButton
+                            selectMonitor={() => this.props.selectMonitor(customMonitor)}
+                            classes={classes}
+                            monitor={customMonitor}
+                            selected={this.props.selectedMonitor === customMonitor}
+                        />
+                        <Grid item xs={3}>
+                            <TextField
+                            value={this.props.selectedMonitor.width}
+                            label="Width"
+                            InputProps={{
+                                disableUnderline: true,
+                                classes: {
+                                root: classes.resolutionAxisInputBox
+                                }
+                            }}
+                            className={classes.resolutionAxisInput}
+                            InputLabelProps={{
+                                shrink: true,
+                                className: classes.textFieldFormLabel,
+                            }}
+                            disabled={this.props.selectedMonitor !== customMonitor}
+                            onChange={this.updateCustomSize("width")}
+                            />
+                        </Grid>
+                        <Grid item xs={3}>
+                            <TextField
+                            value={this.props.selectedMonitor.height}
+                            label="Height"
+                            InputProps={{
+                                disableUnderline: true,
+                                classes: {
+                                root: classes.resolutionAxisInputBox
+                                }
+                            }}
+                            className={classes.resolutionAxisInput}
+                            InputLabelProps={{
+                                shrink: true,
+                                className: classes.textFieldFormLabel,
+                            }}
+                            disabled={this.props.selectedMonitor !== customMonitor}
+                            fullWidth
+                            onChange={this.updateCustomSize("height")}
+                            />
+                        </Grid> 
+                    </Grid>
                 </div>
             </div>
         )
@@ -142,6 +210,14 @@ const mapDispatchToProps = dispatch => {
         expandCategory: category => dispatch({
             type: Symbols.EXPAND_MONITOR_SECTION,
             value: category
+        }),
+        updateCustomWidth: value => dispatch({
+          type: Symbols.SET_CUSTOM_MONITOR_WIDTH,
+          value: value
+        }),
+        updateCustomHeight: value => dispatch({
+          type: Symbols.SET_CUSTOM_MONITOR_HEIGHT,
+          value: value
         })
     }
 }

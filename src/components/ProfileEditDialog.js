@@ -16,7 +16,7 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
-import { monitors } from '../model/HcModel'
+import { monitors, customMonitor } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
 
 const styles = theme => ({
@@ -29,7 +29,15 @@ const styles = theme => ({
   },
   resolutionAxisInput: {
     marginBottom: theme.spacing.unit * 2,
-    minWidth: '120px'
+    maxWidth: '117px',
+    marginRight: theme.spacing.unit
+  },
+  resolutionAxisInputBox: {
+    border: '1px solid #888888',
+    paddingLeft: theme.spacing.unit
+  },
+  subtle: {
+    color: '#888888'
   }
 })
 
@@ -56,8 +64,18 @@ class ProfileEditDialog extends React.Component {
 
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value });
-    console.log(this.state)
   };
+
+  updateCustomSize = axis => event => {
+    if(this.state.monitor === customMonitor) {
+      if(axis == "width")
+        //customMonitor.width = event.target.value
+        this.props.updateCustomWidth(event.target.value)
+      if(axis == "height")
+        this.props.updateCustomHeight(event.target.value)
+      this.setState({ monitor: this.state.monitor })
+    }
+  }
 
   render() {
     const { classes, theme, fullScreen } = this.props
@@ -101,8 +119,9 @@ class ProfileEditDialog extends React.Component {
                   'aria-label': 'DPI',
                 }}
               />
+              <FormHelperText className={classes.subtle}>Recommended: {this.state.monitor.recommendedDpi}</FormHelperText>
             </FormControl><br/>
-            {/* MONITOR / RESOLUTION */}
+            {/* MONITOR */}
             <FormControl className={classes.input}>
               <InputLabel>Desktop Resolution</InputLabel>
               <Select
@@ -113,9 +132,44 @@ class ProfileEditDialog extends React.Component {
                   Object.values(monitors[key]).map((monitor) => (
                     <MenuItem value={monitor}>{monitor.name}</MenuItem>
                   ))))}
-                <MenuItem value={10}>Custom...</MenuItem>
+                <MenuItem value={customMonitor}>Custom..</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl><br/>
+            {/* RESOLUTIONS */}
+            <TextField
+              value={this.state.monitor.width}
+              label="Width"
+              InputProps={{
+                disableUnderline: true,
+                classes: {
+                  root: classes.resolutionAxisInputBox
+                }
+              }}
+              className={classes.resolutionAxisInput}
+              InputLabelProps={{
+                shrink: true,
+                className: classes.textFieldFormLabel,
+              }}
+              disabled={this.state.monitor !== customMonitor}
+              onChange={this.updateCustomSize("width")}
+            />
+            <TextField
+              value={this.state.monitor.height}
+              label="Height"
+              InputProps={{
+                disableUnderline: true,
+                classes: {
+                  root: classes.resolutionAxisInputBox
+                }
+              }}
+              className={classes.resolutionAxisInput}
+              InputLabelProps={{
+                shrink: true,
+                className: classes.textFieldFormLabel,
+              }}
+              disabled={this.state.monitor !== customMonitor}
+              onChange={this.updateCustomSize("height")}
+            />
           </form>
         </DialogContent>
         <DialogActions>
@@ -146,6 +200,14 @@ const mapDispatchToProps = dispatch => {
     }),
     cancel: () => dispatch({
       type: Symbols.CANCEL_EDIT_PROFILE
+    }),
+    updateCustomWidth: value => dispatch({
+      type: Symbols.SET_CUSTOM_MONITOR_WIDTH,
+      value: value
+    }),
+    updateCustomHeight: value => dispatch({
+      type: Symbols.SET_CUSTOM_MONITOR_HEIGHT,
+      value: value
     })
   }
 }

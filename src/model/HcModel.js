@@ -3,7 +3,7 @@ import gameData, { gameNamesByPopularity } from './games/GameData'
 import gameStats from './games/GameStats'
 import Mouse from './Mouse'
 import mouseData from './mice/MouseData'
-import monitorData from './monitors/MonitorData'
+import monitorData, {customMonitor as custmon} from './monitors/MonitorData'
 
 // Export game list as Game objects
 export const games = {}
@@ -24,5 +24,6 @@ for(var i in mouseData) {
 
 // Export monitor list
 export const monitors = monitorData
+export const customMonitor = custmon
 
 export const refreshRates = [ 60, 75, 100, 120, 144 ]

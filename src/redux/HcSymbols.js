@@ -14,6 +14,9 @@ export const SAVE_PROFILE = Symbol('SAVE_PROFILE')
 export const START_EDIT_PROFILE = Symbol('START_EDIT_PROFILE')
 export const CANCEL_EDIT_PROFILE = Symbol('CANCEL_EDIT_PROFILE')
 
+export const SET_CUSTOM_MONITOR_WIDTH = Symbol('SET_CUSTOM_MONITOR_WIDTH')
+export const SET_CUSTOM_MONITOR_HEIGHT = Symbol('SET_CUSTOM_MONITOR_HEIGHT')
+
 export const ADD_GAME = Symbol('ADD_GAME')
 export const REMOVE_GAME = Symbol('REMOVE_GAME')
 export const TOGGLE_GAME = Symbol('TOGGLE_GAME')

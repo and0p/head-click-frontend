@@ -1,7 +1,7 @@
 import { applyMiddleware, combineReducers, createStore, } from 'redux';
 import reduceReducers from 'reduce-reducers'
 import * as Symbols from './HcSymbols'
-import { games, mice, monitors } from '../model/HcModel'
+import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
 import { isValid, getRecommendedDpi } from '../util'
 
@@ -45,7 +45,7 @@ const initialState = {
             text: "",
             type: 0
         },
-        editingProfile: true
+        editingProfile: false
     }
 }
 
@@ -116,7 +116,6 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             }
-        default:
             return state
         case Symbols.SAVE_PROFILE:
             if(action.value != "undefined")
@@ -133,8 +132,21 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             }
-            else
-                return state
+            return state
+        case Symbols.SET_CUSTOM_MONITOR_WIDTH:
+            if(action.value != "undefined") {
+                customMonitor.width = action.value
+                updateCustomMonitorDetails()
+            }
+            return update(state, {})
+        case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
+            if(action.value != "undefined") {
+                customMonitor.height = action.value
+                updateCustomMonitorDetails()
+            }
+            return update(state, {})
+        default:
+            return state
     }
 }
 
@@ -167,7 +179,27 @@ function sidebarReducer (state = initialState, action) {
 function wizardReducer (state = initialState, action) {
     switch(action.type) {
         case Symbols.SELECT_MONITOR:
-            if(state.profile.monitor != "undefined")
+            if(state.profile.monitor != "undefined" && state.profile.monitor.usable)
+                return update(state, {
+                    wizard: {
+                        pagesReady: {
+                            1: { $set: true }
+                        }
+                    }
+                })
+            return state
+        case Symbols.SET_CUSTOM_MONITOR_WIDTH:
+            if(state.profile.monitor != "undefined" && state.profile.monitor.usable)
+                return update(state, {
+                    wizard: {
+                        pagesReady: {
+                            1: { $set: true }
+                        }
+                    }
+                })
+            return state
+        case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
+            if(state.profile.monitor != "undefined" && state.profile.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
@@ -294,6 +326,15 @@ function uiReducer (state = initialState, action) {
         default:
             return state
     }
+}
+
+const updateCustomMonitorDetails = () => {
+    customMonitor.name = customMonitor.width + "x" + customMonitor.height;
+    // Simple recommended DPI
+    customMonitor.recommendedDpi = 400 * Math.ceil(((customMonitor.height - 600) / 400))
+    if(customMonitor.recommendedDpi > 3200)
+        customMonitor.recommendedDpi = 3200
+    customMonitor.usable = true;
 }
 
 export default reduceReducers(
