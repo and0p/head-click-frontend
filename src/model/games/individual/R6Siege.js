@@ -19,6 +19,12 @@ const getInfo = profile => {
             icon: 'settings_ethernet',
             value: getRounded(getSensitivity(profile), 0),
             color: 'purple'
+        },
+        {
+            name: "FOV",
+            icon: 'videocam',
+            value: 73,
+            color: 'blue'
         }
     ]
 }
