@@ -65,22 +65,16 @@ class GamePage extends React.Component {
                                         Aim Settings
                                     </Typography>
                                     <Grid container>
-                                            <Grid item xs={12}>
-                                                <InfoCard 
-                                                    name="Sensitivity"
-                                                    value={game.getSettingForDCm(this.props.profile).toFixed(2)}
-                                                    color="purple"
-                                                    icon='settings_ethernet'
-                                                /> 
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                            <InfoCard
-                                                name="FOV"
-                                                value={game.getIdealFOV(this.props.profile)} 
-                                                color="blue"
-                                                icon='videocam'
-                                            />
-                                            </Grid>
+                                        {
+                                            game.infoFunction(this.props.profile).map(props => 
+                                                <Grid item xs={12}>
+                                                    <InfoCard
+                                                        {...props}
+                                                    />
+                                                </Grid>
+                                            )
+                                        }
+
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={12}>   

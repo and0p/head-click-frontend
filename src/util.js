@@ -43,3 +43,5 @@ for(let i = 0; i < 200; i++)
 {
     emptyArray.push(0)
 }
+
+export const getRounded = (input, decimalPlaces) => parseFloat(input).toFixed(decimalPlaces)
