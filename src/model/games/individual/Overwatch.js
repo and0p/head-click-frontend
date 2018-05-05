@@ -2,16 +2,18 @@ import { getRounded } from '../../../util'
 
 let baseDots = 54543;
 
-const getSensitivity = profile => {
-    return baseDots / (profile.dpi.actual / 2.54) / profile.sensitivity.actual
+const getSensitivity = settings => {
+    console.log("settings:")
+    console.log(settings)
+    return baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual
 }
 
-const getInfo = profile => {
+const getInfo = settings => {
     return [
         {
             name: 'Sensitivity',
             icon: 'settings_ethernet',
-            value: getRounded(getSensitivity(profile), 2),
+            value: getRounded(getSensitivity(settings), 2),
             color: 'purple'
         },
         {
@@ -97,7 +99,12 @@ const Overwatch = {
                     info: "This keeps your beam going without having to hold the button.",
                     critical: false
                 }
-            ]
+            ],
+            overrides: {
+                cm360: true,
+                dpi: true,
+                resolution: false
+            }
         }
 }
 

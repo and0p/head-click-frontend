@@ -51,13 +51,13 @@ class Dashboard extends React.Component {
                         <EditIcon onClick={this.props.editProfile}/>
                         <Grid container>
                             <Grid item xs={12} lg={4}>
-                                <InfoCard name={constants.cm360Text} value={this.props.profile.sensitivity.actual} icon='settings_ethernet' color="purple"/>
+                                <InfoCard name={constants.cm360Text} value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple"/>
                             </Grid>
                             <Grid item xs={12} lg={4}>
-                                <InfoCard name="DPI" value={this.props.profile.dpi.actual} icon='mouse' color="blue"/>
+                                <InfoCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue"/>
                             </Grid>
                             <Grid item xs={12} lg={4}>
-                                <InfoCard name="Resolution" value={this.props.profile.monitor.name} icon='settings_overscan' color="teal"/>
+                                <InfoCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal"/>
                             </Grid>
                         </Grid>
                     </Grid>

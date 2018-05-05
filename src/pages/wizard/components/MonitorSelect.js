@@ -191,8 +191,8 @@ class MonitorSelect extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        selectedMonitor: state.profile.monitor,
-        selectedRefreshRate: state.profile.refreshRate,
+        selectedMonitor: state.profile.settings.monitor,
+        selectedRefreshRate: state.profile.settings.refreshRate,
         expanded: state.wizard.monitorsExpanded
     }
 }

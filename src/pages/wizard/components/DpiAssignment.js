@@ -52,7 +52,7 @@ const DpiAssignment = props => {
 
 const mapStateToProps = (state) => {
     return {
-        monitor: state.profile.monitor
+        monitor: state.profile.settings.monitor
     }
 }
   

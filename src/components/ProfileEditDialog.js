@@ -47,11 +47,10 @@ class ProfileEditDialog extends React.Component {
     console.log(props)
     super(props)
     this.state = {
-      sensitivity: this.props.profile.sensitivity.actual,
-      dpi: this.props.profile.dpi.actual,
-      monitor: this.props.profile.monitor
+      sensitivity: this.props.profile.settings.sensitivity.actual,
+      dpi: this.props.profile.settings.dpi.actual,
+      monitor: this.props.profile.settings.monitor
     }
-    console.log(this.state)
   }
   
   getReturnJson() {

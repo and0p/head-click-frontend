@@ -21,6 +21,9 @@ export const ADD_GAME = Symbol('ADD_GAME')
 export const REMOVE_GAME = Symbol('REMOVE_GAME')
 export const TOGGLE_GAME = Symbol('TOGGLE_GAME')
 
+export const SET_GAME_OVERRIDE = Symbol('SET_GAME_OVERRIDE')
+export const UPDATE_GAME_OVERRIDE = Symbol('UPDATE_GAME_OVERRIDE')
+
 export const SET_WIZARD_READY = Symbol('SET_WIZARD_READY')
 export const SET_WIZARD_NOT_READY = Symbol('SET_WIZARD_NOT_READY')
 export const WIZARD_NEXT = Symbol('WIZARD_NEXT')

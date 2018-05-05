@@ -78,7 +78,7 @@ const SensitivityAssignment = props => {
 
 const mapStateToProps = (state) => {
     return {
-        sensitivityAssigned: state.profile.sensitivity.recommended
+        sensitivityAssigned: state.profile.settings.sensitivity.recommended
     }
 }
   

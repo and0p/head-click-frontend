@@ -12,22 +12,35 @@ const initialState = {
         selectedMenuItem: Symbols.HOME_MENU
     },
     profile: {
-        monitor: monitors["16:9"]["1080p"],
-        refreshRate: 60,
-        dpi: {
-            actual: 1200,
-            recommended: 1200
-        },
-        sensitivity: {
-            actual: 34,
-            recommended: 34
-        },
-        toggle: {
-            actual: null,
-            recommended: null
+        settings: {
+            monitor: monitors["16:9"]["1080p"],
+            refreshRate: 60,
+            dpi: {
+                actual: 1200,
+                recommended: 1200
+            },
+            sensitivity: {
+                actual: 34,
+                recommended: 34
+            },
+            toggle: {
+                actual: null,
+                recommended: null
+            }
         },
         ownedGames: [],
-        ready: false
+        ready: false,
+        gamesOverriden: [],
+        overrides: {
+            overwatch: {
+                sensitivity: {
+                    actual: 34
+                },
+                dpi: {
+                    actual: 1200
+                }
+            }
+        }
     },
     wizard: {
         wizardCompleted: false,
@@ -45,7 +58,8 @@ const initialState = {
             text: "",
             type: 0
         },
-        editingProfile: false
+        editingProfile: false,
+        gamesOverriden: []
     }
 }
 
@@ -56,16 +70,18 @@ function profileReducer (state = initialState, action) {
             if(action.value != null)
             {
                 // Update dpi if still doing wizard
-                let newMouseDpi = state.profile.dpi
+                let newMouseDpi = state.profile.settings.dpi
                 if(!state.wizard.wizardCompleted) {
                     newMouseDpi = action.value.recommendedDpi
                 }
                 return update(state, {
                     profile: {
-                        monitor: { $set: action.value },
-                        dpi: { 
-                            actual: { $set: newMouseDpi },
-                            recommended: {$set: newMouseDpi }
+                        settings: {
+                            monitor: { $set: action.value },
+                            dpi: { 
+                                actual: { $set: newMouseDpi },
+                                recommended: {$set: newMouseDpi }
+                            }
                         }
                     }
                 })
@@ -109,9 +125,11 @@ function profileReducer (state = initialState, action) {
                 let recommendedSensitivity = getRecommendedDpi(state.profile.ownedGames)
                 return update(state, {
                     profile: {
-                        sensitivity: {
-                            actual: { $set: recommendedSensitivity},
-                            recommended: { $set: recommendedSensitivity }
+                        settings: {
+                            sensitivity: {
+                                actual: { $set: recommendedSensitivity},
+                                recommended: { $set: recommendedSensitivity }
+                            }
                         }
                     }
                 })
@@ -122,13 +140,15 @@ function profileReducer (state = initialState, action) {
             {
                 return update(state, {
                     profile: {
-                        sensitivity: {
-                            actual: { $set: action.value.sensitivity }
-                        },
-                        dpi: {
-                            actual: { $set: action.value.dpi }
-                        },
-                        monitor: { $set: action.value.monitor }
+                        settings: {
+                            sensitivity: {
+                                actual: { $set: action.value.sensitivity }
+                            },
+                            dpi: {
+                                actual: { $set: action.value.dpi }
+                            },
+                            monitor: { $set: action.value.monitor }
+                        }
                     }
                 })
             }
@@ -145,6 +165,21 @@ function profileReducer (state = initialState, action) {
                 updateCustomMonitorDetails()
             }
             return update(state, {})
+        case Symbols.UPDATE_GAME_OVERRIDE: 
+            if(action.value.override == 'cm360')
+                return update(state, {
+                    profile: {
+                        overrides: {
+                            [action.value.gameName]: {
+                                sensitivity: {
+                                    actual: {$set: action.value.value}
+                                }
+                            }
+                        }
+                    }
+                })
+            else
+                return state
         default:
             return state
     }
@@ -179,7 +214,7 @@ function sidebarReducer (state = initialState, action) {
 function wizardReducer (state = initialState, action) {
     switch(action.type) {
         case Symbols.SELECT_MONITOR:
-            if(state.profile.monitor != "undefined" && state.profile.monitor.usable)
+            if(state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
@@ -189,7 +224,7 @@ function wizardReducer (state = initialState, action) {
                 })
             return state
         case Symbols.SET_CUSTOM_MONITOR_WIDTH:
-            if(state.profile.monitor != "undefined" && state.profile.monitor.usable)
+            if(state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
@@ -199,7 +234,7 @@ function wizardReducer (state = initialState, action) {
                 })
             return state
         case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
-            if(state.profile.monitor != "undefined" && state.profile.monitor.usable)
+            if(state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
@@ -318,11 +353,29 @@ function uiReducer (state = initialState, action) {
             }
         })
         case Symbols.SAVE_PROFILE:
-        return update(state, {
-            ui: {
-                editingProfile: {$set: false}
-            }
-        })
+            return update(state, {
+                ui: {
+                    editingProfile: {$set: false}
+                }
+            })
+        case Symbols.SET_GAME_OVERRIDE:
+            if(action.value.set)
+                return update(state, {
+                    ui: {
+                        gamesOverriden: { $push: [action.value.gameName] }
+                    }
+                })
+            else
+                {
+                    // Find the index of that game
+                    let index = state.ui.gamesOverriden.findIndex(item => item === action.value.gameName);
+                    console.log(index)
+                    return update(state, {
+                        ui: {
+                            gamesOverriden: { $unset: [index] }
+                        }
+                    })
+                }
         default:
             return state
     }
