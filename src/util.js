@@ -38,6 +38,17 @@ export const getRecommendedDpi = games => {
     }
 }
 
+export const getOverrideFromSettings = settings => {
+    console.log("settings passed:")
+    console.log(settings)
+    let j = { sensitivity: {}, dpi: {}, monitor: {} }
+    j.sensitivity.actual = settings.sensitivity.actual
+    j.dpi.actual = settings.dpi.actual
+    j.monitor = {}
+    Object.assign(j.monitor, settings.monitor)
+    return j
+}
+
 export const emptyArray = []
 for(let i = 0; i < 200; i++)
 {

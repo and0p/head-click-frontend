@@ -87,10 +87,10 @@ class GamePage extends React.Component {
             let game = new Game(games[gameAlias])
             // See if we're overriding the profile at all and use overrides if so
             let settings = null
-                if(isInArray(this.props.ui.gamesOverriden, gameAlias))
-                    settings = this.props.profile.overrides[gameAlias]
-                else
-                    settings = this.props.profile.settings
+            if(isInArray(this.props.profile.gamesOverriden, gameAlias))
+                settings = this.props.profile.overrides[gameAlias]
+            else
+                settings = this.props.profile.settings
             return (
                 <div className={classes.root}>
                     <Typography variant="title" gutterBottom>
@@ -107,14 +107,14 @@ class GamePage extends React.Component {
                                     <div className={classes.floatRight}>
                                         <Typography variant="button" className={classes.overrideText}>Override</Typography>
                                         <Switch
-                                            checked={isInArray(this.props.ui.gamesOverriden, game.alias)}
+                                            checked={isInArray(this.props.profile.gamesOverriden, game.alias)}
                                             onChange={this.toggleOverride(game.alias)}
                                             className={classes.overrideSwitch}
                                         />
                                     </div>
                                     <Grid container>
                                         <Collapse 
-                                            in={isInArray(this.props.ui.gamesOverriden, game.alias)} 
+                                            in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
                                             timeout="auto" 
                                             className={classes.collapse}
                                             unmountOnExit>
@@ -128,6 +128,17 @@ class GamePage extends React.Component {
                                                                 //className={classes.textField}
                                                                 value={settings.sensitivity.actual}
                                                                 onChange={this.handleOverrideChange('cm360', game.alias)}
+                                                                margin="dense"
+                                                                fullWidth
+                                                            />
+                                                        </Grid>
+                                                        <Grid item xs={6} md={3}>
+                                                            <TextField
+                                                                id="name"
+                                                                label="DPI"
+                                                                //className={classes.textField}
+                                                                value={settings.dpi.actual}
+                                                                onChange={this.handleOverrideChange('dpi', game.alias)}
                                                                 margin="dense"
                                                                 fullWidth
                                                             />
@@ -205,10 +216,9 @@ GamePage.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-      profile: state.profile,
-      ui: state.ui
+      profile: state.profile
     }
-  }
+}
   
 const mapDispatchToProps = dispatch => {
     return {

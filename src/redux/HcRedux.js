@@ -3,7 +3,7 @@ import reduceReducers from 'reduce-reducers'
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
-import { isValid, getRecommendedDpi } from '../util'
+import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings } from '../util'
 
 // States
 const initialState = {
@@ -31,16 +31,7 @@ const initialState = {
         ownedGames: [],
         ready: false,
         gamesOverriden: [],
-        overrides: {
-            overwatch: {
-                sensitivity: {
-                    actual: 34
-                },
-                dpi: {
-                    actual: 1200
-                }
-            }
-        }
+        overrides: {}
     },
     wizard: {
         wizardCompleted: false,
@@ -59,7 +50,6 @@ const initialState = {
             type: 0
         },
         editingProfile: false,
-        gamesOverriden: []
     }
 }
 
@@ -165,6 +155,37 @@ function profileReducer (state = initialState, action) {
                 updateCustomMonitorDetails()
             }
             return update(state, {})
+        case Symbols.SET_GAME_OVERRIDE:
+            if(action.value.set)
+            {
+                // If we haven't overriden game yet, give new overrides from current settings
+                if(!state.profile.overrides.hasOwnProperty(action.value.gameName))
+                    return update(state, {
+                        profile: {
+                            gamesOverriden: { $push: [action.value.gameName] },
+                            overrides: {
+                                [action.value.gameName]: {$set: getOverrideFromSettings(state.profile.settings)}
+                            }
+                        }
+                    })
+                else
+                    return update(state, {
+                        profile: {
+                            gamesOverriden: { $push: [action.value.gameName] }
+                        }
+                    })
+                
+            }
+            else    
+            {
+                // Find the index of that game
+                let index = state.profile.gamesOverriden.findIndex(item => item === action.value.gameName);
+                return update(state, {
+                    profile: {
+                        gamesOverriden: { $unset: [index] }
+                    }
+                })
+            }
         case Symbols.UPDATE_GAME_OVERRIDE: 
             if(action.value.override == 'cm360')
                 return update(state, {
@@ -172,6 +193,18 @@ function profileReducer (state = initialState, action) {
                         overrides: {
                             [action.value.gameName]: {
                                 sensitivity: {
+                                    actual: {$set: action.value.value}
+                                }
+                            }
+                        }
+                    }
+                })
+            else if(action.value.override == 'dpi')
+                return update(state, {
+                    profile: {
+                        overrides: {
+                            [action.value.gameName]: {
+                                dpi: {
                                     actual: {$set: action.value.value}
                                 }
                             }
@@ -358,24 +391,6 @@ function uiReducer (state = initialState, action) {
                     editingProfile: {$set: false}
                 }
             })
-        case Symbols.SET_GAME_OVERRIDE:
-            if(action.value.set)
-                return update(state, {
-                    ui: {
-                        gamesOverriden: { $push: [action.value.gameName] }
-                    }
-                })
-            else
-                {
-                    // Find the index of that game
-                    let index = state.ui.gamesOverriden.findIndex(item => item === action.value.gameName);
-                    console.log(index)
-                    return update(state, {
-                        ui: {
-                            gamesOverriden: { $unset: [index] }
-                        }
-                    })
-                }
         default:
             return state
     }
