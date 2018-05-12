@@ -2,31 +2,43 @@ import { getRounded } from '../../../util'
 
 let baseDots = 62828;
 
-const getSensitivity = profile => {
-    return baseDots / (profile.dpi.actual / 2.54) / profile.sensitivity.actual
+const getSensitivity = settings => {
+    return baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual
 }
 
-const getInfo = profile => {
-    return [
-        {
-            name: 'Mouse Sensitivity Horizontal',
-            icon: 'settings_ethernet',
-            value: getRounded(getSensitivity(profile), 0),
-            color: 'purple'
-        },
-        {
-            name: 'Mouse Sensitivity Vertical',
-            icon: 'settings_ethernet',
-            value: getRounded(getSensitivity(profile), 0),
-            color: 'purple'
-        },
-        {
-            name: "FOV",
-            icon: 'videocam',
-            value: 73,
-            color: 'blue'
-        }
-    ]
+const getCm360FromGameSettings = (settings, gameSetting) => {
+    let result = settings.dpi.actual / 2.54
+    result = baseDots / result
+    result /= gameSetting
+    return result
+}
+
+const getInfo = settings => {
+    return {
+        settings: [
+            {
+                name: 'Mouse Sensitivity Horizontal',
+                icon: 'settings_ethernet',
+                value: getRounded(getSensitivity(settings), 0),
+                color: 'purple'
+            },
+            {
+                name: 'Mouse Sensitivity Vertical',
+                icon: 'settings_ethernet',
+                value: getRounded(getSensitivity(settings), 0),
+                color: 'purple'
+            },
+            {
+                name: "FOV",
+                icon: 'videocam',
+                value: 73,
+                color: 'blue'
+            }
+        ],
+        output: [
+
+        ]
+    }
 }
 
 export const R6Siege = {

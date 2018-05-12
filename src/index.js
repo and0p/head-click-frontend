@@ -9,8 +9,9 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { ConnectedRouter, routerReducer, routerMiddleware, push} from 'react-router-redux'
 import createHistory from 'history/createBrowserHistory'
 // Utility imports
-import HcRedux from './redux/HcRedux'
+import { store, persistor } from './redux/HcRedux'
 import theme from './theme.js'
+import { PersistGate } from 'redux-persist/integration/react'
 // Pages & styles
 import Dashboard from './pages/dashboard/Dashboard'
 import MaterialRoot from './pages/materialroot/MaterialRoot'
@@ -23,11 +24,6 @@ import Alert from './components/Alert'
 const history = createHistory()
 // Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history)
-// Create Redux store from reducers in HcRedux
-let store = createStore(
-  HcRedux,
-  applyMiddleware(middleware)
-);
 // Log initial state
 console.log(store.getState());
 // Subscribe console to state changes, while holding onto handle to unsub
@@ -36,7 +32,7 @@ const unsubscribe = store.subscribe(() => {
 })
 
 const homeComponent = state => {
-  if(state.wizard.wizardCompleted)
+  if(state.profile.ready)
     return <Dashboard />
   else
     return <Wizard theme={theme} />
@@ -47,15 +43,17 @@ class App extends React.Component {
   render() {
     return(
     <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <MuiThemeProvider theme={theme}>
-          <MaterialRoot>
-            <Route exact path="/" render={() => homeComponent(store.getState())}/>
-            <Route path="/game/:name" component={GamePage} />
-          </MaterialRoot>
-          <Alert />
-        </MuiThemeProvider>
-      </ConnectedRouter>
+      <PersistGate loading={null} persistor={persistor}>
+        <ConnectedRouter history={history}>
+          <MuiThemeProvider theme={theme}>
+            <MaterialRoot>
+              <Route exact path="/" render={() => homeComponent(store.getState())}/>
+              <Route path="/game/:name" component={GamePage} />
+            </MaterialRoot>
+            <Alert />
+          </MuiThemeProvider>
+        </ConnectedRouter>
+      </PersistGate>
     </Provider>
     );
   }

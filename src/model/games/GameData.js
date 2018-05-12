@@ -1,49 +1,13 @@
 import Overwatch from './individual/Overwatch'
 import Fortnite from './individual/Fortnite'
 import R6Siege from './individual/R6Siege'
+import PUBG from './individual/PUBG'
 
 const gameData = [
     Overwatch,
     R6Siege,
     Fortnite,
-    {
-        name: "Player Unknown's Battlegrounds",
-        shortName: "PUBG",
-        alias: "pubg",
-        hasLogo: false,
-        math: {
-            fov: {
-                min: 60,
-                max: 90,
-                default: 90,
-                recommended: 90,
-                horizontal: true,
-                basedOnSD: false
-            },
-            sensitivity: {
-                min: 1,
-                max: 25,
-                default: 10,
-                linear: true,   // scale: 1 instead?
-                multiplier: 1,
-                affectedByResolution: false,
-                affectedByFov: false,
-                rawInput: true,
-                accelerationPossible: false,
-                accelerationDefault: false,
-                yaw: 0.022
-            },
-            recommended: {
-                ideal: 34,
-                min: 15,
-                max: 46
-            }
-        },
-        settings: {
-            optimization: [],
-            gameplay: []
-        }
-    },
+    PUBG,
     {
         name: "Counter-Strike: Global Offensive",
         shortName: "CS:GO",

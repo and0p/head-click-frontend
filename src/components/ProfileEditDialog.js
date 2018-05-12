@@ -43,14 +43,23 @@ const styles = theme => ({
 
 class ProfileEditDialog extends React.Component {
   constructor(props) {
-    console.log("dialog props: ")
-    console.log(props)
     super(props)
     this.state = {
       sensitivity: this.props.profile.settings.sensitivity.actual,
       dpi: this.props.profile.settings.dpi.actual,
-      monitor: this.props.profile.settings.monitor
+      monitor: this.props.profile.settings.monitor,
+      usingCustomMonitor: this.props.profile.settings.usingCustomMonitor
     }
+  }
+
+  cancel = () => {
+    this.setState({
+      sensitivity: this.props.profile.settings.sensitivity.actual,
+      dpi: this.props.profile.settings.dpi.actual,
+      monitor: this.props.profile.settings.monitor
+    })
+    // Cancel UI in redux
+    this.props.cancel()
   }
   
   getReturnJson() {
@@ -62,22 +71,28 @@ class ProfileEditDialog extends React.Component {
   }
 
   handleChange = prop => event => {
-    this.setState({ [prop]: event.target.value });
+    if(prop == "monitor") {
+      if(event.target.value == this.props.profile.customMonitor)
+        this.setState({[prop]: event.target.value, usingCustomMonitor: true })
+      else
+        this.setState({ [prop]: event.target.value })
+    }
+    else
+      this.setState({ [prop]: event.target.value })
   };
 
   updateCustomSize = axis => event => {
-    if(this.state.monitor === customMonitor) {
+    if(this.state.monitor == this.props.profile.customMonitor) {
       if(axis == "width")
-        //customMonitor.width = event.target.value
         this.props.updateCustomWidth(event.target.value)
       if(axis == "height")
         this.props.updateCustomHeight(event.target.value)
-      this.setState({ monitor: this.state.monitor })
     }
   }
 
   render() {
     const { classes, theme, fullScreen } = this.props
+    let cMonitor = this.props.profile.customMonitor
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -131,7 +146,7 @@ class ProfileEditDialog extends React.Component {
                   Object.values(monitors[key]).map((monitor) => (
                     <MenuItem value={monitor}>{monitor.name}</MenuItem>
                   ))))}
-                <MenuItem value={customMonitor}>Custom..</MenuItem>
+                <MenuItem value={cMonitor}>Custom..</MenuItem>
               </Select>
             </FormControl><br/>
             {/* RESOLUTIONS */}
@@ -149,7 +164,7 @@ class ProfileEditDialog extends React.Component {
                 shrink: true,
                 className: classes.textFieldFormLabel,
               }}
-              disabled={this.state.monitor !== customMonitor}
+              disabled={this.state.monitor !== this.props.profile.customMonitor}
               onChange={this.updateCustomSize("width")}
             />
             <TextField
@@ -166,13 +181,13 @@ class ProfileEditDialog extends React.Component {
                 shrink: true,
                 className: classes.textFieldFormLabel,
               }}
-              disabled={this.state.monitor !== customMonitor}
+              disabled={this.state.monitor !== this.props.profile.customMonitor}
               onChange={this.updateCustomSize("height")}
             />
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.cancel} color="primary">
+          <Button onClick={this.cancel} color="primary">
             Cancel
           </Button>
           <Button onClick={() => this.props.saveProfile(this.state)} color="primary" autoFocus>

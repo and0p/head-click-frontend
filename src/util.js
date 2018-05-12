@@ -49,6 +49,15 @@ export const getOverrideFromSettings = settings => {
     return j
 }
 
+export const normalizeLowPercentage = percentage => {
+    if(percentage < 0.0005 && percentage > -0.0005)
+        return 0
+    else
+        return percentage
+}
+
+export const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+
 export const emptyArray = []
 for(let i = 0; i < 200; i++)
 {

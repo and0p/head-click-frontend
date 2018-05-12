@@ -44,7 +44,7 @@ const DpiAssignment = props => {
                 We recommend DPI based on desktop resolution.
             </Typography>
             <Typography variant="body1" className={classes.subtle}>
-                Due to the way modern mice work, there's no benefit to having a lower DPI over lower in-game sensitivity. And with monitor resolutions increasing, lower DPI makes everyday desktop usage or RTS / MOBA games difficult. Read more...
+                Due to the way modern mice work, there's no benefit to having a lower DPI over lower in-game sensitivity. And with larger monitor resolutions, lower DPI makes everyday desktop usage and RTS / MOBA games difficult. Read more...
             </Typography>
         </div>
     )

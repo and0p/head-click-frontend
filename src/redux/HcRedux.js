@@ -1,9 +1,11 @@
 import { applyMiddleware, combineReducers, createStore, } from 'redux';
 import reduceReducers from 'reduce-reducers'
+import { persistStore, persistReducer, createTransform  } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
-import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings } from '../util'
+import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, clamp } from '../util'
 
 // States
 const initialState = {
@@ -26,8 +28,10 @@ const initialState = {
             toggle: {
                 actual: null,
                 recommended: null
-            }
+            },
+            usingCustomMonitor: false,
         },
+        customMonitor: customMonitor,
         ownedGames: [],
         ready: false,
         gamesOverriden: [],
@@ -72,7 +76,8 @@ function profileReducer (state = initialState, action) {
                                 actual: { $set: newMouseDpi },
                                 recommended: {$set: newMouseDpi }
                             }
-                        }
+                        },
+                        usingCustomMonitor: {$set: action.value === customMonitor }
                     }
                 })
             }
@@ -138,23 +143,40 @@ function profileReducer (state = initialState, action) {
                                 actual: { $set: action.value.dpi }
                             },
                             monitor: { $set: action.value.monitor }
-                        }
+                        },
+                        usingCustomMonitor: { $set: action.value.monitor == customMonitor }
                     }
                 })
             }
             return state
         case Symbols.SET_CUSTOM_MONITOR_WIDTH:
-            if(action.value != "undefined") {
-                customMonitor.width = action.value
-                updateCustomMonitorDetails()
-            }
-            return update(state, {})
+            if(action.value != "undefined")
+                return update(state, {
+                    profile: {
+                        customMonitor: {
+                            name: { $set: action.value + "x" + customMonitor.height },
+                            recommendedDpi: { $set: clamp(400 * Math.ceil(((customMonitor.height - 600) / 400)), 400, 6400) },
+                            width: { $set: action.value },
+                            usable: { $set: true}
+                        }
+                    }
+                })
+            else
+                return state
         case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
-            if(action.value != "undefined") {
-                customMonitor.height = action.value
-                updateCustomMonitorDetails()
-            }
-            return update(state, {})
+            if(action.value != "undefined")
+                return update(state, {
+                    profile: {
+                        customMonitor: {
+                            name: { $set: customMonitor.width + "x" + action.value },
+                            recommendedDpi: { $set: clamp(400 * Math.ceil(((customMonitor.height - 600) / 400)), 400, 6400) },
+                            height: { $set: action.value },
+                            usable: { $set: true }
+                        }
+                    }
+                })
+            else
+                return state
         case Symbols.SET_GAME_OVERRIDE:
             if(action.value.set)
             {
@@ -397,17 +419,55 @@ function uiReducer (state = initialState, action) {
 }
 
 const updateCustomMonitorDetails = () => {
-    customMonitor.name = customMonitor.width + "x" + customMonitor.height;
-    // Simple recommended DPI
-    customMonitor.recommendedDpi = 400 * Math.ceil(((customMonitor.height - 600) / 400))
-    if(customMonitor.recommendedDpi > 3200)
-        customMonitor.recommendedDpi = 3200
-    customMonitor.usable = true;
+
 }
 
-export default reduceReducers(
+// Combine reducers
+const rootReducer = reduceReducers(
     profileReducer,
     sidebarReducer,
     wizardReducer,
     uiReducer
 )
+
+/*
+/* Persistence
+*/
+
+// Transform owned games from objects to keys and back
+const HCTransform = createTransform(
+    (inboundState, key) => {
+        return { 
+            ...inboundState, 
+            ownedGames: inboundState.ownedGames.map(game => game.alias),
+            settings: {
+                ...inboundState.settings,
+                monitor: inboundState.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
+            }
+        }
+    },
+    (outboundState, key) => {
+        return {  
+            ...outboundState,
+            ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
+            settings: {
+                ...outboundState.settings,
+                monitor: outboundState.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
+            }
+        };
+    },
+    { whitelist: ['profile'] }
+);
+
+// Config
+const persistConfig = {
+    key: 'root',
+    storage,
+    whitelist: ['profile'],
+    transforms: [HCTransform]
+}
+
+// Create and export persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+export const store = createStore(persistedReducer)
+export const persistor = persistStore(store)

@@ -1,18 +1,22 @@
 import { getRounded, normalizeLowPercentage, clamp } from '../../../util'
 
-let baseDots = 54543;
-let minSensitivity = 1;
+let baseDots = 12960;
+let minSensitivity = 0;
 let maxSensitivity = 100;
+let idealFOV = 90;
 
 const getSensitivity = settings => {
-    return getRounded(clamp((baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
+    let desiredDots = settings.sensitivity.actual * settings.dpi.actual
+    let fovDots = baseDots / idealFOV
+    let rawSensitivity = fovDots / desiredDots * 2.54
+    // convert to PUBG slider
+    return getRounded(clamp(Math.log(Math.pow(rawSensitivity / 0.002, 50)) / Math.log(10), minSensitivity, maxSensitivity), 0)
 }
 
 const getCm360FromGameSettings = (settings, gameSetting) => {
-    let result = settings.dpi.actual / 2.54
-    result = baseDots / result
-    result /= gameSetting
-    return result
+    let rawSensitivity = 0.002 * Math.pow(10, gameSetting / 50)
+    let dots = baseDots / idealFOV / rawSensitivity
+    return dots * 2.54 / settings.dpi.actual
 }
 
 const getInfo = settings => {
@@ -23,7 +27,7 @@ const getInfo = settings => {
             {
                 name: 'Sensitivity',
                 icon: 'settings_ethernet',
-                value: getRounded(sensitivity, 2),
+                value: getRounded(sensitivity, 0),
                 color: 'purple'
             },
             {
@@ -54,11 +58,11 @@ const getInfo = settings => {
     }
 }
 
-const Overwatch = {
-        name: "Overwatch",
-        shortName: "Overwatch",
-        alias: "overwatch",
-        hasLogo: true,
+const PUBG = {
+        name: "PlayerUnknown's Battlegrounds",
+        shortName: "PUBG",
+        alias: "pubg",
+        hasLogo: false,
         math: {
             fov: {
                 min: 50,
@@ -90,44 +94,10 @@ const Overwatch = {
         infoFunction: getInfo,
         settings: {
             optimization: [
-                {
-                    text: "Triple Buffering - OFF",
-                    subtext: "Options ~ Display ~ Triple Buffering",
-                    info: "Triple buffering is the worst. Read more...",
-                    critical: true
-                },
-                {
-                    text: "Reduce Buffer - ON",
-                    subtext: "Options ~ Display ~ Reduce Buffering",
-                    info: "This option reduces input lag by not pre-rendering frames.",
-                    critical: true
-                },
-                {
-                    text: "VSYNC - OFF*",
-                    subtext: "Options ~ Display ~ VSYNC",
-                    info: "Only use VSYNC in a competitive FPS if your machine can comfortably render with it at your monitor's maximum refresh rate. Otherwise you could experience input lag.",
-                    critical: false
-                },
-                {
-                    text: "Limit FPS - OFF*",
-                    subtext: "Options ~ Display ~ Limit FPS",
-                    info: "Set this to OFF, or at least reasonably higher than your monitor's refresh rate.",
-                    critical: false
-                },
-                {
-                    text: "Render Scale - 100%",
-                    subtext: "Options ~ Display ~ Graphics Quality ~ Advanced ~ Render Scale",
-                    info: "Render the game at your full resolution, improving clarity. Lower this for improved performance as a last resort.",
-                    critical: false
-                }
+               
             ],
             gameplay: [
-                {
-                    text: "Mercy - Beam Toggle - ON",
-                    subtext: "Options ~ Controls ~ Mercy ~ Beam Toggle",
-                    info: "This keeps your beam going without having to hold the button.",
-                    critical: false
-                }
+                
             ],
             overrides: {
                 cm360: true,
@@ -137,4 +107,4 @@ const Overwatch = {
         }
 }
 
-export default Overwatch
+export default PUBG

@@ -110,8 +110,6 @@ class InfoCard extends React.Component {
                 break
         }
         // See if we were given an icon to render and if not render default
-        console.log(this.props.icon)
-        console.log(this.props.icon)
         return (
             <Paper className={classes.root}>
                 <div className={iconClass}>

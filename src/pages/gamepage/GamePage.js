@@ -45,11 +45,13 @@ const styles = theme => ({
     },
     sectionHeaderOpen: {
         marginLeft: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit,
         float: 'left'
     },
     overrideSwitch: {
         marginTop: -theme.spacing.unit * 1.5,
         float: 'right',
+        marginBottom: -theme.spacing.unit - 1
     },
     overrideText: {
         float: 'left',
@@ -64,6 +66,10 @@ const styles = theme => ({
     },
     innerCollapse: {
         padding: theme.spacing.unit
+    },
+    outputValue: {
+        overflow: 'hidden',
+        textAlign: 'right'
     }
   });
 
@@ -91,6 +97,7 @@ class GamePage extends React.Component {
                 settings = this.props.profile.overrides[gameAlias]
             else
                 settings = this.props.profile.settings
+            let gameInfo = game.infoFunction(settings)
             return (
                 <div className={classes.root}>
                     <Typography variant="title" gutterBottom>
@@ -148,7 +155,7 @@ class GamePage extends React.Component {
                                             </Grid>
                                         </Collapse>
                                         {
-                                            game.infoFunction(settings).map(props => 
+                                            gameInfo.settings.map(props => 
                                                 <Grid item xs={12}>
                                                     <InfoCard
                                                         {...props}
@@ -156,8 +163,55 @@ class GamePage extends React.Component {
                                                 </Grid>
                                             )
                                         }
-
                                     </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Paper className={classes.paper}>
+                                            <Typography variant="subheading" gutterBottom>
+                                                Output
+                                            </Typography>
+                                            <Grid container>
+                                            {
+                                                gameInfo.output.map(item => ([
+                                                        <Grid item xs={3}>
+                                                            <Typography variant="title">
+                                                                {item.name}
+                                                            </Typography>
+                                                        </Grid>,
+                                                        <Grid item xs={3}  className={classes.outputValue}>
+                                                            <div className={classes.floatRight}>
+                                                                <Typography variant="title">
+                                                                    {item.value}
+                                                                </Typography>
+                                                                <Typography variant="caption" className={classes.floatRight}>
+                                                                    {item.valueDescription}
+                                                                </Typography>
+                                                            </div>
+                                                        </Grid>,
+                                                        <Grid item xs={3} className={classes.outputValue}>
+                                                            <div className={classes.floatRight}>
+                                                                <Typography variant="title">
+                                                                    {item.desired}
+                                                                </Typography>
+                                                                <Typography variant="caption" className={classes.floatRight}>
+                                                                    desired
+                                                                </Typography>
+                                                            </div>
+                                                        </Grid>,
+                                                        <Grid item xs={3} className={classes.outputValue}>
+                                                            <div className={classes.floatRight}>
+                                                                <Typography variant="title">
+                                                                    {item.variance}
+                                                                </Typography>
+                                                                <Typography variant="caption" className={classes.floatRight}>
+                                                                    variance
+                                                                </Typography>
+                                                            </div>
+                                                        </Grid>
+                                                ]))
+                                            }
+                                            </Grid>
+                                    </Paper>
                                 </Grid>
                                 <Grid item xs={12}>   
                                     {/* Other settings */}

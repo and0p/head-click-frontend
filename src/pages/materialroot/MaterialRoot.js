@@ -119,7 +119,8 @@ const styles = theme => ({
     fontSize: '0.875rem'
   },
   gameLogo: {
-    width: '24px'
+    width: '24px',
+    marginRight: theme.spacing.unit * 2
   }
 });
 

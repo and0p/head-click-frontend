@@ -2,6 +2,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import Snackbar from 'material-ui/Snackbar'
 import Button from 'material-ui/Button'
+import IconButton from 'material-ui/IconButton';
+import Icon from 'material-ui/Icon'
 import { connect } from 'react-redux'
 import * as Symbols from '../redux/HcSymbols'
 import { withStyles } from 'material-ui/styles';
@@ -11,6 +13,7 @@ const styles = theme => ({
 
 class Alert extends React.Component {
     render() {
+        const { classes } = this.props
         return(
             <Snackbar
                 anchorOrigin={{ vertical:'bottom', horizontal: 'center' }}
@@ -19,12 +22,19 @@ class Alert extends React.Component {
                 SnackbarContentProps={{
                 'aria-describedby': 'message-id',
                 }}
-                message={<span>Test</span>}
-                autoHideDuration={3000}
+                message={<span id="message-id">{this.props.alertInfo.text}</span>}
+                autoHideDuration={1000}
+                // action={
+                //     <IconButton
+                //     key="close"
+                //     aria-label="Close"
+                //     color="inherit"
+                //     onClick={this.props.closeAlert}
+                //   >
+                //     <Icon>close</Icon>
+                //   </IconButton>
+                // }
             >
-            <Button key="undo" color="secondary" size="small" onClick={this.props.closeAlert}>
-                {this.props.alertInfo.text}
-            </Button>
             </Snackbar>
         )
     }

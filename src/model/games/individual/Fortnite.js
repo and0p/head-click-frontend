@@ -2,25 +2,53 @@ import { getRounded } from '../../../util'
 
 let baseDots = 64805;
 
-const getSensitivity = profile => {
-    return baseDots / (profile.dpi.actual / 2.54) / profile.sensitivity.actual
+const getSensitivity = settings => {
+    return baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual
 }
 
-const getInfo = profile => {
-    return [
-        {
-            name: 'Sensitivity',
-            icon: 'settings_ethernet',
-            value: "." + getRounded(getSensitivity(profile), 0).padStart(2, '0'),
-            color: 'purple'
-        },
-        {
-            name: "FOV",
-            icon: 'videocam',
-            value: 103,
-            color: 'blue'
-        }
-    ]
+const getCm360FromGameSettings = (settings, gameSetting) => {
+    let result = settings.dpi.actual / 2.54
+    result = baseDots / result
+    result /= gameSetting
+    return result
+}
+
+const getInfo = settings => {
+    let sensitivity = getSensitivity(settings)
+    let outputHipFire = getCm360FromGameSettings(settings, sensitivity)
+    return {
+        settings: [
+            {
+                name: 'Sensitivity',
+                icon: 'settings_ethernet',
+                //value: "." + sensitivity.padStart(2, '0'),
+                value: getRounded(sensitivity / 100, 3),
+                color: 'purple'
+            },
+            {
+                name: "FOV",
+                icon: 'videocam',
+                value: 103,
+                color: 'blue'
+            }
+        ],
+        output: [
+            {
+                name: 'Hip Fire',
+                value: getRounded(outputHipFire, 2),
+                valueDescription: 'cm/360',
+                desired: getRounded(settings.sensitivity.actual, 2),
+                variance: getRounded((outputHipFire / settings.sensitivity.actual - 1) * 100, 2) + '%'
+            },
+            {
+                name: 'Iron Sights',
+                value: getRounded(outputHipFire, 2),
+                valueDescription: 'cm/360',
+                desired: getRounded(settings.sensitivity.actual, 2),
+                variance: getRounded((outputHipFire / settings.sensitivity.actual - 1) * 100, 2) + '%'
+            }
+        ]
+    }
 }
 
 const Fortnite = {
