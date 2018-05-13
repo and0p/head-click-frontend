@@ -31,7 +31,16 @@ const initialState = {
             },
             usingCustomMonitor: false,
         },
-        customMonitor: customMonitor,
+        customMonitor: {
+            name: "1920x1080",
+            width: 1920,
+            height: 1080,
+            aspectRatio: "16:9",
+            recommendedDpi: 800,
+            nonDescriptiveName: false,
+            common: true,
+            usable: false
+        },
         ownedGames: [],
         ready: false,
         gamesOverriden: [],
@@ -75,9 +84,9 @@ function profileReducer (state = initialState, action) {
                             dpi: { 
                                 actual: { $set: newMouseDpi },
                                 recommended: {$set: newMouseDpi }
-                            }
+                            },
+                            usingCustomMonitor: {$set: action.value === customMonitor }
                         },
-                        usingCustomMonitor: {$set: action.value === customMonitor }
                     }
                 })
             }
@@ -142,9 +151,10 @@ function profileReducer (state = initialState, action) {
                             dpi: {
                                 actual: { $set: action.value.dpi }
                             },
-                            monitor: { $set: action.value.monitor }
+                            monitor: { $set: action.value.monitor },
+                            usingCustomMonitor: { $set: action.value.monitor == action.value.customMonitor }
                         },
-                        usingCustomMonitor: { $set: action.value.monitor == customMonitor }
+                        customMonitor: { $set: action.value.customMonitor },
                     }
                 })
             }
@@ -418,7 +428,7 @@ function uiReducer (state = initialState, action) {
     }
 }
 
-const updateCustomMonitorDetails = () => {
+const updateCustomMonitorDetails = customMonitor => {
 
 }
 
@@ -442,7 +452,7 @@ const HCTransform = createTransform(
             ownedGames: inboundState.ownedGames.map(game => game.alias),
             settings: {
                 ...inboundState.settings,
-                monitor: inboundState.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
+                monitor: inboundState.settings.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
             }
         }
     },
@@ -452,7 +462,7 @@ const HCTransform = createTransform(
             ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
             settings: {
                 ...outboundState.settings,
-                monitor: outboundState.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
+                monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
             }
         };
     },

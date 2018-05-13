@@ -16,8 +16,9 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
-import { monitors, customMonitor } from '../model/HcModel'
+import { monitors } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
+import { clamp } from '../util'
 
 const styles = theme => ({
   root: {
@@ -44,19 +45,31 @@ const styles = theme => ({
 class ProfileEditDialog extends React.Component {
   constructor(props) {
     super(props)
+    let cmonitor = Object.assign({}, this.props.profile.customMonitor)
     this.state = {
       sensitivity: this.props.profile.settings.sensitivity.actual,
       dpi: this.props.profile.settings.dpi.actual,
-      monitor: this.props.profile.settings.monitor,
-      usingCustomMonitor: this.props.profile.settings.usingCustomMonitor
+      monitor: this.props.profile.settings.usingCustomMonitor ? cmonitor : this.props.profile.settings.monitor,
+      customMonitor: cmonitor
     }
+  }
+
+  reopened = () => {
+    let cmonitor = Object.assign({}, this.props.profile.customMonitor)
+    this.setState({
+      sensitivity: this.props.profile.settings.sensitivity.actual,
+      dpi: this.props.profile.settings.dpi.actual,
+      monitor: this.props.profile.settings.usingCustomMonitor ? cmonitor : this.props.profile.settings.monitor,
+      customMonitor: cmonitor
+    })
   }
 
   cancel = () => {
     this.setState({
       sensitivity: this.props.profile.settings.sensitivity.actual,
       dpi: this.props.profile.settings.dpi.actual,
-      monitor: this.props.profile.settings.monitor
+      monitor: this.props.profile.settings.monitor,
+      customMonitor: this.props.profile.customMonitor
     })
     // Cancel UI in redux
     this.props.cancel()
@@ -66,43 +79,46 @@ class ProfileEditDialog extends React.Component {
     return {
       dpi: this.state.dpi,
       sensitivity: this.state.sensitivity,
-      monitor: this.state.monitor
+      monitor: this.state.monitor,
+      customMonitor: this.state.customMonitor
     }
   }
 
   handleChange = prop => event => {
-    if(prop == "monitor") {
-      if(event.target.value == this.props.profile.customMonitor)
-        this.setState({[prop]: event.target.value, usingCustomMonitor: true })
-      else
-        this.setState({ [prop]: event.target.value })
-    }
-    else
       this.setState({ [prop]: event.target.value })
   };
 
   updateCustomSize = axis => event => {
-    if(this.state.monitor == this.props.profile.customMonitor) {
       if(axis == "width")
-        this.props.updateCustomWidth(event.target.value)
-      if(axis == "height")
-        this.props.updateCustomHeight(event.target.value)
+        this.setState({
+          customMonitor: Object.assign(this.state.customMonitor, 
+            { name: event.target.value + "x" + this.state.customMonitor.height,
+              width: event.target.value,
+              recommendedDpi: clamp(400 * Math.ceil(((this.state.customMonitor.height - 600) / 400)), 400, 6400),
+              usable: this.state.customMonitor.width > 0 && this.state.customMonitor.height > 0
+            })})
+      else if(axis == "height")
+        this.setState({
+          customMonitor: Object.assign(this.state.customMonitor, 
+            { name: this.state.customMonitor.width + "x" + event.target.value,
+              height: event.target.value,
+              recommendedDpi: clamp(400 * Math.ceil(((this.state.customMonitor.height - 600) / 400)), 400, 6400),
+              usable: this.state.customMonitor.width > 0 && event.target.value > 0
+            })})
     }
-  }
 
   render() {
     const { classes, theme, fullScreen } = this.props
-    let cMonitor = this.props.profile.customMonitor
     return (
       <Dialog
         fullScreen={fullScreen}
         open={this.props.ui.editingProfile}
         aria-labelledby="edit-profile"
+        onEnter={this.reopened}
       >
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <form noValidate autoComplete="off">
-          {/*<DialogContentText>Text</DialogContentText> */}
           {/* SENSITIVITY */}
             <FormControl className={classes.input}>
             <FormHelperText>Sensitivity</FormHelperText>
@@ -146,7 +162,8 @@ class ProfileEditDialog extends React.Component {
                   Object.values(monitors[key]).map((monitor) => (
                     <MenuItem value={monitor}>{monitor.name}</MenuItem>
                   ))))}
-                <MenuItem value={cMonitor}>Custom..</MenuItem>
+                <MenuItem value={this.state.customMonitor}>Custom..</MenuItem>
+                {console.log(this.state.customMonitor == this.state.monitor)}
               </Select>
             </FormControl><br/>
             {/* RESOLUTIONS */}
@@ -164,7 +181,7 @@ class ProfileEditDialog extends React.Component {
                 shrink: true,
                 className: classes.textFieldFormLabel,
               }}
-              disabled={this.state.monitor !== this.props.profile.customMonitor}
+              disabled={this.state.monitor != this.state.customMonitor}
               onChange={this.updateCustomSize("width")}
             />
             <TextField
@@ -181,7 +198,7 @@ class ProfileEditDialog extends React.Component {
                 shrink: true,
                 className: classes.textFieldFormLabel,
               }}
-              disabled={this.state.monitor !== this.props.profile.customMonitor}
+              disabled={this.state.monitor != this.state.customMonitor}
               onChange={this.updateCustomSize("height")}
             />
           </form>
