@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import { monitors, customMonitor } from '../../../model/HcModel'
+import { monitors } from '../../../model/HcModel'
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
@@ -75,7 +75,7 @@ const MonitorButton = (props) => (
             key={props.monitor.name}
             className={props.selected ? props.classes.monitorButtonSelected : props.classes.monitorButton }
         >
-            <Typography variant="subheading">{props.monitor.name}</Typography>
+            <Typography variant="subheading">{props.hasOwnProperty("nameOverride") ? props.nameOverride : props.monitor.name}</Typography>
         </Button>
     </Grid>
 )
@@ -98,17 +98,24 @@ class MonitorSelect extends React.Component {
     }
 
     updateCustomSize = axis => event => {
-        if(this.props.selectedMonitor === customMonitor) {
+        if(this.props.selectedMonitor === this.props.customMonitor) {
           if(axis == "width")
             this.props.updateCustomWidth(event.target.value)
           if(axis == "height")
             this.props.updateCustomHeight(event.target.value)
-          this.setState({  })
+          //this.setState({  })
         }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("update")
     }
 
     render() {
         const { classes, theme } = this.props;
+        console.log(this.props.selectedMonitor)
+        console.log(this.props.customMonitor)
+        console.log(this.props.customMonitor == this.props.selectedMonitor)
         return(
             <div>
                 <div className={classes.section}>
@@ -138,10 +145,11 @@ class MonitorSelect extends React.Component {
                     <Typography variant="body2" className={classes.ratioText}>Custom</Typography>
                     <Grid container className={classes.gridRoot}>
                         <MonitorButton
-                            selectMonitor={() => this.props.selectMonitor(customMonitor)}
+                            selectMonitor={() => this.props.selectMonitor(this.props.customMonitor)}
                             classes={classes}
-                            monitor={customMonitor}
-                            selected={this.props.selectedMonitor === customMonitor}
+                            monitor={this.props.customMonitor}
+                            selected={this.props.selectedMonitor == this.props.customMonitor}
+                            nameOverride="Custom"
                         />
                         <Grid item xs={3}>
                             <TextField
@@ -158,7 +166,7 @@ class MonitorSelect extends React.Component {
                                 shrink: true,
                                 className: classes.textFieldFormLabel,
                             }}
-                            disabled={this.props.selectedMonitor !== customMonitor}
+                            disabled={this.props.selectedMonitor !== this.props.customMonitor}
                             onChange={this.updateCustomSize("width")}
                             />
                         </Grid>
@@ -177,7 +185,7 @@ class MonitorSelect extends React.Component {
                                 shrink: true,
                                 className: classes.textFieldFormLabel,
                             }}
-                            disabled={this.props.selectedMonitor !== customMonitor}
+                            disabled={this.props.selectedMonitor !== this.props.customMonitor}
                             fullWidth
                             onChange={this.updateCustomSize("height")}
                             />
@@ -193,6 +201,7 @@ const mapStateToProps = (state) => {
     return {
         selectedMonitor: state.profile.settings.monitor,
         selectedRefreshRate: state.profile.settings.refreshRate,
+        customMonitor: state.profile.customMonitor,
         expanded: state.wizard.monitorsExpanded
     }
 }

@@ -39,7 +39,7 @@ const initialState = {
             recommendedDpi: 800,
             nonDescriptiveName: false,
             common: true,
-            usable: false
+            usable: true
         },
         ownedGames: [],
         ready: false,
@@ -85,7 +85,7 @@ function profileReducer (state = initialState, action) {
                                 actual: { $set: newMouseDpi },
                                 recommended: {$set: newMouseDpi }
                             },
-                            usingCustomMonitor: {$set: action.value === customMonitor }
+                            usingCustomMonitor: {$set: action.value === state.profile.customMonitor }
                         },
                     }
                 })
@@ -160,31 +160,43 @@ function profileReducer (state = initialState, action) {
             }
             return state
         case Symbols.SET_CUSTOM_MONITOR_WIDTH:
-            if(action.value != "undefined")
+            if(action.value != "undefined") {
+                let cMonitor = {
+                    ...state.profile.customMonitor,
+                    name: action.value + "x" + state.profile.customMonitor.height,
+                    recommendedDpi: clamp(400 * Math.ceil(((state.profile.customMonitor.height - 600) / 400)), 400, 6400),
+                    width: action.value,
+                    usable: action.value > 0 && state.profile.customMonitor.height > 0
+                }
                 return update(state, {
                     profile: {
-                        customMonitor: {
-                            name: { $set: action.value + "x" + customMonitor.height },
-                            recommendedDpi: { $set: clamp(400 * Math.ceil(((customMonitor.height - 600) / 400)), 400, 6400) },
-                            width: { $set: action.value },
-                            usable: { $set: true}
+                        customMonitor: { $set: cMonitor },
+                        settings: {
+                            monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         }
                     }
                 })
+            }
             else
                 return state
         case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
-            if(action.value != "undefined")
+            if(action.value != "undefined") {
+                let cMonitor = {
+                    ...state.profile.customMonitor,
+                    name: state.profile.customMonitor.width + "x" + action.value,
+                    recommendedDpi: clamp(400 * Math.ceil(((state.profile.customMonitor.height - 600) / 400)), 400, 6400),
+                    height: action.value,
+                    usable: action.value > 0 && state.profile.customMonitor.width > 0
+                }
                 return update(state, {
                     profile: {
-                        customMonitor: {
-                            name: { $set: customMonitor.width + "x" + action.value },
-                            recommendedDpi: { $set: clamp(400 * Math.ceil(((customMonitor.height - 600) / 400)), 400, 6400) },
-                            height: { $set: action.value },
-                            usable: { $set: true }
+                        customMonitor: { $set: cMonitor},
+                        settings: {
+                            monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         }
                     }
                 })
+            }
             else
                 return state
         case Symbols.SET_GAME_OVERRIDE:
