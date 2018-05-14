@@ -53,6 +53,9 @@ const styles = theme => ({
         height: '60px',
         float: 'none',
         marginTop: '5px'
+    },
+    sortSection: {
+        width: '100%'
     }
 });
 
@@ -96,11 +99,18 @@ class GameSelect extends React.Component {
             <div className={classes.pageRoot}>
                 <Typography variant="display1" gutterBottom>Select games you play:</Typography>
                 <Grid container spacing={16} className={classes.gridRoot}>
+                    <Grid container className={classes.sortSection}>
+                        <Grid item xs={12} sm={6}>
+                            Filter by:
+                            <Button className={classes.button}>Popularity</Button>
+                            <Button className={classes.button}>Alphabetical</Button>
+                        </Grid>
+                    </Grid>
                     {gamesByPopularity.slice(0, this.props.gamePagesRevealed * gamesPerPage).map((game) => (
                         <GameButton 
                             key={game.name}
-                            game={game} 
-                            selected={this.props.ownedGames.includes(game)} 
+                            game={game}
+                            selected={this.props.ownedGames.includes(game)}
                             classes={classes}
                             click={() => this.props.toggleGame(game)}
                         />
