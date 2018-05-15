@@ -11,7 +11,7 @@ import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
 import MonitorSelect from './components/MonitorSelect'
 import DpiAssignment from './components/DpiAssignment'
-import GameSelect from './components/GameSelect'
+import GameSelect from '../../components/GameSelect'
 import SensitivityAssignment from './components/SensitivityAssignment'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -45,7 +45,7 @@ class Wizard extends React.Component {
                 page = <DpiAssignment />
                 break
             case 3:
-                page = <GameSelect />
+                page = <div><Typography variant="display1" gutterBottom>Select games you play:</Typography><GameSelect /></div>
                 break
             case 4:
                 page = <SensitivityAssignment />

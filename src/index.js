@@ -16,6 +16,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import Dashboard from './pages/dashboard/Dashboard'
 import MaterialRoot from './pages/materialroot/MaterialRoot'
 import GamePage from './pages/gamepage/GamePage'
+import SelectGames from './pages/selectgames/SelectGames.js'
 import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
 import Alert from './components/Alert'
@@ -48,6 +49,7 @@ class App extends React.Component {
           <MuiThemeProvider theme={theme}>
             <MaterialRoot>
               <Route exact path="/" render={() => homeComponent(store.getState())}/>
+              <Route exact path="/select_games" component={SelectGames} />
               <Route path="/game/:name" component={GamePage} />
             </MaterialRoot>
             <Alert />

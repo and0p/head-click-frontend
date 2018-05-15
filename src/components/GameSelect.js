@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
-import { gamesAlphabetically, gamesByPopularity } from '../../../model/HcModel'
+import { gamesAlphabetically, gamesByPopularity } from '../model/HcModel'
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
@@ -14,8 +14,8 @@ import TextField from 'material-ui/TextField'
 import Select from 'material-ui/Select';
 import Button from 'material-ui/Button'
 import ButtonBase from 'material-ui/ButtonBase';
-import ResponsiveAsset from '../../../assets'
-import * as Symbols from '../../../redux/HcSymbols'
+import ResponsiveAsset from '../assets'
+import * as Symbols from '../redux/HcSymbols'
 
 const gamesPerPage = 12
 
@@ -125,7 +125,7 @@ class GameSelect extends React.Component {
             gameArray = gamesByPopularity
         return (
             <div className={classes.pageRoot}>
-                <Typography variant="display1" gutterBottom>Select games you play:</Typography>
+                
                 <Grid container spacing={16} className={classes.gridRoot}>
                     <Grid item xs={8} sm={9} >
                         <TextField

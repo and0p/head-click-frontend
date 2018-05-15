@@ -166,12 +166,12 @@ class MaterialRoot extends React.Component {
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />
             <Divider />
-            <div className={classes.drawerCategory}>GAMES</div>
+            <div className={classes.drawerCategory}>LIBRARY</div>
             {sidebarGamesList}
             <SidebarButton 
-              link="/add_game"
+              link="/select_games"
               icon="add_circle_outline"
-              text="Add Game"
+              text="Add Games"
               enabled={this.props.profile.ready}
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />
