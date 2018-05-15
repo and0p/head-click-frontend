@@ -42,7 +42,6 @@ class Alert extends React.Component {
 
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
       alertInfo: state.ui.alert
     }

@@ -3,10 +3,15 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from 'material-ui/styles'
-import { gamesByPopularity } from '../../../model/HcModel'
+import { gamesAlphabetically, gamesByPopularity } from '../../../model/HcModel'
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper'
 import Grid from 'material-ui/Grid'
+import Input, { InputLabel } from 'material-ui/Input';
+import { MenuItem } from 'material-ui/Menu';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import TextField from 'material-ui/TextField'
+import Select from 'material-ui/Select';
 import Button from 'material-ui/Button'
 import ButtonBase from 'material-ui/ButtonBase';
 import ResponsiveAsset from '../../../assets'
@@ -55,7 +60,13 @@ const styles = theme => ({
         marginTop: '5px'
     },
     sortSection: {
-        width: '100%'
+        width: '100%',
+        padding: theme.spacing.unit
+    },
+    subtle: {
+        color: theme.palette.custom.subtle
+    },
+    textField: {
     }
 });
 
@@ -93,20 +104,58 @@ const GameButton = (props) => (
 )
 
 class GameSelect extends React.Component {
+
+    handleSortChange = () => event => {
+        this.props.setGameSort( event.target.value )
+    }
+
+    handleFilterChange = () => event => {
+        this.props.setGameFilter( event.target.value )
+    }
+
+    filterFunction = game => {
+        let f = this.props.filter.toLowerCase()
+        return (game.alias.toLowerCase().startsWith(f) || game.name.toLowerCase().startsWith(f))
+    }
+
     render() {
         const { classes, theme } = this.props;
+        let gameArray = gamesAlphabetically
+        if(this.props.sort == "popularity")
+            gameArray = gamesByPopularity
         return (
             <div className={classes.pageRoot}>
                 <Typography variant="display1" gutterBottom>Select games you play:</Typography>
                 <Grid container spacing={16} className={classes.gridRoot}>
-                    <Grid container className={classes.sortSection}>
-                        <Grid item xs={12} sm={6}>
-                            Filter by:
-                            <Button className={classes.button}>Popularity</Button>
-                            <Button className={classes.button}>Alphabetical</Button>
-                        </Grid>
+                    <Grid item xs={8} sm={9} >
+                        <TextField
+                            value={this.props.filter}
+                            onChange={this.handleFilterChange()}
+                            id="search"
+                            label="Search"
+                            type="search"
+                            className={classes.textField}
+                            margin="dense"
+                            fullWidth
+                        />
                     </Grid>
-                    {gamesByPopularity.slice(0, this.props.gamePagesRevealed * gamesPerPage).map((game) => (
+                    <Grid item xs={4} sm={3}>
+                        <FormControl className={classes.formControl} margin='dense' fullWidth>
+                            <InputLabel>Sort</InputLabel>
+                                <Select
+                                    value={this.props.sort}
+                                    onChange={this.handleSortChange()}
+                                    inputProps={{
+                                    name: 'sort'
+                                    }}
+                                >
+                                    <MenuItem value="popularity">Popularity</MenuItem>
+                                    <MenuItem value="alphabetical">Alphabetical</MenuItem>
+                                </Select>
+                        </FormControl>
+                    </Grid>
+                    {
+                        gameArray.filter(this.filterFunction).slice(0, this.props.gamePagesRevealed * gamesPerPage).map((game) => (
                         <GameButton 
                             key={game.name}
                             game={game}
@@ -125,7 +174,9 @@ class GameSelect extends React.Component {
 const mapStateToProps = (state) => {
     return {
         ownedGames: state.profile.ownedGames,
-        gamePagesRevealed: state.wizard.gamePagesRevealed
+        gamePagesRevealed: state.wizard.gamePagesRevealed,
+        sort: state.ui.gameSelect.sort,
+        filter: state.ui.gameSelect.filterQuery
     }
 }
   
@@ -141,7 +192,16 @@ const mapDispatchToProps = dispatch => {
         }),
         showMoreGames: () => dispatch({
             type: Symbols.SHOW_MORE_GAMES
+        }),
+        setGameSort: value => dispatch({
+            type: Symbols.SET_GAMEPAGE_SORT,
+            value: value
+        }),
+        setGameFilter: value => dispatch({
+            type: Symbols.SET_GAMEPAGE_FILTER,
+            value: value
         })
+
     }
 }
 

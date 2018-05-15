@@ -6,9 +6,12 @@ import mouseData from './mice/MouseData'
 import monitorData, {customMonitor as custmon} from './monitors/MonitorData'
 
 // Export game list as Game objects
-export const games = {}
+export const games = []
+export const gamesAlphabetically = []
 for(var i in gameData) {
-    games[gameData[i].alias] = new Game(gameData[i])
+    let game = new Game(gameData[i])
+    games[gameData[i].alias] = game
+    gamesAlphabetically.push(game)
 }
 
 export const gamesByPopularity = []

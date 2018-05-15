@@ -57,6 +57,10 @@ const initialState = {
     },
     ui: {
         contentComponent: null,
+        gameSelect: {
+            filterQuery: "",
+            sort: "popularity"
+        },
         alert: {
             show: false,
             text: "",
@@ -433,6 +437,23 @@ function uiReducer (state = initialState, action) {
             return update(state, {
                 ui: {
                     editingProfile: {$set: false}
+                }
+            })
+        case Symbols.SET_GAMEPAGE_SORT:
+            console.log("fired sort")
+            return update(state, {
+                ui: {
+                    gameSelect: {
+                        sort: {$set: action.value}
+                    }
+                }
+            })
+        case Symbols.SET_GAMEPAGE_FILTER:
+            return update(state, {
+                ui: {
+                    gameSelect: {
+                        filterQuery: {$set: action.value}
+                    }
                 }
             })
         default:

@@ -4,10 +4,6 @@ import R6Siege from './individual/R6Siege'
 import PUBG from './individual/PUBG'
 
 const gameData = [
-    Overwatch,
-    R6Siege,
-    Fortnite,
-    PUBG,
     {
         name: "Counter-Strike: Global Offensive",
         shortName: "CS:GO",
@@ -45,7 +41,11 @@ const gameData = [
             optimization: [],
             gameplay: []
         }
-    }
+    },
+    Fortnite,
+    Overwatch,
+    PUBG,
+    R6Siege,
 ]
 
 export const gameNamesByPopularity = [

@@ -20,6 +20,8 @@ export const SET_CUSTOM_MONITOR_HEIGHT = Symbol('SET_CUSTOM_MONITOR_HEIGHT')
 export const ADD_GAME = Symbol('ADD_GAME')
 export const REMOVE_GAME = Symbol('REMOVE_GAME')
 export const TOGGLE_GAME = Symbol('TOGGLE_GAME')
+export const SET_GAMEPAGE_SORT = Symbol('SET_GAMEPAGE_SORT')
+export const SET_GAMEPAGE_FILTER = Symbol('SET_GAMEPAGE_FILTER')
 
 export const SET_GAME_OVERRIDE = Symbol('SET_GAME_OVERRIDE')
 export const UPDATE_GAME_OVERRIDE = Symbol('UPDATE_GAME_OVERRIDE')
