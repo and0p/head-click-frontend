@@ -46,7 +46,7 @@ class Wizard extends React.Component {
                 page = <DpiAssignment />
                 break
             case 3:
-                page = <div><Typography variant="display1" gutterBottom>Select games you play:</Typography><GameSelect /></div>
+                page = <div><Typography variant="title" gutterBottom>Select games you play:</Typography><GameSelect /></div>
                 break
             case 4:
                 page = <SensitivityAssignment />

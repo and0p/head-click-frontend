@@ -5,7 +5,7 @@ import GameSelect from '../../components/GameSelect'
 
 const SelectGames = props => {
     return([
-        <Typography variant="display1">Select games you play:</Typography>,
+        <Typography variant="title">Select games you play:</Typography>,
         <GameSelect />
     ])
 }
