@@ -42,7 +42,9 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
   },
   navIconHide: {
     [theme.breakpoints.up('md')]: {
@@ -59,7 +61,7 @@ const styles = theme => ({
   },
   drawerHeader: {
     color: '#333333',
-    textAlign: 'center',
+    alignItems: 'center',
     backgroundColor: theme.palette.primary.main,
     fontSize: '1.5em',
     lineHeight: '1.5em',
@@ -68,24 +70,28 @@ const styles = theme => ({
     },
     [theme.breakpoints.down('xs')]: {
       height: mobileAppBarHeight
-    }
+    },
+    paddingLeft: theme.spacing.unit * 2
   },
   drawerContent: {
   },
   logo: {
-
     [theme.breakpoints.up('sm')]: {
-      marginTop: '12px',
-      height: '40px'
+      marginTop: '4px',
+      height: '32px'
     },
     [theme.breakpoints.down('xs')]: {
-      marginTop: '10px',
-      height: '36px'
+      marginTop: '4px',
+      height: '24px'
     }
   },
+  drawerLogo: {
+      marginTop: '14px',
+      height: '32px'
+  },
   barLogo: {
-    marginTop: '-6px',
-    marginLeft: '24px'
+    //marginTop: '-6px',
+    marginLeft: theme.spacing.unit
   },
   content: {
     [theme.breakpoints.up('md')]: {
@@ -148,7 +154,7 @@ class MaterialRoot extends React.Component {
     const drawer = (
       <div>
           <Paper elevation={4} className={classes.drawerHeader}>
-            <ResponsiveAsset category="headclick" asset="logo" className={classes.logo} />
+            <ResponsiveAsset category="headclick" asset="logo" className={classes.drawerLogo} />
           </Paper>
           <div className={classes.drawerContent}>
             <SidebarButton 
@@ -182,7 +188,7 @@ class MaterialRoot extends React.Component {
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar} color="default">
-          <Toolbar>
+          <Toolbar disableGutters>
             <IconButton
               color="inherit"
               aria-label="open drawer"

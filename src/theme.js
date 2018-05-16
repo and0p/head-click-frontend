@@ -44,12 +44,20 @@ const theme = createMuiTheme({
           color: "#FFFFFF"
         },
       },
+      MuiToolbar: {
+        gutters: {
+          paddingLeft: '8px',
+          paddingRight: '8px',
+          // [breakpoints.up('sm')]: {
+          //   paddingLeft: '16px',
+          //   paddingRight: '16px',
+          // }
+        }
+      }
     },
   });
 
 export default theme;
-
-
 
 // {
 //   "breakpoints": {
