@@ -77,17 +77,23 @@ const styles = theme => ({
   },
   logo: {
     [theme.breakpoints.up('sm')]: {
-      marginTop: '4px',
-      height: '32px'
+      marginTop: '12px',
+      height: '40px'
     },
     [theme.breakpoints.down('xs')]: {
-      marginTop: '4px',
-      height: '24px'
+      marginTop: '12px',
+      height: '32px'
     }
   },
-  drawerLogo: {
-      marginTop: '14px',
+  logo_mobile: {
+    [theme.breakpoints.up('sm')]: {
+      marginTop: '4px',
+      height: '40px'
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '5px',
       height: '32px'
+    }
   },
   barLogo: {
     //marginTop: '-6px',
@@ -154,7 +160,7 @@ class MaterialRoot extends React.Component {
     const drawer = (
       <div>
           <Paper elevation={4} className={classes.drawerHeader}>
-            <ResponsiveAsset category="headclick" asset="logo" className={classes.drawerLogo} />
+            <ResponsiveAsset category="headclick" asset="logo_dark" className={classes.logo} />
           </Paper>
           <div className={classes.drawerContent}>
             <SidebarButton 
@@ -197,7 +203,7 @@ class MaterialRoot extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset category="headclick" asset="logo" className={classes.logo} /></Hidden></div>
+            <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo_mobile} /></Hidden></div>
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
