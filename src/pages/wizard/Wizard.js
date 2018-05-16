@@ -22,6 +22,7 @@ const styles = theme => ({
         maxWidth: '1000px',
         marginLeft: 'auto',
         marginRight: 'auto',
+        paddingBottom: theme.spacing.unit * 6,
         [theme.breakpoints.up('md')]: {
             marginBottom: desktopStepperHeight
         }

@@ -24,7 +24,7 @@ const styles = theme => ({
     },
     section: {
         //marginTop: theme.spacing.unit * 3,
-        marginBottom: theme.spacing.unit * 3
+        marginBottom: theme.spacing.unit * 2
     },
     monitorButton: {
         width: '100%',
@@ -69,7 +69,7 @@ const styles = theme => ({
 });
 
 const MonitorButton = (props) => (
-    <Grid item xs={3}>
+    <Grid item xs={4} sm={3}>
         <Button 
             onClick={props.selectMonitor}
             key={props.monitor.name}
@@ -119,7 +119,7 @@ class MonitorSelect extends React.Component {
         return(
             <div>
                 <div className={classes.section}>
-                    <Typography variant="display1" gutterBottom>Select your resolution:</Typography>
+                    <Typography variant="title" gutterBottom>Select your resolution:</Typography>
                     {Object.keys(monitors).map((key) => (
                         <div key={key}>
                             <Typography variant="body2" className={classes.ratioText}>{key}</Typography>

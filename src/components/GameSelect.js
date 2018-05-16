@@ -55,6 +55,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.paper
     },
     logo: {
+        maxWidth: '100%',
         height: '60px',
         float: 'none',
         marginTop: '5px'
