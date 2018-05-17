@@ -44,7 +44,8 @@ const initialState = {
         ownedGames: [],
         ready: false,
         gamesOverriden: [],
-        overrides: {}
+        overrides: {},
+        options: {}
     },
     wizard: {
         wizardCompleted: false,
