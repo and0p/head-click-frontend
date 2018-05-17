@@ -112,7 +112,23 @@ const PUBG = {
             values: [
                 "First Person",
                 "Third Person"
-            ]
+            ],
+            default: "Third Person",
+            dependant: null
+        },
+        {
+            name: "FOV",
+            type: "tab",
+            values: [
+                "80",
+                "90",
+                "103"
+            ],
+            default: "103",
+            dependant: {
+                name: "View",
+                value: "First Person"
+            }
         }
     ]
 }

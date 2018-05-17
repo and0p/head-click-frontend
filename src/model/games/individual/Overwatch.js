@@ -134,8 +134,8 @@ const Overwatch = {
                 dpi: true,
                 resolution: false
             },
-            options: []
-        }
+        },
+        options: []
 }
 
 export default Overwatch

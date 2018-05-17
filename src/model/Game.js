@@ -30,6 +30,14 @@ class Game {
         return assetPath + 'games/' + this.alias + '/'
     }
 
+    getDefaultOptions() {
+        let defaultOptions = {}
+        this.options.map(option => {
+            defaultOptions[option.name] = option.default
+        })
+        return defaultOptions
+    }
+
     getPercentileArray = type => {
         if(this.stats.hasOwnProperty(type))
         {

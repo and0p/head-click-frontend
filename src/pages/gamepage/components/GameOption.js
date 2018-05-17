@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import Game from '../../../model/Game'
+import * as Symbols from '../../../redux/HcSymbols'
 import Tabs, { Tab }  from 'material-ui/Tabs'
 
 const styles = theme => ({
@@ -28,25 +29,44 @@ const styles = theme => ({
   });
 
 class GameOption extends React.Component {
-    handleChange = () => event => {
-
+    handleChange = (event, value) => {
+        console.log(value)
+        this.props.setOption(
+            this.props.gameAlias,
+            this.props.option.name,
+            this.props.option.values[value]
+        )
     }
 
     render() {
         const { classes, theme } = this.props;
-        return (
-            <div className={classes.root}>
-                <Tabs
-                    value={0}
-                    onChange={this.handleChange()} 
-                    indicatorColor="primary"
-                    fullWidth
-                >
-                    <Tab classes={{root: classes.tabRoot, selected: classes.tabSelected}} label="First Person"/>
-                    <Tab classes={{root: classes.tabRoot}} label="Third Person"/>
-                </Tabs>
-            </div>
-        )
+        if(true) {  // TODO: add dependant check
+            switch(this.props.option.type) {
+                case "tab":
+                    console.log(this.props)
+                    let index = this.props.option.values.indexOf(this.props.value)
+                    return (
+                        <div className={classes.root}>
+                            <Tabs
+                                value={index}
+                                onChange={this.handleChange} 
+                                indicatorColor="primary"
+                                fullWidth
+                            >
+                                {this.props.option.values.map(value =>
+                                    <Tab classes={{root: classes.tabRoot }} label={value} />
+                                )}
+                            </Tabs>
+                        </div>
+                    )
+                default:
+                 return <div/>
+            }
+        }
+        else
+        {
+            return <div/>
+        }
     }
 }
 
@@ -58,7 +78,14 @@ const mapStateToProps = (state) => {
   
 const mapDispatchToProps = dispatch => {
     return {
-
+        setOption: (gameAlias, optionName, value) => dispatch({
+            type: Symbols.UPDATE_GAME_OPTION,
+            value: {
+                gameAlias: gameAlias,
+                optionName: optionName,
+                value: value
+            }
+        }),
     }
 }
 

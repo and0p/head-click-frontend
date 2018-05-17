@@ -155,7 +155,18 @@ class GamePage extends React.Component {
                                                 </Paper>
                                             </Grid>
                                         </Collapse>
-                                        <GameOption />
+                                        {
+                                            game.options.map(option =>
+                                                <Grid item xs={12}>
+                                                    <GameOption 
+                                                    gameAlias={gameAlias} 
+                                                    option={option} 
+                                                    value={this.props.profile.options[gameAlias][option.name]}
+                                                />
+                                                </Grid>
+                                            )
+                                        }
+                                        
                                         {
                                             gameInfo.settings.map(props => 
                                                 <Grid item xs={12}>

@@ -122,7 +122,10 @@ function profileReducer (state = initialState, action) {
                     // Add game
                     return update(state, {
                         profile: {
-                            ownedGames: { $push: [action.value] }
+                            ownedGames: { $push: [action.value] },
+                            options: { 
+                                [action.value.alias]: { $set: action.value.getDefaultOptions() }
+                            }
                         }
                     })
                 }
@@ -262,6 +265,16 @@ function profileReducer (state = initialState, action) {
                 })
             else
                 return state
+        case Symbols.UPDATE_GAME_OPTION:
+            return update(state, {
+                profile: {
+                    options:{
+                        [action.value.gameAlias]: {
+                            [action.value.optionName]: { $set: action.value.value }
+                        }
+                    }
+                }
+            })
         default:
             return state
     }
