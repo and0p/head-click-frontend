@@ -59,52 +59,62 @@ const getInfo = settings => {
 }
 
 const PUBG = {
-        name: "PlayerUnknown's Battlegrounds",
-        shortName: "PUBG",
-        alias: "pubg",
-        hasLogo: false,
-        math: {
-            fov: {
-                min: 50,
-                max: 103,
-                default: 103,
-                recommended: 103,
-                horizontal: true,
-                basedOnSD: false
-            },
-            sensitivity: {
-                min: 1,
-                max: 25,
-                default: 10,
-                linear: true,   // scale: 1 instead
-                multiplier: (10/3),
-                affectedByResolution: false,
-                affectedByFov: false,
-                rawInput: true,
-                accelerationPossible: true,
-                accelerationDefault: false,
-                yaw: 0.022
-            },
-            recommended: {
-                ideal: 34,
-                min: 15,
-                max: 46
-            }
+    name: "PlayerUnknown's Battlegrounds",
+    shortName: "PUBG",
+    alias: "pubg",
+    hasLogo: false,
+    math: {
+        fov: {
+            min: 50,
+            max: 103,
+            default: 103,
+            recommended: 103,
+            horizontal: true,
+            basedOnSD: false
         },
-        infoFunction: getInfo,
-        settings: {
-            optimization: [
-               
-            ],
-            gameplay: [
-                
-            ],
-            overrides: {
-                cm360: true,
-                dpi: true,
-                resolution: false
-            }
+        sensitivity: {
+            min: 1,
+            max: 25,
+            default: 10,
+            linear: true,   // scale: 1 instead
+            multiplier: (10/3),
+            affectedByResolution: false,
+            affectedByFov: false,
+            rawInput: true,
+            accelerationPossible: true,
+            accelerationDefault: false,
+            yaw: 0.022
+        },
+        recommended: {
+            ideal: 34,
+            min: 15,
+            max: 46
         }
+    },
+    infoFunction: getInfo,
+    settings: {
+        optimization: [
+            
+        ],
+        gameplay: [
+            
+        ],
+        overrides: {
+            cm360: true,
+            dpi: true,
+            resolution: false
+        },
+    },
+    options: [
+        {
+            name: "View",
+            type: "tab",
+            values: [
+                "First Person",
+                "Third Person"
+            ]
+        }
+    ]
 }
 
 export default PUBG

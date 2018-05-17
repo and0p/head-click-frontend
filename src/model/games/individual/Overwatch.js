@@ -133,7 +133,8 @@ const Overwatch = {
                 cm360: true,
                 dpi: true,
                 resolution: false
-            }
+            },
+            options: []
         }
 }
 

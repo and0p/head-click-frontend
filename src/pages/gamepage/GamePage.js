@@ -20,6 +20,7 @@ import * as Symbols from '../../redux/HcSymbols'
 import Game from '../../model/Game'
 import { isInArray } from '../../util'
 import SettingCategory from './components/SettingCategory'
+import GameOption from './components/GameOption'
 import BigValue from '../../components/BigValue'
 import InfoCard from '../../components/InfoCard'
 import ComingSoon from '../../components/ComingSoon'
@@ -154,6 +155,7 @@ class GamePage extends React.Component {
                                                 </Paper>
                                             </Grid>
                                         </Collapse>
+                                        <GameOption />
                                         {
                                             gameInfo.settings.map(props => 
                                                 <Grid item xs={12}>

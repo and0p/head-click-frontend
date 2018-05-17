@@ -77,7 +77,8 @@ export const R6Siege = {
     settings: {
         optimization: [],
         gameplay: []
-    }
+    },
+    options: []
 }
 
 export default R6Siege

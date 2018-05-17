@@ -88,7 +88,8 @@ const Fortnite = {
     settings: {
         optimization: [],
         gameplay: []
-    }
+    },
+    options: []
 }
 
 export default Fortnite
