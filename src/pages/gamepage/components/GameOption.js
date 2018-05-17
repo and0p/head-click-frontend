@@ -29,8 +29,8 @@ const styles = theme => ({
   });
 
 class GameOption extends React.Component {
-    handleChange = (event, value) => {
-        console.log(value)
+
+    handleTabChange = (event, value) => {
         this.props.setOption(
             this.props.gameAlias,
             this.props.option.name,
@@ -49,7 +49,7 @@ class GameOption extends React.Component {
                         <div className={classes.root}>
                             <Tabs
                                 value={index}
-                                onChange={this.handleChange} 
+                                onChange={this.handleTabChange} 
                                 indicatorColor="primary"
                                 fullWidth
                             >
