@@ -108,7 +108,7 @@ const PUBG = {
     options: [
         {
             name: "View",
-            type: "tab",
+            type: "buttons",
             values: [
                 "First Person",
                 "Third Person"

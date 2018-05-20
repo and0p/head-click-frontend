@@ -5,7 +5,9 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import Game from '../../../model/Game'
 import * as Symbols from '../../../redux/HcSymbols'
+import Typography from 'material-ui/Typography'
 import Tabs, { Tab }  from 'material-ui/Tabs'
+import Button from 'material-ui/Button';
 
 const styles = theme => ({
     root: {
@@ -40,11 +42,18 @@ class GameOption extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
+        let index = this.props.option.values.indexOf(this.props.value)
         if(true) {  // TODO: add dependant check
             switch(this.props.option.type) {
+                case "buttons":
+                    return (
+                        <div className={classes.root}>
+                            <div className={classes.name}>
+                                <Typography variant="body2">{this.props.option.name}</Typography>
+                            </div>
+                        </div>
+                    )
                 case "tab":
-                    console.log(this.props)
-                    let index = this.props.option.values.indexOf(this.props.value)
                     return (
                         <div className={classes.root}>
                             <Tabs
