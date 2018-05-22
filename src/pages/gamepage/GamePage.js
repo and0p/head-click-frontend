@@ -30,7 +30,7 @@ const styles = theme => ({
       flexGrow: 1,
     },
     paper: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing.unit,
       textAlign: 'left',
       color: theme.palette.text.secondary,
     },
@@ -38,6 +38,9 @@ const styles = theme => ({
         marginTop: theme.spacing.unit
         //padding: theme.spacing.unit * 2,
         //paddingBottom: 0
+    },
+    subsection: {
+        clear: 'both'
     },
     primaryListItem: {
         padding: theme.spacing.unit * 2,
@@ -52,12 +55,16 @@ const styles = theme => ({
     overrideSwitch: {
         marginTop: -theme.spacing.unit * 1.5,
         float: 'right',
-        marginBottom: -theme.spacing.unit - 1
+        marginBottom: -theme.spacing.unit - 1,
+        marginRight: -theme.spacing.unit * 1.5
     },
     overrideText: {
         float: 'left',
         color: '#888888',
         marginTop: '4px'
+    },
+    floatLeft: {
+        float: 'left'
     },
     floatRight: {
         float: 'right'
@@ -72,7 +79,7 @@ const styles = theme => ({
         overflow: 'hidden',
         textAlign: 'right'
     }
-  });
+});
 
 class GamePage extends React.Component {
 
@@ -101,12 +108,87 @@ class GamePage extends React.Component {
             let gameInfo = game.infoFunction(settings)
             return (
                 <div className={classes.root}>
-                    <Typography variant="title" gutterBottom>
+                    <Typography variant="display1" gutterBottom>
                         {game.name}
                     </Typography>
                     <Grid container spacing={16}>
                         <Grid item xs={12} lg={6}>
                             <Grid container>
+                                <Grid item xs={12} component={Paper}>
+                                    <div className={classes.paper}>
+                                        {/* MAIN SETTINGS */}
+                                        <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
+                                            Aim Settings
+                                        </Typography>
+                                        <div className={classes.floatRight}>
+                                            <Typography variant="button" className={classes.overrideText}>Override</Typography>
+                                            <Switch
+                                                checked={isInArray(this.props.profile.gamesOverriden, game.alias)}
+                                                onChange={this.toggleOverride(game.alias)}
+                                                className={classes.overrideSwitch}
+                                            />
+                                        </div>
+                                        {/* OVERRIDE SECTION */}
+                                        <div className={classes.subsection}>
+                                            <Collapse 
+                                                in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
+                                                timeout="auto" 
+                                                className={classes.collapse}
+                                                unmountOnExit>
+                                                <Typography variant="subheading">
+                                                    Overrides
+                                                </Typography>
+                                                <Grid item xs={12} className={classes.innerCollapse}>
+                                                        <Grid container>
+                                                            <Grid item xs={6} md={3}>
+                                                                <TextField
+                                                                    id="name"
+                                                                    label="Desired cm/360"
+                                                                    //className={classes.textField}
+                                                                    value={settings.sensitivity.actual}
+                                                                    onChange={this.handleOverrideChange('cm360', game.alias)}
+                                                                    margin="dense"
+                                                                    fullWidth
+                                                                />
+                                                            </Grid>
+                                                            <Grid item xs={6} md={3}>
+                                                                <TextField
+                                                                    id="name"
+                                                                    label="DPI"
+                                                                    //className={classes.textField}
+                                                                    value={settings.dpi.actual}
+                                                                    onChange={this.handleOverrideChange('dpi', game.alias)}
+                                                                    margin="dense"
+                                                                    fullWidth
+                                                                />
+                                                            </Grid>
+                                                        </Grid>
+                                                </Grid>
+                                            </Collapse>
+                                        </div>
+                                        {/* OPTIONS SECTION */}
+                                        {game.hasOwnProperty("options") &&
+                                        <div className={classes.subsection}>
+                                            <Typography variant="subheading">
+                                                Options
+                                            </Typography>
+                                            {game.options.map(option =>
+                                                <Grid item xs={12}>
+                                                    <GameOption 
+                                                    gameAlias={gameAlias} 
+                                                    option={option} 
+                                                    value={this.props.profile.options[gameAlias][option.name]}
+                                                    />
+                                                </Grid>
+                                            )
+                                            }
+                                        </div>
+                                        }
+                                    </div>
+                                </Grid>
+
+
+
                                 <Grid item xs={12} className={classes.openPaper}>
                                     {/* Main settings */}
                                     <Typography variant="subheading" className={classes.sectionHeaderOpen} gutterBottom>
@@ -121,50 +203,17 @@ class GamePage extends React.Component {
                                         />
                                     </div>
                                     <Grid container>
-                                        <Collapse 
-                                            in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
-                                            timeout="auto" 
-                                            className={classes.collapse}
-                                            unmountOnExit>
-                                            <Grid item xs={12} className={classes.innerCollapse}>
-                                                <Paper className={classes.paper}>
-                                                    <Grid container>
-                                                        <Grid item xs={6} md={3}>
-                                                            <TextField
-                                                                id="name"
-                                                                label="Desired cm/360"
-                                                                //className={classes.textField}
-                                                                value={settings.sensitivity.actual}
-                                                                onChange={this.handleOverrideChange('cm360', game.alias)}
-                                                                margin="dense"
-                                                                fullWidth
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={6} md={3}>
-                                                            <TextField
-                                                                id="name"
-                                                                label="DPI"
-                                                                //className={classes.textField}
-                                                                value={settings.dpi.actual}
-                                                                onChange={this.handleOverrideChange('dpi', game.alias)}
-                                                                margin="dense"
-                                                                fullWidth
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </Paper>
-                                            </Grid>
-                                        </Collapse>
+
                                         {
-                                            game.options.map(option =>
-                                                <Grid item xs={12}>
-                                                    <GameOption 
-                                                    gameAlias={gameAlias} 
-                                                    option={option} 
-                                                    value={this.props.profile.options[gameAlias][option.name]}
-                                                />
-                                                </Grid>
-                                            )
+                                            // game.options.map(option =>
+                                            //     <Grid item xs={12}>
+                                            //         <GameOption 
+                                            //         gameAlias={gameAlias} 
+                                            //         option={option} 
+                                            //         value={this.props.profile.options[gameAlias][option.name]}
+                                            //     />
+                                            //     </Grid>
+                                            // )
                                         }
                                         
                                         {

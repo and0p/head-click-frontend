@@ -135,7 +135,7 @@ const Overwatch = {
                 resolution: false
             },
         },
-        options: []
+
 }
 
 export default Overwatch

@@ -12,7 +12,7 @@ import Button from 'material-ui/Button';
 const styles = theme => ({
     root: {
         width: '100%',
-        marginBottom: theme.spacing.unit
+        margin: theme.spacing.unit
     },
     tabRoot: {
         maxWidth: '100%',
@@ -27,6 +27,15 @@ const styles = theme => ({
     },
     tabIndicator: {
         backgroundColor: "#FFFFFF"
+    },
+    optionName: {
+        float: 'left'
+    },
+    options: {
+        float: 'right'
+    },
+    button: {
+        margin: theme.spacing.unit
     }
   });
 
@@ -48,8 +57,15 @@ class GameOption extends React.Component {
                 case "buttons":
                     return (
                         <div className={classes.root}>
-                            <div className={classes.name}>
+                            <div className={classes.optionName}>
                                 <Typography variant="body2">{this.props.option.name}</Typography>
+                            </div>
+                            <div className={classes.optionButtons}>
+                                {this.props.option.values.map(value =>
+                                <Button variant="outlined" className={classes.button}>
+                                    Default
+                                </Button>
+                            )}
                             </div>
                         </div>
                     )
