@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Snackbar from 'material-ui/Snackbar'
-import Button from 'material-ui/Button'
-import IconButton from 'material-ui/IconButton';
-import Icon from 'material-ui/Icon'
+import Snackbar from '@material-ui/core/Snackbar'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon'
 import { connect } from 'react-redux'
 import * as Symbols from '../redux/HcSymbols'
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
 })

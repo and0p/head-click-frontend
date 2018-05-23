@@ -135,6 +135,7 @@ const Overwatch = {
                 resolution: false
             },
         },
+        options: []
 
 }
 

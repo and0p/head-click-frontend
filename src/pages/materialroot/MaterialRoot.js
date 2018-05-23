@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import IconButton from 'material-ui/IconButton';
-import Hidden from 'material-ui/Hidden';
-import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper'
-import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon'
+import Hidden from '@material-ui/core/Hidden';
+import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper'
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core/List';
 import { withRouter } from "react-router-dom";
 // Component imports
 import SidebarButton from './components/SidebarButton'
@@ -18,8 +19,6 @@ import { connect } from 'react-redux'
 import * as Symbols from '../../redux/HcSymbols'
 // Utility imports
 import theme from '../../theme.js'
-// Icons
-import MenuIcon from 'material-ui-icons/Menu'
 // Assets
 import ResponsiveAsset from '../../assets'
 
@@ -201,7 +200,7 @@ class MaterialRoot extends React.Component {
               onClick={this.props.openSidebar}
               className={classes.navIconHide}
             >
-              <MenuIcon />
+              <Icon>menu</Icon>
             </IconButton>
             <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo_mobile} /></Hidden></div>
           </Toolbar>

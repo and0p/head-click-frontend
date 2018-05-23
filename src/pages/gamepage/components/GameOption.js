@@ -1,45 +1,53 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import Game from '../../../model/Game'
 import * as Symbols from '../../../redux/HcSymbols'
-import Typography from 'material-ui/Typography'
-import Tabs, { Tab }  from 'material-ui/Tabs'
-import Button from 'material-ui/Button';
+import Typography from '@material-ui/core/Typography'
+import Tabs, { Tab } from '@material-ui/core/Tabs'
+import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
     root: {
-        width: '100%',
-        margin: theme.spacing.unit
-    },
-    tabRoot: {
-        maxWidth: '100%',
-        color: "#FFFFFF",
-        '&$tabSelected': {
-            color: '#1890ff',
-            fontWeight: theme.typography.fontWeightMedium,
-        }
-    },
-    tabSelected: {
-        backgroundColor: theme.palette.background.paper
-    },
-    tabIndicator: {
-        backgroundColor: "#FFFFFF"
+        //width: '100%',
+        //paddingLeft: theme.spacing.unit,
+        marginTop: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+        height: '40px'
     },
     optionName: {
+        padding: theme.spacing.unit,
         float: 'left'
     },
-    options: {
-        float: 'right'
+    optionButtons: {
+        float: 'right',
+        align: 'right',
+        color: "#777777"
     },
     button: {
-        margin: theme.spacing.unit
+        marginLeft: theme.spacing.unit
+    },
+    selectedColor: {
+        color: "#FFFFFF",
+        backgroundColor: "#444444",
+        borderColor: "#AA00BB"
+    },
+    unselectedColor: {
+        color: theme.palette.custom.subtle
     }
   });
 
 class GameOption extends React.Component {
+
+    handleButtonChange = value => {
+        this.props.setOption(
+            this.props.gameAlias,
+            this.props.option.name,
+            value
+        )
+    }
 
     handleTabChange = (event, value) => {
         this.props.setOption(
@@ -51,37 +59,39 @@ class GameOption extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
+        let option = this.props.option
         let index = this.props.option.values.indexOf(this.props.value)
-        if(true) {  // TODO: add dependant check
+        let dependancyPass = true;
+        console.log(option)
+        if(option.hasOwnProperty("dependant") && this.props.profileOptions[this.props.gameAlias][option.dependant.name] != option.dependant.value)
+            dependancyPass = false
+        if(dependancyPass) {  // TODO: add dependant check
             switch(this.props.option.type) {
                 case "buttons":
                     return (
                         <div className={classes.root}>
                             <div className={classes.optionName}>
-                                <Typography variant="body2">{this.props.option.name}</Typography>
+                                <Typography variant="button">{this.props.option.name}</Typography>
                             </div>
                             <div className={classes.optionButtons}>
                                 {this.props.option.values.map(value =>
-                                <Button variant="outlined" className={classes.button}>
-                                    Default
-                                </Button>
+                                    <Button
+                                    variant="outlined"
+                                    className={value == this.props.value ? classes.selectedColor : classes.unselectedColor }
+                                    color={value == this.props.value ? "default" : "inherit"}
+                                    className={classes.button}
+                                    onClick={() => this.handleButtonChange(value)}
+                                    >
+                                        {value}
+                                    </Button>
                             )}
                             </div>
                         </div>
                     )
-                case "tab":
+                case "slider":
                     return (
                         <div className={classes.root}>
-                            <Tabs
-                                value={index}
-                                onChange={this.handleTabChange} 
-                                indicatorColor="primary"
-                                fullWidth
-                            >
-                                {this.props.option.values.map(value =>
-                                    <Tab classes={{root: classes.tabRoot }} label={value} />
-                                )}
-                            </Tabs>
+
                         </div>
                     )
                 default:
@@ -97,7 +107,7 @@ class GameOption extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-
+        profileOptions: state.profile.options
     }
 }
   

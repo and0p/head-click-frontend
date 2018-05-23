@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { monitors, refreshRates, mice } from '../../model/HcModel';
-import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
-import Grid from 'material-ui/Grid';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
 import MonitorSelect from './components/MonitorSelect'

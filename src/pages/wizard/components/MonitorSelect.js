@@ -2,16 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import { monitors } from '../../../model/HcModel'
-import Typography from 'material-ui/Typography';
-import Paper from 'material-ui/Paper'
-import Grid from 'material-ui/Grid'
-import Button from 'material-ui/Button'
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider'
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
+import Radio, { RadioGroup } from '@material-ui/core/Radio';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider'
 import * as Symbols from '../../../redux/HcSymbols'
 
 const styles = theme => ({

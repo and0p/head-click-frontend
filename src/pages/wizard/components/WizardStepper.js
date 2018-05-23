@@ -2,14 +2,14 @@ import React from 'react';
 import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
-import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
-import MobileStepper from 'material-ui/MobileStepper';
-import Button from 'material-ui/Button';
-import KeyboardArrowLeft from 'material-ui-icons/KeyboardArrowLeft';
-import KeyboardArrowRight from 'material-ui-icons/KeyboardArrowRight';
-import Hidden from 'material-ui/Hidden';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Stepper, { Step, StepLabel } from '@material-ui/core/Stepper';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import Hidden from '@material-ui/core/Hidden';
 import * as Symbols from '../../../redux/HcSymbols'
 
 const drawerWidth = 240;

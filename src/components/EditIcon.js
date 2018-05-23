@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { withStyles } from 'material-ui/styles';
-import Icon from 'material-ui/Icon'
+import { withStyles } from '@material-ui/core/styles';
+import Icon from '@material-ui/core/Icon'
 
 const styles = theme => ({
     root: {

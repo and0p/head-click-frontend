@@ -1,19 +1,19 @@
 import React from 'react'
 import { render } from 'react-dom'
 import PropTypes from 'prop-types'
-import { withStyles } from 'material-ui/styles'
-import Typography from 'material-ui/Typography'
-import Paper from 'material-ui/Paper'
-import Icon from 'material-ui/Icon'
+import { withStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import Icon from '@material-ui/core/Icon'
 //import InfoOutline from 'material-ui-icons/InfoOutline'
 import ReactFitText from 'react-fittext'
 
 const styles = theme => ({
     root: {
-        //marginBottom: theme.spacing.unit,
         width: '100%',
         backgroundColor: theme.palette.background.paper,
         height: '100px',
+        //marginBottom: theme.spacing.unit * 2
     },
     name: {
         lineHeight: '90%',
@@ -80,7 +80,8 @@ const styles = theme => ({
     icon: {
         color: "#FFFFFF",
         lineHeight: '2.5em',
-        fontSize: '2.5em'
+        fontSize: '2.5em',
+        overflow: 'visible'
     }
 });
 

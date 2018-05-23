@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 import GameSelect from '../../components/GameSelect'
 
 const SelectGames = props => {
