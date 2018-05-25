@@ -13,7 +13,7 @@ const getCm360FromGameSettings = (settings, gameSetting) => {
     return result
 }
 
-const getInfo = settings => {
+const getInfo = (settings, options) => {
     let sensitivity = getSensitivity(settings)
     let outputHipFire = getCm360FromGameSettings(settings, sensitivity)
     return {

@@ -13,18 +13,23 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Switch from '@material-ui/core/Switch'
-import List, { ListItem, ListItemIcon, ListItemText } from '@material-ui/core/List';
 import Collapse from '@material-ui/core/Collapse';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 // Headclick imports
 import { games } from '../../model/HcModel';
 import * as Symbols from '../../redux/HcSymbols'
 import Game from '../../model/Game'
-import { isInArray } from '../../util'
+import { isInArray, getRounded, replaceSettingsArrows } from '../../util'
 import SettingCategory from './components/SettingCategory'
 import GameOption from './components/GameOption'
 import BigValue from '../../components/BigValue'
 import InfoCard from '../../components/InfoCard'
 import ComingSoon from '../../components/ComingSoon'
+import * as Copy from '../../copy'
 
 const styles = theme => ({
     root: {
@@ -45,8 +50,8 @@ const styles = theme => ({
     },
     subsection: {
         clear: 'both',
-        marginTop: theme.spacing.unit,
-        marginBottom: theme.spacing.unit
+        marginTop: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit * 2
     },
     overrideSwitch: {
         marginTop: -theme.spacing.unit * 1.5,
@@ -72,9 +77,32 @@ const styles = theme => ({
         padding: theme.spacing.unit,
         marginBottom: theme.spacing.unit
     },
+    setting: {
+        paddingLeft: theme.spacing.unit,
+        paddingTop: theme.spacing.unit,
+        paddingBottom: theme.spacing.unit,
+        minHeight: '48px'
+    },
+    settingName: {
+        float: 'left',
+        maxWidth: '60%'
+    },
+    settingDescription: {
+        lineHeight: '1em',
+        color: theme.palette.custom.subtle,
+    },
+    settingText: {
+        fontWeight: 300
+    },
+    settingValue: {
+        float: 'right'
+    },
     outputValue: {
         overflow: 'hidden',
         textAlign: 'right'
+    },
+    clear: {
+        clear: 'both'
     }
 });
 
@@ -104,7 +132,7 @@ class GamePage extends React.Component {
                 settings = this.props.profile.overrides[gameAlias]
             else
                 settings = this.props.profile.settings
-            let gameInfo = game.infoFunction(settings)
+            let gameInfo = game.infoFunction(settings, this.props.profile.options[gameAlias])
             return (
                 <div className={classes.root}>
                     <Typography variant="display1" gutterBottom>
@@ -126,12 +154,12 @@ class GamePage extends React.Component {
                                         />
                                     </div>
                                     {/* OVERRIDE SECTION */}
-                                    <div className={classes.subsection}>
-                                        <Collapse 
-                                        in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
-                                        timeout="auto" 
-                                        className={classes.collapse}
-                                        unmountOnExit>
+                                    <Collapse 
+                                    in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
+                                    timeout="auto" 
+                                    className={classes.collapse}
+                                    unmountOnExit>
+                                        <div className={classes.subsection}>
                                             <Typography variant="subheading">
                                                 Overrides
                                             </Typography>
@@ -161,11 +189,11 @@ class GamePage extends React.Component {
                                                         </Grid>
                                                     </Grid>
                                             </Grid>
-                                            <Divider/>
-                                        </Collapse>
-                                    </div>
+                                        </div>
+                                        <Divider/>
+                                    </Collapse>
                                     {/* OPTIONS SECTION */}
-                                    {game.hasOwnProperty("options") && game["options"].length > 0 &&
+                                    {game.hasOwnProperty("options") && game["options"].length > 0 && [
                                     <div className={classes.subsection}>
                                         <Typography variant="subheading">
                                             Options
@@ -180,18 +208,66 @@ class GamePage extends React.Component {
                                             </Grid>
                                         )
                                         }
-                                        <Divider/>
-                                    </div>
+                                    </div>,
+                                    <Divider/>]
                                     }
                                     {/* IN-GAME SETTINGS */}
                                     <div className={classes.subsection}>
                                         <Typography variant="subheading">
                                             In-Game Settings
                                         </Typography>
+                                        {gameInfo.settings.map(item => ([
+                                            <div className={classes.clear}>
+                                                <div className={classes.setting}>
+                                                    <div className={classes.settingName}>
+                                                        <Typography variant="headline" className={classes.settingText}>{item.name}</Typography>
+                                                        <Typography variant="caption" className={classes.settingDescription}>{replaceSettingsArrows(item.subtext)}</Typography>
+                                                    </div>
+                                                    <div className={classes.settingValue}>
+                                                        <Typography variant="display1" className={classes.settingText}>{item.value}</Typography>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ]))}
+                                    </div>
+                                    <Divider />
+                                    {/* OUTPUT SETTINGS */}
+                                    <div className={classes.subsection}>
+                                        <Typography variant="subheading">
+                                            Output
+                                        </Typography>
+                                        <Table className={classes.table}>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell padding="dense">View</TableCell>
+                                                    <TableCell padding="dense">Zoom</TableCell>
+                                                    <TableCell padding="dense">FOV</TableCell>
+                                                    <TableCell padding="dense">{Copy.cm360}</TableCell>
+                                                    <TableCell padding="dense">Ideal</TableCell>
+                                                    <TableCell padding="dense">Variance</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                            {gameInfo.output.map(output => (
+                                                <TableRow>
+                                                    <TableCell padding="dense">{output.name}</TableCell>
+                                                    <TableCell padding="dense">{getRounded(output.zoom, 2)}</TableCell>
+                                                    <TableCell padding="dense">{output.fov}</TableCell>
+                                                    <TableCell padding="dense">{output.cm360}</TableCell>
+                                                    <TableCell padding="dense">{output.ideal}</TableCell>
+                                                    <TableCell padding="dense">{output.variance}%</TableCell>
+                                                </TableRow>
+                                            ))}
+                                            </TableBody>
+                                        </Table>
                                     </div>
                                 </div>
                             </Paper>
                         </Grid>
+
+
+
+
                         {/* Stats */}
                         <Grid item xs={12} lg={6}> {/* RIGHT DIVISION */}
                                 <Paper className={classes.paper}>{/* STATS */}
@@ -199,7 +275,9 @@ class GamePage extends React.Component {
                                         <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
                                             Stats
                                         </Typography>
-                                        <ComingSoon />
+                                        <div className={classes.subsection}>
+                                            <ComingSoon />
+                                        </div>
                                     </div>
                                 </Paper>
                         </Grid>

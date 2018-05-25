@@ -4,7 +4,7 @@ let baseDots = 54543;
 let minSensitivity = 1;
 let maxSensitivity = 100;
 
-const getSensitivity = settings => {
+const getSensitivity = (settings, options) => {
     return getRounded(clamp((baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
 }
 
@@ -15,19 +15,21 @@ const getCm360FromGameSettings = (settings, gameSetting) => {
     return result
 }
 
-const getInfo = settings => {
+const getInfo = (settings, options) => {
     let sensitivity = getSensitivity(settings)
     let outputHipFire = getCm360FromGameSettings(settings, sensitivity)
     return {
         settings: [
             {
                 name: 'Sensitivity',
+                subtext: 'Settings ~ Controls',
                 icon: 'settings_ethernet',
                 value: getRounded(sensitivity, 2),
                 color: 'purple'
             },
             {
                 name: "FOV",
+                subtext: 'Settings ~ Video',
                 icon: 'videocam',
                 value: 103,
                 color: 'blue'
@@ -35,20 +37,12 @@ const getInfo = settings => {
         ],
         output: [
             {
-                name: 'Hip Fire',
-                value: getRounded(outputHipFire, 2),
-                valueDescription: 'cm/360',
-                desired: getRounded(settings.sensitivity.actual, 2),
-                variance: getRounded(normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100, 2) + '%',
-                colored: true
-            },
-            {
-                name: 'Hor. FOV',
-                value: 103,
-                valueDescription: 'cm/360',
-                desired: 106,
-                variance: 103 - 106,
-                colored: false
+                name: "Hip Fire",
+                fov: 103,
+                zoom: 1,
+                cm360: getRounded(outputHipFire, 2),
+                ideal: getRounded(settings.sensitivity.actual, 2),
+                variance: getRounded(normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100, 2),
             }
         ]
     }

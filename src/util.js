@@ -1,9 +1,17 @@
 import * as stats from 'stats-lite'
 import gaussian from 'gaussian'
 
+// ideal FOV W:H is 106:74 at 16:9 
+export const baseFOV = 106
+export const getPercentageOfBaseFOV = (fov) => {
+    return fov / baseFOV
+}
+
+export const getIdealCm360AtFOV = (idealCm360, fov) => {
+    return idealCm360 / getPercentageOfBaseFOV(fov)
+}
+
 export const getSettingForDCm = (game, profile, targetDCm) => {
-    console.log(game)
-    console.log(profile)
     // Get 360 / (dpi * yaw)
     let calc = 360 / (profile.dPI * game.math.sensitivity.yaw)
     // Convert from inches to cm
@@ -18,6 +26,10 @@ export const isValid = (anything) => { return(anything != "undefined" && anythin
 
 export const isInArray = (arr, value) => {
     return (arr.indexOf(value) > -1)
+}
+
+export const replaceSettingsArrows = text => {
+    return text.replace(/~/g, "→")
 }
 
 export const assetPath = 'file:///C:/Users/Andrew/Pictures/head.click/'
@@ -39,8 +51,6 @@ export const getRecommendedDpi = games => {
 }
 
 export const getOverrideFromSettings = settings => {
-    console.log("settings passed:")
-    console.log(settings)
     let j = { sensitivity: {}, dpi: {}, monitor: {} }
     j.sensitivity.actual = settings.sensitivity.actual
     j.dpi.actual = settings.dpi.actual
@@ -53,7 +63,7 @@ export const normalizeLowPercentage = percentage => {
     if(percentage < 0.0005 && percentage > -0.0005)
         return 0
     else
-        return percentage
+        return Math.abs(percentage)
 }
 
 export const clamp = (value, min, max) => Math.min(Math.max(value, min), max)

@@ -1,60 +1,79 @@
-import { getRounded, normalizeLowPercentage, clamp } from '../../../util'
+import { getRounded, normalizeLowPercentage, clamp, getPercentageOfBaseFOV, getIdealCm360AtFOV } from '../../../util'
 
 let baseDots = 12960;
 let minSensitivity = 0;
 let maxSensitivity = 100;
 let idealFOV = 90;
 
-const getSensitivity = settings => {
-    let desiredDots = settings.sensitivity.actual * settings.dpi.actual
-    let fovDots = baseDots / idealFOV
+let FOVs = {
+    General: null,
+    Vehicle: null,
+    Targetting: null,
+    Scoping: 70,
+    Scope2x: 40,
+    Scope3x: 26.666666,
+    Scope4x: 19,
+    Scope6x: 13.333333,
+    Scope8x: 10,
+    Scope15x: 6.666667
+}
+
+const getSensitivity = (desiredCm360, dpi, fov) => {
+    let desiredDots = desiredCm360 * dpi
+    let fovDots = baseDots / fov
     let rawSensitivity = fovDots / desiredDots * 2.54
     // convert to PUBG slider
-    return getRounded(clamp(Math.log(Math.pow(rawSensitivity / 0.002, 50)) / Math.log(10), minSensitivity, maxSensitivity), 0)
+    return clamp(Math.log(Math.pow(rawSensitivity / 0.002, 50)) / Math.log(10), minSensitivity, maxSensitivity)
 }
 
-const getCm360FromGameSettings = (settings, gameSetting) => {
+const getCm360FromGameSettings = (dpi, gameSetting, fov) => {
     let rawSensitivity = 0.002 * Math.pow(10, gameSetting / 50)
-    let dots = baseDots / idealFOV / rawSensitivity
-    return dots * 2.54 / settings.dpi.actual
+    let dots = baseDots / fov / rawSensitivity
+    return dots * 2.54 / dpi
 }
 
-const getInfo = settings => {
-    let sensitivity = getSensitivity(settings)
-    let outputHipFire = getCm360FromGameSettings(settings, sensitivity)
+const getInfo = (settings, options) => {
+    // Get the FOV from user Head Click options
+    let fov = options["View"] == "First Person" ? options["First Person FOV"] : 80
+    FOVs.General = fov
+    FOVs.Vehicle = fov
+    FOVs.Targetting = fov
+    // Build the result, looping over views and respective FOVs
+    let settingsJSON = []
+    let outputJSON = []
+    Object.keys(FOVs).map(key => {
+        let thisFOV = FOVs[key]
+        let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisFOV)
+        let setting = getSensitivity(idealCm360, settings.dpi.actual, thisFOV)
+        let output = getCm360FromGameSettings(settings.dpi.actual, getRounded(setting, 0), thisFOV)
+        console.log("for " + thisFOV + "ideal cm: " + idealCm360 +", setting: " + setting +", output: " + output)
+        settingsJSON.push({
+            name: 'Sensitivity - ' + key,
+            subtext: 'Settings ~ Control ~ Mouse',
+            icon: 'settings_ethernet',
+            value: getRounded(setting, 0),
+            color: 'purple'
+        })
+        outputJSON.push({
+            name: key == "Scoping" ? "ADS" : key,
+            fov: getRounded(thisFOV, 2),
+            zoom: getRounded(fov / thisFOV, 2),
+            cm360: getRounded(output, 2),
+            ideal: getRounded(idealCm360, 2),
+            variance: getRounded(normalizeLowPercentage(idealCm360 / output - 1) * 100, 2),
+        })
+    })
+    if(options["View"] == "First Person")
+        settingsJSON.push({
+            name: "FPSCameraFOV",
+            subtext: 'Settings ~ Graphics ~ Screen',
+            icon: 'videocam',
+            value: fov,
+            color: 'blue'
+        })
     return {
-        settings: [
-            {
-                name: 'Sensitivity',
-                icon: 'settings_ethernet',
-                value: getRounded(sensitivity, 0),
-                color: 'purple'
-            },
-            {
-                name: "FOV",
-                icon: 'videocam',
-                value: 103,
-                color: 'blue'
-            }
-        ],
-        output: [
-            {
-                name: 'Hip Fire',
-                value: getRounded(outputHipFire, 2),
-                valueDescription: 'cm/360',
-                desired: getRounded(settings.sensitivity.actual, 2),
-                variance: getRounded(normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100, 2) + '%',
-                colored: true
-            },
-            {
-                name: 'Hor. FOV',
-                value: 103,
-                valueDescription: 'cm/360',
-                desired: 106,
-                variance: 103 - 106,
-                colored: false
-            }
-        ]
+        settings: settingsJSON,
+        output: outputJSON
     }
 }
 

@@ -2,7 +2,7 @@ import { getRounded } from '../../../util'
 
 let baseDots = 62828;
 
-const getSensitivity = settings => {
+const getSensitivity = (settings, options) => {
     return baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual
 }
 
