@@ -3,6 +3,8 @@ import { getRounded, normalizeLowPercentage, clamp } from '../../../util'
 let baseDots = 54543;
 let minSensitivity = 1;
 let maxSensitivity = 100;
+let idealFOV = 103
+let widowFOV = 38
 
 const getSensitivity = (settings, options) => {
     return getRounded(clamp((baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
@@ -38,6 +40,7 @@ const getInfo = (settings, options) => {
         output: [
             {
                 name: "Hip Fire",
+                alias: "Hip Fire",
                 fov: 103,
                 zoom: 1,
                 cm360: getRounded(outputHipFire, 2),
@@ -123,11 +126,11 @@ const Overwatch = {
                     critical: false
                 }
             ],
-            overrides: {
-                cm360: true,
-                dpi: true,
-                resolution: false
-            },
+        },
+        overrides: {
+            cm360: true,
+            dpi: true,
+            resolution: false
         },
         options: []
 

@@ -18,6 +18,19 @@ let FOVs = {
     Scope15x: 6.666667
 }
 
+let aliases = {
+    General: "Hip",
+    Vehicle: "Hip",
+    Targetting: "Hip",
+    Scoping: "ADS",
+    Scope2x: "2x",
+    Scope3x: "3x",
+    Scope4x: "4x",
+    Scope6x: "6x",
+    Scope8x: "8x",
+    Scope15x: "15x"
+}
+
 const getSensitivity = (desiredCm360, dpi, fov) => {
     let desiredDots = desiredCm360 * dpi
     let fovDots = baseDots / fov
@@ -56,11 +69,12 @@ const getInfo = (settings, options) => {
         })
         outputJSON.push({
             name: key == "Scoping" ? "ADS" : key,
-            fov: getRounded(thisFOV, 2),
-            zoom: getRounded(fov / thisFOV, 2),
-            cm360: getRounded(output, 2),
-            ideal: getRounded(idealCm360, 2),
-            variance: getRounded(normalizeLowPercentage(idealCm360 / output - 1) * 100, 2),
+            alias: aliases[key],
+            fov: thisFOV,
+            zoom: fov / thisFOV,
+            cm360: output,
+            ideal: idealCm360,
+            variance: normalizeLowPercentage(idealCm360 / output - 1) * 100
         })
     })
     if(options["View"] == "First Person")
@@ -73,7 +87,8 @@ const getInfo = (settings, options) => {
         })
     return {
         settings: settingsJSON,
-        output: outputJSON
+        output: outputJSON,
+        graph: outputJSON.filter(o => o.name != "Vehicle" && o.name != "Targetting")
     }
 }
 
@@ -111,18 +126,18 @@ const PUBG = {
         }
     },
     infoFunction: getInfo,
-    settings: {
-        optimization: [
+    // settings: {
+    //     optimization: [
             
-        ],
-        gameplay: [
+    //     ],
+    //     gameplay: [
             
-        ],
-        overrides: {
-            cm360: true,
-            dpi: true,
-            resolution: false
-        },
+    //     ]
+    // },
+    overrides: {
+        cm360: true,
+        dpi: true,
+        resolution: false
     },
     options: [
         {

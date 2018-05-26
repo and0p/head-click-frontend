@@ -221,7 +221,7 @@ class MaterialRoot extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
-        <Hidden smDown implementation="css">
+        <Hidden smDown>
           <Drawer
             variant="permanent"
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}
