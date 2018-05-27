@@ -103,15 +103,17 @@ const styles = theme => ({
       marginLeft: drawerWidth,
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing.unit * 3,
-    },
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing.unit * 1,
-    },
+    // [theme.breakpoints.up('sm')]: {
+    //   padding: theme.spacing.unit * 3,
+    // },
+    // [theme.breakpoints.down('sm')]: {
+    //   padding: theme.spacing.unit * 1,
+    // },
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    width: '100%'
+    overflow: 'hidden',
+    paddingTop: theme.spacing.unit * 2
+    //width: '100%'
   },
   contentWrap: {
     maxWidth: '1639px',
