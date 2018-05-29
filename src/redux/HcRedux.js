@@ -68,6 +68,7 @@ const initialState = {
             type: 0
         },
         editingProfile: false,
+        drawerOpenOnMobile: false
     }
 }
 

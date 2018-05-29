@@ -95,7 +95,7 @@ const styles = theme => ({
     },
     settingName: {
         float: 'left',
-        maxWidth: '60%'
+        maxWidth: '80%'
     },
     settingDescription: {
         lineHeight: '1em',

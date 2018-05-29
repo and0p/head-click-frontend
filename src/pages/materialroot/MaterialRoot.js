@@ -1,17 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import Drawer from '@material-ui/core/Drawer'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
-import Hidden from '@material-ui/core/Hidden';
-import Divider from '@material-ui/core/Divider';
+import Hidden from '@material-ui/core/Hidden'
+import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core/List';
-import { withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom"
 // Component imports
 import SidebarButton from './components/SidebarButton'
 // Redux imports
@@ -104,7 +103,7 @@ const styles = theme => ({
       width: `calc(100% - ${drawerWidth}px)`,
     },
     // [theme.breakpoints.up('sm')]: {
-    //   padding: theme.spacing.unit * 3,
+    //   padding: theme.spacing.unit * 1,
     // },
     // [theme.breakpoints.down('sm')]: {
     //   padding: theme.spacing.unit * 1,
@@ -112,7 +111,7 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     overflow: 'hidden',
-    paddingTop: theme.spacing.unit * 2
+    padding: theme.spacing.unit
     //width: '100%'
   },
   contentWrap: {
@@ -144,6 +143,7 @@ class MaterialRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
+
     // Games list HTML
     const sidebarGamesList = (
       this.props.profile.ownedGames.map((game) =>
@@ -190,8 +190,9 @@ class MaterialRoot extends React.Component {
             />
           </div>
       </div>
-    );
+    )
 
+    console.log("rendering material root!")
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar} color="default">
@@ -212,10 +213,10 @@ class MaterialRoot extends React.Component {
             variant="temporary"
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}
             open={this.props.open}
+            onClose={this.props.closeSidebar}
             classes={{
               paper: classes.drawerPaper,
             }}
-            onClose={this.props.closeSidebar}
             ModalProps={{
               keepMounted: true, // Better open performance on mobile.
             }}
@@ -223,7 +224,7 @@ class MaterialRoot extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
-        <Hidden smDown>
+        <Hidden smDown implementation="css">
           <Drawer
             variant="permanent"
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}

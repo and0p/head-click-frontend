@@ -7,8 +7,9 @@ import { gamesAlphabetically, gamesByPopularity } from '../model/HcModel'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
-import Input, { InputLabel } from '@material-ui/core/Input';
-import { MenuItem } from '@material-ui/core/Menu';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField'

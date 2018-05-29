@@ -17,7 +17,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Select from '@material-ui/core/Select';
-import { MenuItem } from '@material-ui/core/Menu';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { monitors } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
 import { clamp } from '../util'
@@ -118,6 +119,7 @@ class ProfileEditDialog extends React.Component {
         aria-labelledby="edit-profile"
         onEnter={this.reopened}
       >
+      {console.log("dialog innards")}
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <form noValidate autoComplete="off">
@@ -165,7 +167,6 @@ class ProfileEditDialog extends React.Component {
                     <MenuItem value={monitor}>{monitor.name}</MenuItem>
                   ))))}
                 <MenuItem value={this.state.customMonitor}>Custom..</MenuItem>
-                {console.log(this.state.customMonitor == this.state.monitor)}
               </Select>
             </FormControl><br/>
             {/* RESOLUTIONS */}

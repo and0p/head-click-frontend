@@ -113,7 +113,7 @@ class ResponsiveAsset extends React.Component {
         if(img.hasOwnProperty(this.props.category) && img[this.props.category].hasOwnProperty(this.props.asset))
         {
             let srcset = img[this.props.category][this.props.asset]["1x"] + ", " + img[this.props.category][this.props.asset]["1.5x"] + " 1.5x," + img[this.props.category][this.props.asset]["2x"] + " 2x"
-            return <img srcset={srcset} src={img[this.props.category][this.props.asset].normal} className={this.props.className} />
+            return <img srcSet={srcset} src={img[this.props.category][this.props.asset].normal} className={this.props.className} />
         }
         else
         {

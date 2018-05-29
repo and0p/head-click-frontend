@@ -47,7 +47,7 @@ const getCm360FromGameSettings = (dpi, gameSetting, fov) => {
 
 const getInfo = (settings, options) => {
     // Get the FOV from user Head Click options
-    let fov = options["View"] == "First Person" ? options["First Person FOV"] : 80
+    let fov = options["View"] == "First Person" ? options["FOV"] : 80
     FOVs.General = fov
     FOVs.Vehicle = fov
     FOVs.Targetting = fov
@@ -59,7 +59,7 @@ const getInfo = (settings, options) => {
         let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisFOV)
         let setting = getSensitivity(idealCm360, settings.dpi.actual, thisFOV)
         let output = getCm360FromGameSettings(settings.dpi.actual, getRounded(setting, 0), thisFOV)
-        console.log("for " + thisFOV + "ideal cm: " + idealCm360 +", setting: " + setting +", output: " + output)
+        //console.log("for " + thisFOV + "ideal cm: " + idealCm360 +", setting: " + setting +", output: " + output)
         settingsJSON.push({
             name: 'Sensitivity - ' + key,
             subtext: 'Settings ~ Control ~ Mouse',
@@ -150,7 +150,7 @@ const PUBG = {
             default: "Third Person",
         },
         {
-            name: "First Person FOV",
+            name: "FOV",
             type: "buttons",
             values: [
                 "80",
