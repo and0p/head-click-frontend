@@ -86,27 +86,35 @@ const Overwatch = {
         },
         infoFunction: getInfo,
         settings: {
-            optimization: [
+            "Display": [
                 {
-                    text: "Triple Buffering - OFF",
+                    text: "Triple Buffering",
+                    value: "OFF",
+                    note: false,
                     subtext: "Options ~ Display ~ Triple Buffering",
                     info: "Triple buffering is the worst. Read more...",
                     critical: true
                 },
                 {
-                    text: "Reduce Buffer - ON",
+                    text: "Reduce Buffer",
+                    value: "ON",
+                    note: false,
                     subtext: "Options ~ Display ~ Reduce Buffering",
                     info: "This option reduces input lag by not pre-rendering frames.",
                     critical: true
                 },
                 {
-                    text: "VSYNC - OFF*",
+                    text: "VSYNC",
+                    value: "OFF",
+                    note: true,
                     subtext: "Options ~ Display ~ VSYNC",
                     info: "Only use VSYNC in a competitive FPS if your machine can comfortably render with it at your monitor's maximum refresh rate. Otherwise you could experience input lag.",
                     critical: false
                 },
                 {
                     text: "Limit FPS - OFF*",
+                    value: "OFF",
+                    note: true,
                     subtext: "Options ~ Display ~ Limit FPS",
                     info: "Set this to OFF, or at least reasonably higher than your monitor's refresh rate.",
                     critical: false
