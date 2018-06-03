@@ -63,7 +63,7 @@ class GameOption extends React.Component {
         let index = this.props.option.values.indexOf(this.props.value)
         let dependancyPass = true;
         console.log(option)
-        if(option.hasOwnProperty("dependant") && this.props.profileOptions[this.props.gameAlias][option.dependant.name] != option.dependant.value)
+        if(option.hasOwnProperty("dependant") && this.props.userOptions[option.dependant.name] != option.dependant.value)
             dependancyPass = false
         if(dependancyPass) {  // TODO: add dependant check
             switch(this.props.option.type) {
@@ -106,9 +106,7 @@ class GameOption extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    return {
-        profileOptions: state.profile.options
-    }
+
 }
   
 const mapDispatchToProps = dispatch => {

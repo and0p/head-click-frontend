@@ -1,4 +1,4 @@
-import { getRounded, normalizeLowPercentage, clamp } from '../../../util'
+import { getRounded, normalizeLowPercentage, clamp } from '../../../math'
 
 let baseDots = 54543;
 let minSensitivity = 1;
@@ -92,7 +92,7 @@ const Overwatch = {
                     value: "OFF",
                     note: false,
                     subtext: "Options ~ Display ~ Triple Buffering",
-                    info: "Triple buffering is the worst. Read more...",
+                    info: "Delays input significantly by pre-rendering multiple frames.",
                     critical: true
                 },
                 {
@@ -100,7 +100,7 @@ const Overwatch = {
                     value: "ON",
                     note: false,
                     subtext: "Options ~ Display ~ Reduce Buffering",
-                    info: "This option reduces input lag by not pre-rendering frames.",
+                    info: "Reduce input lag by removing miscellaneous buffering.",
                     critical: true
                 },
                 {
@@ -108,7 +108,7 @@ const Overwatch = {
                     value: "OFF",
                     note: true,
                     subtext: "Options ~ Display ~ VSYNC",
-                    info: "Only use VSYNC in a competitive FPS if your machine can comfortably render with it at your monitor's maximum refresh rate. Otherwise you could experience input lag.",
+                    info: "Less screen tearing with performance cost.",
                     critical: false
                 },
                 {
@@ -120,15 +120,19 @@ const Overwatch = {
                     critical: false
                 },
                 {
-                    text: "Render Scale - 100%",
+                    text: "Render Scale",
+                    value: "100%",
+                    note: false,
                     subtext: "Options ~ Display ~ Graphics Quality ~ Advanced ~ Render Scale",
                     info: "Render the game at your full resolution, improving clarity. Lower this for improved performance as a last resort.",
                     critical: false
                 }
             ],
-            gameplay: [
+            "Gameplay": [
                 {
-                    text: "Mercy - Beam Toggle - ON",
+                    text: "Mercy - Beam Toggle",
+                    value: "ON",
+                    note: false,
                     subtext: "Options ~ Controls ~ Mercy ~ Beam Toggle",
                     info: "This keeps your beam going without having to hold the button.",
                     critical: false
@@ -141,7 +145,6 @@ const Overwatch = {
             resolution: false
         },
         options: []
-
 }
 
 export default Overwatch

@@ -5,23 +5,22 @@ import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
     root: {
-        width: '100%'
-    },
-    text: {
+        backgroundColor: theme.palette.background.default,
+        border: '1px solid ' + theme.palette.custom.subtle,
         textAlign: 'center',
-        color: theme.palette.custom.subtle
+        padding: theme.spacing.unit * 2
     }
 });
 
-const ComingSoon = props => {
+const MessageBox = props => {
     const { classes, theme } = props;
     return(
         <div className= {classes.root}>
             <Typography variant="body2" className={classes.text}>
-                COMING SOON
+                {props.children}
             </Typography>
         </div>
     )
 }
 
-export default withStyles(styles)(ComingSoon)
+export default withStyles(styles)(MessageBox)

@@ -15,15 +15,15 @@ const initialState = {
     },
     profile: {
         settings: {
-            monitor: monitors["16:9"]["1080p"],
-            refreshRate: 60,
+            monitor: null,
+            refreshRate: null,
             dpi: {
-                actual: 1200,
-                recommended: 1200
+                actual: null,
+                recommended: null
             },
             sensitivity: {
-                actual: 34,
-                recommended: 34
+                actual: null,
+                recommended: null
             },
             toggle: {
                 actual: null,
@@ -143,7 +143,9 @@ function profileReducer (state = initialState, action) {
                                 actual: { $set: recommendedSensitivity},
                                 recommended: { $set: recommendedSensitivity }
                             }
-                        }
+                        },
+                        overrides: { $set: {} },
+                        gamesOverriden: { $set: [] }
                     }
                 })
             }
@@ -213,21 +215,28 @@ function profileReducer (state = initialState, action) {
             {
                 // If we haven't overriden game yet, give new overrides from current settings
                 if(!state.profile.overrides.hasOwnProperty(action.value.gameName))
+                {
+                    // See if a profile exists, and use a generic one otherwise
+                    let overrides = {}
+                    if(state.profile.ready)
+                        overrides = getOverrideFromSettings(state.profile.settings)
+                    else
+                        overrides = getOverrideFromSettings(null)
                     return update(state, {
                         profile: {
                             gamesOverriden: { $push: [action.value.gameName] },
                             overrides: {
-                                [action.value.gameName]: {$set: getOverrideFromSettings(state.profile.settings)}
+                                [action.value.gameName]: {$set: overrides}
                             }
                         }
                     })
+                }
                 else
                     return update(state, {
                         profile: {
                             gamesOverriden: { $push: [action.value.gameName] }
                         }
                     })
-                
             }
             else    
             {
@@ -267,6 +276,9 @@ function profileReducer (state = initialState, action) {
             else
                 return state
         case Symbols.UPDATE_GAME_OPTION:
+            // See if we have these options yet
+            if(!state.profile.options.hasOwnProperty(action.value.gameAlias))
+                state.profile.options[action.value.gameAlias] = games[action.value.gameAlias].getDefaultOptions()
             return update(state, {
                 profile: {
                     options:{
@@ -495,24 +507,38 @@ const rootReducer = reduceReducers(
 // Transform owned games from objects to keys and back
 const HCTransform = createTransform(
     (inboundState, key) => {
-        return { 
-            ...inboundState, 
-            ownedGames: inboundState.ownedGames.map(game => game.alias),
-            settings: {
-                ...inboundState.settings,
-                monitor: inboundState.settings.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
+        if(inboundState.ready)
+        {
+            return { 
+                ...inboundState, 
+                ownedGames: inboundState.ownedGames.map(game => game.alias),
+                settings: {
+                    ...inboundState.settings,
+                    monitor: inboundState.settings.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
+                }
             }
+        }
+        else
+        {
+            return inboundState
         }
     },
     (outboundState, key) => {
-        return {  
-            ...outboundState,
-            ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
-            settings: {
-                ...outboundState.settings,
-                monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
-            }
-        };
+        if(outboundState.ready)
+        {
+            return {  
+                ...outboundState,
+                ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
+                settings: {
+                    ...outboundState.settings,
+                    monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
+                }
+            };
+        }
+        else
+        {
+            return outboundState
+        }
     },
     { whitelist: ['profile'] }
 );

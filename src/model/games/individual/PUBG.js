@@ -1,4 +1,4 @@
-import { getRounded, normalizeLowPercentage, clamp, getPercentageOfBaseFOV, getIdealCm360AtFOV } from '../../../util'
+import { getRounded, normalizeLowPercentage, clamp, getPercentageOfBaseFOV, getIdealCm360AtFOV } from '../../../math'
 
 let baseDots = 12960;
 let minSensitivity = 0;
@@ -63,9 +63,7 @@ const getInfo = (settings, options) => {
         settingsJSON.push({
             name: 'Sensitivity - ' + key,
             subtext: 'Settings ~ Control ~ Mouse',
-            icon: 'settings_ethernet',
             value: getRounded(setting, 0),
-            color: 'purple'
         })
         outputJSON.push({
             name: key == "Scoping" ? "ADS" : key,

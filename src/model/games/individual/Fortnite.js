@@ -1,4 +1,4 @@
-import { getRounded } from '../../../util'
+import { getRounded } from '../../../math'
 
 let baseDots = 64805;
 

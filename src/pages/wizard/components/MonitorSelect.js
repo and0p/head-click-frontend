@@ -16,6 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider'
 import * as Symbols from '../../../redux/HcSymbols'
+import { isValid } from '../../../util' 
 
 const styles = theme => ({
     gridRoot : {
@@ -126,7 +127,7 @@ class MonitorSelect extends React.Component {
                     {Object.keys(monitors).map((key) => (
                         <div key={key}>
                             <Typography variant="body2" className={classes.ratioText}>{key}</Typography>
-                            <Grid container className={classes.gridRoot}>
+                            <Grid container spacing={16} className={classes.gridRoot}>
                                 {Object.values(monitors[key]).map((monitor) => {
                                     if(monitor.common || this.props.expanded[key])
                                         return(
@@ -146,7 +147,7 @@ class MonitorSelect extends React.Component {
                         </div>
                     ))}
                     <Typography variant="body2" className={classes.ratioText}>Custom</Typography>
-                    <Grid container className={classes.gridRoot}>
+                    <Grid container spacing={16} className={classes.gridRoot}>
                         <MonitorButton
                             selectMonitor={() => this.props.selectMonitor(this.props.customMonitor)}
                             classes={classes}
@@ -156,7 +157,7 @@ class MonitorSelect extends React.Component {
                         />
                         <Grid item xs={3}>
                             <TextField
-                            value={this.props.selectedMonitor.width}
+                            value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.width : "-"}
                             label="Width"
                             InputProps={{
                                 disableUnderline: true,
@@ -175,12 +176,12 @@ class MonitorSelect extends React.Component {
                         </Grid>
                         <Grid item xs={3}>
                             <TextField
-                            value={this.props.selectedMonitor.height}
+                            value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.height : "-"}
                             label="Height"
                             InputProps={{
                                 disableUnderline: true,
                                 classes: {
-                                root: classes.resolutionAxisInputBox
+                                    root: classes.resolutionAxisInputBox
                                 }
                             }}
                             className={classes.resolutionAxisInput}

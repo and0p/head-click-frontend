@@ -2,7 +2,7 @@ import * as stats from 'stats-lite'
 import gaussian from 'gaussian'
 
 // ideal FOV W:H is 106:74 at 16:9 
-export const baseFOV = 106
+export const baseFOV = 106.26
 export const getPercentageOfBaseFOV = (fov) => {
     return fov / baseFOV
 }
@@ -52,10 +52,19 @@ export const getRecommendedDpi = games => {
 
 export const getOverrideFromSettings = settings => {
     let j = { sensitivity: {}, dpi: {}, monitor: {} }
-    j.sensitivity.actual = settings.sensitivity.actual
-    j.dpi.actual = settings.dpi.actual
-    j.monitor = {}
-    Object.assign(j.monitor, settings.monitor)
+    if(isValid(settings))
+    {
+        j.sensitivity.actual = settings.sensitivity.actual
+        j.dpi.actual = settings.dpi.actual
+        j.monitor = {}
+        Object.assign(j.monitor, settings.monitor)
+    }
+    else
+    {
+        j.sensitivity.actual = 34
+        j.dpi.actual = 800
+        j.monitor = { width: 1920, height: 1080 }
+    }
     return j
 }
 

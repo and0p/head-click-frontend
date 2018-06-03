@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
+import classNames from 'classnames'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 // Material imports
@@ -27,18 +28,22 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Icon from '@material-ui/core/Icon'
-// Rechar import
+// Recharts import
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, Label, XAxis, YAxis, Tooltip, Legend } from 'recharts'
+// Other libs
+import { Link } from "react-router-dom";
 // Headclick imports
 import { games } from '../../model/HcModel'
 import * as Symbols from '../../redux/HcSymbols'
 import Game from '../../model/Game'
-import { isInArray, getRounded, replaceSettingsArrows } from '../../util'
+import { isInArray, replaceSettingsArrows, isValid } from '../../util'
+import { getRounded } from '../../math'
 import SettingCategory from './components/SettingCategory'
 import GameOption from './components/GameOption'
 import BigValue from '../../components/BigValue'
 import InfoCard from '../../components/InfoCard'
 import ComingSoon from '../../components/ComingSoon'
+import MessageBox from '../../components/MessageBox'
 import * as Copy from '../../copy'
 
 const styles = theme => ({
@@ -111,6 +116,9 @@ const styles = theme => ({
         overflow: 'hidden',
         textAlign: 'right'
     },
+    goodOutput: { color: theme.palette.custom.blue, fontWeight: 'bold' },
+    mediumOutput: { color: theme.palette.custom.yellow, fontWeight: 'bold' },
+    badOutput: { color: theme.palette.custom.red, fontWeight: 'bold' },
     clear: {
         clear: 'both'
     },
@@ -128,8 +136,17 @@ const labelReformat = ({ x, y, stroke, value }) => {
 }
 
 class GamePage extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
+    // prepGame = gameName => {
+    //     // Make sure we have options
+    //     if(this.props.)
+    // }
 
     toggleOverride = gameName => event => {
+        console.log("toggling")
         this.props.setOverride(event.target.checked, gameName)
       };
 
@@ -146,12 +163,27 @@ class GamePage extends React.Component {
             // Grab Game object
             let game = new Game(games[gameAlias])
             // See if we're overriding the profile at all and use overrides if so
-            let settings = null
+            let settings = null, ready = false
             if(isInArray(this.props.profile.gamesOverriden, gameAlias))
+            {
                 settings = this.props.profile.overrides[gameAlias]
+                ready = true
+            }
             else
+            {
                 settings = this.props.profile.settings
-            let gameInfo = game.infoFunction(settings, this.props.profile.options[gameAlias])
+                ready = this.props.profile.ready
+            }
+            // Set options
+            let userOptions = {}
+            if(this.props.profile.options.hasOwnProperty(gameAlias))
+                userOptions = this.props.profile.options[gameAlias]
+            else
+                userOptions = game.getDefaultOptions()
+            // Get the game's output
+            let gameOutput = {}
+            if(ready)
+                gameOutput = game.infoFunction(settings, userOptions)
             return (
                 <div className={classes.root}>
                     <Typography variant="display1" gutterBottom>
@@ -159,175 +191,207 @@ class GamePage extends React.Component {
                     </Typography>
                     <Grid container spacing={spacing}>
                         <Grid item xs={12} lg={6}> {/* LEFT DIVISION */}
-                            <Paper>{/* AIM SETTINGS */}
-                                <div className={classes.paper}>
-                                    <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
-                                        Aim Settings
-                                    </Typography>
-                                    <div className={classes.floatRight}>
-                                        <Typography variant="button" className={classes.overrideText}>Override</Typography>
-                                        <Switch
-                                            checked={isInArray(this.props.profile.gamesOverriden, game.alias)}
-                                            onChange={this.toggleOverride(game.alias)}
-                                            className={classes.overrideSwitch}
-                                        />
-                                    </div>
-                                    {/* OVERRIDE SECTION */}
-                                    <Collapse 
-                                    in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
-                                    timeout="auto" 
-                                    className={classes.collapse}
-                                    unmountOnExit>
-                                        <div className={classes.subsection}>
-                                            <Typography variant="subheading">
-                                                Overrides
+                            <Grid container spacing={spacing}>
+                                <Grid item xs={12}>
+                                    <Paper>{/* AIM SETTINGS */}
+                                        <div className={classes.paper}>
+                                            <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
+                                                Aim Settings
                                             </Typography>
-                                            <Grid item xs={12} className={classes.innerCollapse}>
-                                                    <Grid container spacing={spacing}>
-                                                        <Grid item xs={6} md={3}>
-                                                            <TextField
-                                                                id="name"
-                                                                label="Desired cm/360"
-                                                                //className={classes.textField}
-                                                                value={settings.sensitivity.actual}
-                                                                onChange={this.handleOverrideChange('cm360', game.alias)}
-                                                                margin="dense"
-                                                                fullWidth
-                                                            />
-                                                        </Grid>
-                                                        <Grid item xs={6} md={3}>
-                                                            <TextField
-                                                                id="name"
-                                                                label="DPI"
-                                                                //className={classes.textField}
-                                                                value={settings.dpi.actual}
-                                                                onChange={this.handleOverrideChange('dpi', game.alias)}
-                                                                margin="dense"
-                                                                fullWidth
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                            </Grid>
-                                        </div>
-                                        <Divider/>
-                                    </Collapse>
-                                    {/* OPTIONS SECTION */}
-                                    {game.hasOwnProperty("options") && game["options"].length > 0 && [
-                                    <div className={classes.subsection}>
-                                        <Typography variant="subheading">
-                                            Options
-                                        </Typography>
-                                        {game.options.map(option =>
-                                            <Grid item xs={12}>
-                                                <GameOption 
-                                                gameAlias={gameAlias} 
-                                                option={option} 
-                                                value={this.props.profile.options[gameAlias][option.name]}
+                                            <div className={classes.floatRight}>
+                                                <Typography variant="button" className={classes.overrideText}>Override</Typography>
+                                                <Switch
+                                                    checked={isInArray(this.props.profile.gamesOverriden, game.alias)}
+                                                    onChange={this.toggleOverride(game.alias)}
+                                                    className={classes.overrideSwitch}
                                                 />
-                                            </Grid>
-                                        )
-                                        }
-                                    </div>,
-                                    <Divider/>]
-                                    }
-                                    {/* IN-GAME SETTINGS */}
-                                    <div className={classes.subsection}>
-                                        <Typography variant="subheading">
-                                            In-Game Settings
-                                        </Typography>
-                                        {gameInfo.settings.map(item => ([
-                                            <div className={classes.clear}>
-                                                <div className={classes.setting}>
-                                                    <div className={classes.settingName}>
-                                                        <Typography variant="headline" className={classes.settingText}>{item.name}</Typography>
-                                                        <Typography variant="caption" className={classes.settingDescription}>{replaceSettingsArrows(item.subtext)}</Typography>
-                                                    </div>
-                                                    <div className={classes.settingValue}>
-                                                        <Typography variant="display1" className={classes.settingText}>{item.value}</Typography>
-                                                    </div>
-                                                </div>
                                             </div>
-                                        ]))}
-                                    </div>
-                                    <Divider />
-                                    {/* OUTPUT SETTINGS */}
-                                    <div className={classes.subsection}>
-                                        <Typography variant="subheading">
-                                            Output
-                                        </Typography>
-                                        {/* Output table */}
-                                        <Hidden smDown>
-                                            <Table className={classes.table}>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell padding="dense">View</TableCell>
-                                                        <TableCell padding="dense">Zoom</TableCell>
-                                                        <TableCell padding="dense">FOV</TableCell>
-                                                        <TableCell padding="dense">{Copy.cm360}</TableCell>
-                                                        <TableCell padding="dense">Ideal</TableCell>
-                                                        <TableCell padding="dense">Variance</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                {gameInfo.output.map(output => (
-                                                    <TableRow>
-                                                        <TableCell padding="dense">{output.name}</TableCell>
-                                                        <TableCell padding="dense">{getRounded(output.zoom, 2)}</TableCell>
-                                                        <TableCell padding="dense">{getRounded(output.fov, 2)}</TableCell>
-                                                        <TableCell padding="dense">{getRounded(output.cm360, 2)}</TableCell>
-                                                        <TableCell padding="dense">{getRounded(output.ideal, 2)}</TableCell>
-                                                        <TableCell padding="dense">{getRounded(output.variance, 2)}%</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                                </TableBody>
-                                            </Table>
-                                        <div/>
-                                        </Hidden>
-                                        <Hidden mdUp>
-                                            <Table className={classes.table}>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell padding="none">View</TableCell>
-                                                        <TableCell padding="none">{Copy.cm360}</TableCell>
-                                                        <TableCell padding="none">Ideal</TableCell>
-                                                        <TableCell padding="none">Variance</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                {gameInfo.output.map(output => (
-                                                    <TableRow>
-                                                        <TableCell padding="none">{output.name}</TableCell>
-                                                        <TableCell padding="none">{getRounded(output.zoom, 2)}</TableCell>
-                                                        <TableCell padding="none">{getRounded(output.ideal, 2)}</TableCell>
-                                                        <TableCell padding="none">{getRounded(output.variance, 2)}%</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                                </TableBody>
-                                            </Table>
-                                        </Hidden>
-                                        {/* Output graph */}
-                                        {console.log(gameInfo)}
-                                        <ResponsiveContainer width="100%" height={400}>
-                                            <LineChart 
-                                            data={gameInfo.hasOwnProperty("graph") ? gameInfo.graph : gameInfo.output}
-                                            margin={{top: 20, bottom: 20, left: 20, right: 20}}
-                                            >
-                                                <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
-                                                <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
-                                                <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
-                                                    <Label value="Zoom" position="bottom" color="white" fill="white" />
-                                                </XAxis>
-                                                <YAxis stroke="#CCC">
-                                                <Label value="cm" offset={0} position="left" color="white" fill="white" />
-                                                </YAxis>
-                                                <CartesianGrid stroke="#888" strokeDasharray="5 5" />
-                                                <Tooltip />
-                                                <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
-                                            </LineChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                </div>
-                            </Paper>
+                                            {/* OVERRIDE SECTION */}
+                                            <Collapse 
+                                            in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
+                                            timeout="auto" 
+                                            className={classes.collapse}
+                                            unmountOnExit>
+                                                <div className={classes.subsection}>
+                                                    <Typography variant="subheading">
+                                                        Overrides
+                                                    </Typography>
+                                                    <Grid item xs={12} className={classes.innerCollapse}>
+                                                            <Grid container spacing={spacing}>
+                                                                <Grid item xs={6} md={3}>
+                                                                    <TextField
+                                                                        id="name"
+                                                                        label="Desired cm/360"
+                                                                        //className={classes.textField}
+                                                                        value={settings.sensitivity.actual}
+                                                                        onChange={this.handleOverrideChange('cm360', game.alias)}
+                                                                        margin="dense"
+                                                                        type="number"
+                                                                        fullWidth
+                                                                    />
+                                                                </Grid>
+                                                                <Grid item xs={6} md={3}>
+                                                                    <TextField
+                                                                        id="name"
+                                                                        label="DPI"
+                                                                        //className={classes.textField}
+                                                                        value={settings.dpi.actual}
+                                                                        onChange={this.handleOverrideChange('dpi', game.alias)}
+                                                                        margin="dense"
+                                                                        type="number"
+                                                                        step={400}
+                                                                        fullWidth
+                                                                    />
+                                                                </Grid>
+                                                            </Grid>
+                                                    </Grid>
+                                                </div>
+                                                <Divider/>
+                                            </Collapse>
+                                            {/* OPTIONS SECTION */}
+                                            {game.hasOwnProperty("options") && game["options"].length > 0 && [
+                                            <div className={classes.subsection}>
+                                                <Typography variant="subheading">
+                                                    Options
+                                                </Typography>
+                                                {game.options.map(option =>
+                                                    <Grid item xs={12}>
+                                                        <GameOption 
+                                                        gameAlias={gameAlias}
+                                                        userOptions={userOptions} 
+                                                        option={option} 
+                                                        value={userOptions[option.name]}
+                                                        />
+                                                    </Grid>
+                                                )
+                                                }
+                                            </div>,
+                                            <Divider/>]
+                                            }
+                                            {/* IN-GAME SETTINGS */}
+                                            <div className={classes.subsection}>
+                                                <Typography gutterBottom variant="subheading">
+                                                    In-Game Settings
+                                                </Typography>
+                                                { // Output game settings if ready
+                                                ready &&
+                                                gameOutput.settings.map(item => ([
+                                                    <div className={classes.clear}>
+                                                        <div className={classes.setting}>
+                                                            <div className={classes.settingName}>
+                                                                <Typography variant="headline" className={classes.settingText}>{item.name}</Typography>
+                                                                <Typography variant="caption" className={classes.settingDescription}>{replaceSettingsArrows(item.subtext)}</Typography>
+                                                            </div>
+                                                            <div className={classes.settingValue}>
+                                                                <Typography variant="display1" className={classes.settingText}>{item.value}</Typography>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ]))
+                                                }
+                                                { // Otherwise show message box
+                                                !ready &&
+                                                <MessageBox>
+                                                    To calculate settings for this game, you'll need to <a href="../..">make a profile</a> or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, gameAlias)}>enter preferences manually</a>.
+                                                </MessageBox>
+                                                }
+                                            </div>
+                                        </div>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Paper>{/* OUTPUT SETTINGS */}
+                                        <div className={classes.paper}>
+                                            <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
+                                                Output
+                                            </Typography>
+                                            <div className={classes.subsection}>
+                                                {/* Output table */}
+                                                { // Output table / graph if ready
+                                                ready && <div>
+                                                <Hidden smDown>
+                                                    <Table className={classes.table}>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell padding="dense">View</TableCell>
+                                                                <TableCell padding="dense">Zoom</TableCell>
+                                                                <TableCell padding="dense">FOV</TableCell>
+                                                                <TableCell padding="dense">{Copy.cm360}</TableCell>
+                                                                <TableCell padding="dense">Ideal</TableCell>
+                                                                <TableCell padding="dense">Variance</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                        {gameOutput.output.map(output => {
+                                                            let c = classes.goodOutput
+                                                            if(output.variance > 2)
+                                                                c = classes.badOutput
+                                                            else if(output.variance > 1)
+                                                                c = classes.mediumOutput
+                                                            return (
+                                                            <TableRow>
+                                                                <TableCell padding="dense">{output.name}</TableCell>
+                                                                <TableCell padding="dense">{getRounded(output.zoom, 2)}</TableCell>
+                                                                <TableCell padding="dense">{getRounded(output.fov, 2)}</TableCell>
+                                                                <TableCell padding="dense">{getRounded(output.cm360, 2)}</TableCell>
+                                                                <TableCell padding="dense">{getRounded(output.ideal, 2)}</TableCell>
+                                                                <TableCell padding="dense" className={c}>{getRounded(output.variance, 2)}%</TableCell>
+                                                            </TableRow>
+                                                        )})}
+                                                        </TableBody>
+                                                    </Table>
+                                                </Hidden>
+                                                <Hidden mdUp>
+                                                    <Table className={classes.table}>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell padding="none">View</TableCell>
+                                                                <TableCell padding="none">{Copy.cm360}</TableCell>
+                                                                <TableCell padding="none">Ideal</TableCell>
+                                                                <TableCell padding="none">Variance</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                        {gameOutput.output.map(output => (
+                                                            <TableRow>
+                                                                <TableCell padding="none">{output.name}</TableCell>
+                                                                <TableCell padding="none">{getRounded(output.zoom, 2)}</TableCell>
+                                                                <TableCell padding="none">{getRounded(output.ideal, 2)}</TableCell>
+                                                                <TableCell padding="none">{getRounded(output.variance, 2)}%</TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </Hidden>
+                                                {/* Output graph */}
+                                                <ResponsiveContainer width="100%" height={400}>
+                                                    <LineChart 
+                                                    data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
+                                                    margin={{top: 20, bottom: 20, left: 20, right: 20}}
+                                                    >
+                                                        <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
+                                                        <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
+                                                        <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
+                                                            <Label value="Zoom" position="bottom" color="white" fill="white" />
+                                                        </XAxis>
+                                                        <YAxis stroke="#CCC">
+                                                        <Label value="cm" offset={0} position="left" color="white" fill="white" />
+                                                        </YAxis>
+                                                        <CartesianGrid stroke="#888" strokeDasharray="5 5" />
+                                                        <Tooltip />
+                                                        <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
+                                                    </LineChart>
+                                                </ResponsiveContainer></div>
+                                                }
+                                                {   // Otherwise show the message box
+                                                !ready &&
+                                                <MessageBox>No output to show</MessageBox>
+                                                }
+                                            </div>
+                                        </div>
+                                    </Paper>
+                                </Grid>
+                            </Grid>
                         </Grid>
                         {/* RIGHT DIVISION */}
                         <Grid item xs={12} lg={6}>
@@ -346,12 +410,12 @@ class GamePage extends React.Component {
                                 </Paper>
                                 </Grid>
                                 {game.hasOwnProperty("settings") &&
-                                /* STATS */
+                                /* MISC SETTINGS */
                                 <Grid item xs={12}>
-                                    <Paper className={classes.paper}>
+                                    <Paper>
                                         <div className={classes.paper}>
                                             <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
-                                                Other Settings
+                                                Miscellaneous Settings
                                             </Typography>
                                             <div className={classes.subsection}>
                                                 <List subheader={<li />} dense>
@@ -362,13 +426,18 @@ class GamePage extends React.Component {
                                                         </ListItem>
                                                         {game.settings[category].map(setting => (
                                                             <ListItem>
+                                                                {setting.critical &&
+                                                                <ListItemIcon>
+                                                                    <Icon>star</Icon>
+                                                                </ListItemIcon>
+                                                                }
                                                                 <ListItemText
                                                                 primary={setting.text}
-                                                                secondary={replaceSettingsArrows(setting.subtext)}
+                                                                secondary={replaceSettingsArrows(setting.info)}
                                                                 inset
                                                                 />
                                                                     <ListItemSecondaryAction>
-                                                                    test
+                                                                    <Typography variant="subheading">{setting.value}</Typography>
                                                                     </ListItemSecondaryAction>
                                                             </ListItem>
                                                         ))}

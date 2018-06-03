@@ -134,6 +134,7 @@ class ProfileEditDialog extends React.Component {
                 value={this.state.sensitivity}
                 onChange={this.handleChange('sensitivity')}
                 endAdornment={<InputAdornment position="end">cm/360</InputAdornment>}
+                type="number"
                 inputProps={{
                   'aria-label': 'Sensitivity',
                 }}
@@ -149,6 +150,7 @@ class ProfileEditDialog extends React.Component {
                 endAdornment={<InputAdornment position="end">DPI</InputAdornment>}
                 value={this.state.dpi}
                 onChange={this.handleChange('dpi')}
+                type="number"
                 inputProps={{
                   'aria-label': 'DPI',
                 }}
@@ -185,6 +187,7 @@ class ProfileEditDialog extends React.Component {
                 className: classes.textFieldFormLabel,
               }}
               disabled={this.state.monitor != this.state.customMonitor}
+              type="number"
               onChange={this.updateCustomSize("width")}
             />
             <TextField
@@ -197,6 +200,7 @@ class ProfileEditDialog extends React.Component {
                 }
               }}
               className={classes.resolutionAxisInput}
+              type="number"
               InputLabelProps={{
                 shrink: true,
                 className: classes.textFieldFormLabel,
