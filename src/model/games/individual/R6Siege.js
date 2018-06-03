@@ -33,15 +33,15 @@ let minSensitivity = 1
 let maxSensitivity = 100
 let idealFOV = 74
 let baseModifier = 50
-let idealModifier = 57
+let idealModifier = 76
 
 const getInGameSensitivity = (desiredCm360, dpi, sightBaseDots) => {
     return sightBaseDots / (dpi / 2.54) / desiredCm360
 }
 
 const getCm360ForSight = (gameSetting, dpi, modifier, sight) => {
-    if(sight == sights.hip)
-        return sight.baseDots / gameSetting / dpi * 2.45 
+    if(sight.name == "Hip Fire")
+        return sight.baseDots / gameSetting / dpi * 2.54 
     else
         return (sight.baseDots / (modifier / baseModifier)) / gameSetting / dpi * 2.54
 }
