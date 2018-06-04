@@ -32,7 +32,7 @@ let aliases = {
 }
 
 const getSensitivity = (desiredCm360, dpi, fov) => {
-    let desiredDots = desiredCm360 * dpi
+    let desiredDots = desiredCm360 / 2.54 * dpi //lolwut?
     let fovDots = baseDots / fov
     let rawSensitivity = fovDots / desiredDots * 2.54
     // convert to PUBG slider

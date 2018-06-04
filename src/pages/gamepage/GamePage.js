@@ -125,6 +125,10 @@ const styles = theme => ({
     nested: {
         paddingLeft: theme.spacing.unit * 4,
     },
+    graphArea: {
+        marginLeft: -theme.spacing.unit * 2,
+        marginRight: -theme.spacing.unit * 2
+    }
 });
 
 const spacing = 8
@@ -364,24 +368,26 @@ class GamePage extends React.Component {
                                                     </Table>
                                                 </Hidden>
                                                 {/* Output graph */}
-                                                <ResponsiveContainer width="100%" height={400}>
-                                                    <LineChart 
-                                                    data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
-                                                    margin={{top: 20, bottom: 20, left: 20, right: 20}}
-                                                    >
-                                                        <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
-                                                        <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
-                                                        <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
-                                                            <Label value="Zoom" position="bottom" color="white" fill="white" />
-                                                        </XAxis>
-                                                        <YAxis stroke="#CCC">
-                                                        <Label value="cm" offset={0} position="left" color="white" fill="white" />
-                                                        </YAxis>
-                                                        <CartesianGrid stroke="#888" strokeDasharray="5 5" />
-                                                        <Tooltip />
-                                                        <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
-                                                    </LineChart>
-                                                </ResponsiveContainer></div>
+                                                <div className={classes.graphArea}>
+                                                    <ResponsiveContainer width="100%" height={400}>
+                                                        <LineChart 
+                                                        data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
+                                                        margin={{top: 20, bottom: 20, left: 30, right: 30}}
+                                                        >
+                                                            <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
+                                                            <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
+                                                            <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
+                                                                <Label value="Zoom" position="bottom" color="white" fill="white" />
+                                                            </XAxis>
+                                                            <YAxis stroke="#CCC">
+                                                            <Label value="cm" offset={0} position="left" color="white" fill="white" />
+                                                            </YAxis>
+                                                            <CartesianGrid stroke="#888" strokeDasharray="5 5" />
+                                                            <Tooltip />
+                                                            <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
+                                                        </LineChart>
+                                                    </ResponsiveContainer></div>
+                                                </div>
                                                 }
                                                 {   // Otherwise show the message box
                                                 !ready &&

@@ -33,53 +33,75 @@ let minSensitivity = 1
 let maxSensitivity = 100
 let idealFOV = 74
 let baseModifier = 50
-let idealModifier = 76
+
+const getConfigSensitivity = (desiredCm360, dpi) => {
+    // Base config sensitivity of 0.02 gives 62828 dots to rotate 360 at 1 sensitivity (hip fire)
+    // Divide by 50 and we get 1257
+    // Get desired dots
+    let desiredDots = desiredCm360 / 2.54 * dpi
+    // Compare to base of 62828 when at slider 50 (so base / 50)
+    let m = desiredDots / (62828 / 50) // at 48 desired cm this comes out to ~18.047
+    // Config is 0.02 divided by that value
+    return getRounded(0.02 / m, 6)
+}
 
 const getInGameSensitivity = (desiredCm360, dpi, sightBaseDots) => {
     return sightBaseDots / (dpi / 2.54) / desiredCm360
 }
 
-const getCm360ForSight = (gameSetting, dpi, modifier, sight) => {
+const getCm360ForSight = (gameSetting, configSetting, dpi, modifier, sight) => {
+    // Get config setting variance
+    let multiplier = configSetting / 0.02
+    console.log(multiplier)
     if(sight.name == "Hip Fire")
-        return sight.baseDots / gameSetting / dpi * 2.54 
+        return sight.baseDots / gameSetting / dpi * 2.54 / multiplier
     else
-        return (sight.baseDots / (modifier / baseModifier)) / gameSetting / dpi * 2.54
+        return (sight.baseDots / (modifier / baseModifier)) / gameSetting / dpi * 2.54 / multiplier
 }
 
 const getInfo = (settings, options) => {
-    // Get base FOV TODO use options
-    let baseFOV = getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, idealFOV)
+    // Get base FOV from options
+    let baseFOV = getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, options["FOV"])
+    // Get ideal zoom modifier based on options
+    let idealModifier = options["Preferred Sight"] == "Zoom" ? 57 : 76
     // Get ideal cm for base FOV (hip fire)
     let baseDesiredCM = getIdealCm360AtFOV(settings.sensitivity.actual, baseFOV)
     // Get in-game setting that reflects this TODO also add config file option
-    let gameSetting = getRounded(getInGameSensitivity(baseDesiredCM, settings.dpi.actual, sights.hip.baseDots), 0)
+    let gameSetting = options["Method"] == "Config File" ? 50 : getRounded(getInGameSensitivity(baseDesiredCM, settings.dpi.actual, sights.hip.baseDots), 0)
+    let configSetting = options["Method"] == "Config File" ? getConfigSensitivity(baseDesiredCM, settings.dpi.actual) : 0.02
+    console.log(configSetting)
     let settingsJSON = [
-            {
-                name: 'Mouse Sensitivity Horizontal',
-                subtext: 'Settings ~ Controls',
-                value: gameSetting
-            },
-            {
-                name: 'Mouse Sensitivity Vertical',
-                subtext: 'Settings ~ Controls',
-                value: gameSetting
-            },
-            {
-                name: 'Zoom Modifier',
-                subtext: 'Settings ~ Controls',
-                value: idealModifier
-            },
-            {
-                name: "FOV",
-                subtext: 'Settings ~ Display',
-                value: idealFOV
-            }
-        ]
+        {
+            name: 'Mouse Sensitivity Horizontal',
+            subtext: 'Settings ~ Controls',
+            value: gameSetting
+        },
+        {
+            name: 'Mouse Sensitivity Vertical',
+            subtext: 'Settings ~ Controls',
+            value: gameSetting
+        },
+        {
+            name: 'Zoom Modifier',
+            subtext: 'Settings ~ Controls',
+            value: idealModifier
+        },
+        {
+            name: "FOV",
+            subtext: 'Settings ~ Display',
+            value: idealFOV
+        },
+        {
+            name: 'MouseSensitivityMultiplierUnit',
+            subtext: 'Config File ~ INPUT',
+            value: getRounded(configSetting, 6)
+        },
+    ]
     let outputJSON = []
     Object.keys(sights).map(sight => {
         let sightFOV = baseFOV / sights[sight].zoom
         let desiredCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, sightFOV)
-        let output = getCm360ForSight(gameSetting, settings.dpi.actual, idealModifier, sights[sight])
+        let output = getCm360ForSight(gameSetting, configSetting, settings.dpi.actual, idealModifier, sights[sight])
         outputJSON.push({
                 name: sights[sight].name,
                 alias: sights[sight].name,
@@ -131,7 +153,36 @@ export const R6Siege = {
     infoFunction: getInfo,
     settings: {
     },
-    options: []
+    options: [
+        {
+            name: "Method",
+            type: "buttons",
+            values: [
+                "Config File",
+                "In-Game"
+            ],
+            default: "Config File",
+        },
+        {
+            name: "Preferred Sight",
+            type: "buttons",
+            values: [
+                "ADS / Reflex",
+                "Zoom"
+            ],
+            default: "ACOG & Glaz",
+        },
+        {
+            name: "FOV",
+            type: "buttons",
+            values: [
+                "60",
+                "73",
+                "90"
+            ],
+            default: "73",
+        }
+    ]
 }
 
 export default R6Siege
