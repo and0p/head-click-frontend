@@ -125,10 +125,7 @@ const styles = theme => ({
   drawerCategory: {
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 2,
-    color: "#888888",
-    fontWeight: 500,
-    fontSize: '0.875rem'
+    paddingLeft: theme.spacing.unit * 2
   },
   gameLogo: {
     width: '24px',
@@ -153,6 +150,7 @@ class MaterialRoot extends React.Component {
           text={game.shortName}
           innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
           enabled={ this.props.profile.ready }
+          key={game.alias}
           />
       )
     );
@@ -179,7 +177,7 @@ class MaterialRoot extends React.Component {
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />
             <Divider />
-            <div className={classes.drawerCategory}>LIBRARY</div>
+            <div className={classes.drawerCategory}><Typography variant="button">LIBRARY</Typography></div>
             {sidebarGamesList}
             <SidebarButton 
               link="/select_games"

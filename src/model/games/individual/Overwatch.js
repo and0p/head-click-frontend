@@ -1,16 +1,17 @@
 import { getRounded, normalizeLowPercentage, clamp } from '../../../math'
 
-let baseDots = 54543;
-let minSensitivity = 1;
-let maxSensitivity = 100;
+let baseHipDots = 54543
+let baseWidowDots = 181819
+let minSensitivity = 1
+let maxSensitivity = 100
 let idealFOV = 103
 let widowFOV = 38
 
 const getSensitivity = (settings, options) => {
-    return getRounded(clamp((baseDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
+    return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
 }
 
-const getCm360FromGameSettings = (settings, gameSetting) => {
+const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
     let result = settings.dpi.actual / 2.54
     result = baseDots / result
     result /= gameSetting
@@ -18,8 +19,9 @@ const getCm360FromGameSettings = (settings, gameSetting) => {
 }
 
 const getInfo = (settings, options) => {
-    let sensitivity = getSensitivity(settings)
-    let outputHipFire = getCm360FromGameSettings(settings, sensitivity)
+    let sensitivity = clamp(getSensitivity(settings), minSensitivity, maxSensitivity)
+    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
+    let outputWidow = getCm360FromGameSettings(settings, sensitivity, baseWidowDots)
     return {
         settings: [
             {
@@ -43,9 +45,18 @@ const getInfo = (settings, options) => {
                 alias: "Hip Fire",
                 fov: 103,
                 zoom: 1,
-                cm360: getRounded(outputHipFire, 2),
-                ideal: getRounded(settings.sensitivity.actual, 2),
-                variance: getRounded(normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100, 2),
+                cm360: outputHipFire,
+                ideal: settings.sensitivity.actual,
+                variance: normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100,
+            },
+            {
+                name: "Widowmaker",
+                alias: "Widow",
+                fov: 50.91,
+                zoom: 2.02,
+                cm360: outputWidow,
+                ideal: settings.sensitivity.actual * 2.02,
+                variance: normalizeLowPercentage((settings.sensitivity.actual * 2.02) / outputWidow - 1) * 100
             }
         ]
     }

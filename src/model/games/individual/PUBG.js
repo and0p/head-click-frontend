@@ -32,17 +32,17 @@ let aliases = {
 }
 
 const getSensitivity = (desiredCm360, dpi, fov) => {
-    let desiredDots = desiredCm360 / 2.54 * dpi //lolwut?
+    let desiredDots = desiredCm360 / 2.54 * dpi
     let fovDots = baseDots / fov
-    let rawSensitivity = fovDots / desiredDots * 2.54
+    let rawSensitivity = fovDots / desiredDots
     // convert to PUBG slider
-    return clamp(Math.log(Math.pow(rawSensitivity / 0.002, 50)) / Math.log(10), minSensitivity, maxSensitivity)
+    return getRounded(clamp(Math.log(Math.pow(rawSensitivity / 0.002, 50)) / Math.log(10), minSensitivity, maxSensitivity), 0)
 }
 
 const getCm360FromGameSettings = (dpi, gameSetting, fov) => {
     let rawSensitivity = 0.002 * Math.pow(10, gameSetting / 50)
     let dots = baseDots / fov / rawSensitivity
-    return dots * 2.54 / dpi
+    return dots / dpi * 2.54
 }
 
 const getInfo = (settings, options) => {
@@ -58,18 +58,17 @@ const getInfo = (settings, options) => {
         let thisFOV = FOVs[key]
         let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisFOV)
         let setting = getSensitivity(idealCm360, settings.dpi.actual, thisFOV)
-        let output = getCm360FromGameSettings(settings.dpi.actual, getRounded(setting, 0), thisFOV)
-        //console.log("for " + thisFOV + "ideal cm: " + idealCm360 +", setting: " + setting +", output: " + output)
+        let output = getCm360FromGameSettings(settings.dpi.actual, setting, thisFOV)
         settingsJSON.push({
             name: 'Sensitivity - ' + key,
             subtext: 'Settings ~ Control ~ Mouse',
-            value: getRounded(setting, 0),
+            value: setting
         })
         outputJSON.push({
             name: key == "Scoping" ? "ADS" : key,
             alias: aliases[key],
             fov: thisFOV,
-            zoom: fov / thisFOV,
+            zoom: getRounded(fov / thisFOV, 2),
             cm360: output,
             ideal: idealCm360,
             variance: normalizeLowPercentage(idealCm360 / output - 1) * 100
@@ -149,13 +148,12 @@ const PUBG = {
         },
         {
             name: "FOV",
-            type: "buttons",
-            values: [
-                "80",
-                "90",
-                "103"
-            ],
-            default: "103",
+            type: "slider",
+            min: 80,
+            max: 103,
+            step: 1,
+            recommended: 103,
+            default: 103,
             dependant: {
                 name: "View",
                 value: "First Person"

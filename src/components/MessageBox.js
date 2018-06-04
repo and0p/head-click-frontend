@@ -8,15 +8,22 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default,
         border: '1px solid ' + theme.palette.custom.subtle,
         textAlign: 'center',
-        padding: theme.spacing.unit * 2
+        padding: theme.spacing.unit * 2,
+        margin: theme.spacing.unit
+    },
+    alignCenter: {
+        textAlign: 'center',
+    },
+    alignLeft: {
+        textAlign: 'left',
     }
 });
 
 const MessageBox = props => {
     const { classes, theme } = props;
     return(
-        <div className= {classes.root}>
-            <Typography variant="body2" className={classes.text}>
+        <div className={classes.root}>
+            <Typography variant="body1" className={props.align == "center" ? classes.alignCenter : classes.alignLeft}>
                 {props.children}
             </Typography>
         </div>

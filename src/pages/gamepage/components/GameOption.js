@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import Game from '../../../model/Game'
 import * as Symbols from '../../../redux/HcSymbols'
 import Typography from '@material-ui/core/Typography'
-import Tabs, { Tab } from '@material-ui/core/Tabs'
+import Slider from '@material-ui/lab/Slider'
 import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
@@ -15,16 +15,53 @@ const styles = theme => ({
         //paddingLeft: theme.spacing.unit,
         marginTop: theme.spacing.unit,
         marginBottom: theme.spacing.unit,
-        height: '40px'
+        [theme.breakpoints.up('sm')]: {
+            height: '40px'
+        },
+        [theme.breakpoints.down('xs')]: {
+            height: '70px'
+        }
+    },
+    optionNameSection: {
+        //paddingTop: theme.spacing.unit,
+        paddingLeft: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+        minHeight: theme.spacing.unit * 2,
+        [theme.breakpoints.up('sm')]: {
+            float: 'left'
+        }
     },
     optionName: {
-        padding: theme.spacing.unit,
-        float: 'left'
+        [theme.breakpoints.down('xs')]: {
+            float: 'left',
+            marginRight: theme.spacing.unit
+        }
     },
-    optionButtons: {
-        float: 'right',
-        align: 'right',
+    optionSelectionSection: {
+        [theme.breakpoints.up('sm')]: {
+            float: 'right',
+        },
+        [theme.breakpoints.down('xs')]: {
+            clear: 'left'
+        },
+        //textAlign: 'right',
         color: "#777777"
+    },
+    slider: {
+        float: 'right',
+        minWidth: '200px',
+        marginTop: '4px',
+        marginRight: '4px',
+        [theme.breakpoints.down('xs')]: {
+            width: '90%'
+        }
+    },
+    sliderValue: {
+        color: "#FFFFFF",
+        float: 'left',
+        paddingTop: '10px',
+        paddingRight: theme.spacing.unit,
+        paddingLeft: theme.spacing.unit
     },
     button: {
         marginLeft: theme.spacing.unit
@@ -36,6 +73,13 @@ const styles = theme => ({
     },
     unselectedColor: {
         color: theme.palette.custom.subtle
+    },
+    recommended: {
+        color: theme.palette.custom.subtle,
+        [theme.breakpoints.down('xs')]: {
+            position: 'relative',
+            bottom: '-1px'
+        }
     }
   });
 
@@ -49,31 +93,31 @@ class GameOption extends React.Component {
         )
     }
 
-    handleTabChange = (event, value) => {
+    handleSliderChange = (event, value) => {
         this.props.setOption(
             this.props.gameAlias,
             this.props.option.name,
-            this.props.option.values[value]
+            value
         )
     }
 
     render() {
         const { classes, theme } = this.props;
         let option = this.props.option
-        let index = this.props.option.values.indexOf(this.props.value)
         let dependancyPass = true;
-        console.log(option)
         if(option.hasOwnProperty("dependant") && this.props.userOptions[option.dependant.name] != option.dependant.value)
             dependancyPass = false
         if(dependancyPass) {  // TODO: add dependant check
             switch(this.props.option.type) {
                 case "buttons":
+                    let index = this.props.option.values.indexOf(this.props.value)
                     return (
                         <div className={classes.root}>
-                            <div className={classes.optionName}>
-                                <Typography variant="button">{this.props.option.name}</Typography>
+                            <div className={classes.optionNameSection}>
+                                <Typography variant="button" className={classes.optionName}>{this.props.option.name}</Typography>
+                                {option.recommended && <Typography variant="caption" className={classes.recommended}>Recommended: {option.recommended}</Typography>}
                             </div>
-                            <div className={classes.optionButtons}>
+                            <div className={classes.optionSelectionSection}>
                                 {this.props.option.values.map(value =>
                                     <Button
                                     variant="outlined"
@@ -81,6 +125,7 @@ class GameOption extends React.Component {
                                     color={value == this.props.value ? "default" : "inherit"}
                                     className={classes.button}
                                     onClick={() => this.handleButtonChange(value)}
+                                    key={value}
                                     >
                                         {value}
                                     </Button>
@@ -91,7 +136,23 @@ class GameOption extends React.Component {
                 case "slider":
                     return (
                         <div className={classes.root}>
-
+                            <div className={classes.optionNameSection}>
+                                <Typography variant="button" className={classes.optionName}>{this.props.option.name}</Typography>
+                                {option.recommended && <Typography variant="caption" className={classes.recommended}>Recommended: {option.recommended}</Typography>}
+                            </div>
+                            <div className={classes.optionSelectionSection}>
+                                <div className={classes.sliderValue}>
+                                    <Typography variant="label">{this.props.value}</Typography>
+                                </div>
+                                <div className={classes.slider}>
+                                    <Slider 
+                                    value={parseInt(this.props.value)}
+                                    min={option.min} max={option.max}
+                                    onChange={this.handleSliderChange}
+                                    step={option.step} 
+                                    />
+                                </div>
+                            </div>
                         </div>
                     )
                 default:
@@ -106,7 +167,7 @@ class GameOption extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-
+    return {}
 }
   
 const mapDispatchToProps = dispatch => {

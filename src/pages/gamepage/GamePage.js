@@ -99,8 +99,10 @@ const styles = theme => ({
         minHeight: '48px'
     },
     settingName: {
-        float: 'left',
-        maxWidth: '80%'
+        [theme.breakpoints.up('sm')]: {
+            float: 'left',
+            maxWidth: '80%'
+        }
     },
     settingDescription: {
         lineHeight: '1em',
@@ -110,7 +112,13 @@ const styles = theme => ({
         fontWeight: 300
     },
     settingValue: {
-        float: 'right'
+        [theme.breakpoints.up('sm')]: {
+            float: 'right'
+        },
+        [theme.breakpoints.down('xs')]: {
+            marginTop: -theme.spacing.unit * 2
+        },
+        textAlign: 'right'
     },
     outputValue: {
         overflow: 'hidden',
@@ -188,13 +196,155 @@ class GamePage extends React.Component {
             let gameOutput = {}
             if(ready)
                 gameOutput = game.infoFunction(settings, userOptions)
+
+            // Create const for output and misc settings and reorder based on window size
+            const OutputHTML = 
+                <Grid item xs={12}>
+                    <Paper>{/* OUTPUT SETTINGS */}
+                        <div className={classes.paper}>
+                            <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
+                                Output
+                            </Typography>
+                            <div className={classes.subsection}>
+                                {/* Output table */}
+                                { // Output table / graph if ready
+                                ready && <div>
+                                <Hidden smDown>
+                                    <Table className={classes.table}>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell padding="dense">View</TableCell>
+                                                <TableCell numeric padding="dense">Zoom</TableCell>
+                                                <TableCell numeric padding="dense">FOV</TableCell>
+                                                <TableCell numeric padding="dense">{Copy.cm360}</TableCell>
+                                                <TableCell numeric padding="dense">Ideal</TableCell>
+                                                <TableCell numeric padding="dense">Variance</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                        {gameOutput.output.map(output => {
+                                            let c = classes.goodOutput
+                                            if(output.variance > 4)
+                                                c = classes.badOutput
+                                            else if(output.variance > 2)
+                                                c = classes.mediumOutput
+                                            return (
+                                            <TableRow key ={output.name}>
+                                                <TableCell padding="dense">{output.name}</TableCell>
+                                                <TableCell numeric padding="dense">{getRounded(output.zoom, 2)}</TableCell>
+                                                <TableCell numeric padding="dense">{getRounded(output.fov, 2)}</TableCell>
+                                                <TableCell numeric padding="dense">{getRounded(output.cm360, 2)}</TableCell>
+                                                <TableCell numeric padding="dense">{getRounded(output.ideal, 2)}</TableCell>
+                                                <TableCell numeric padding="dense" className={c}>{getRounded(output.variance, 2)}%</TableCell>
+                                            </TableRow>
+                                        )})}
+                                        </TableBody>
+                                    </Table>
+                                </Hidden>
+                                <Hidden mdUp>
+                                    <Table className={classes.table}>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell padding="none">View</TableCell>
+                                                <TableCell numeric padding="none">{Copy.cm360}</TableCell>
+                                                <TableCell numeric padding="none">Ideal</TableCell>
+                                                <TableCell numeric padding="none">Variance</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                        {gameOutput.output.map(output => {
+                                            let c = classes.goodOutput
+                                            if(output.variance > 2)
+                                                c = classes.badOutput
+                                            else if(output.variance > 1)
+                                                c = classes.mediumOutput
+                                            return (
+                                            <TableRow key={output.name}>
+                                                <TableCell padding="none">{output.name}</TableCell>
+                                                <TableCell numeric padding="none">{getRounded(output.zoom, 2)}</TableCell>
+                                                <TableCell numeric padding="none">{getRounded(output.ideal, 2)}</TableCell>
+                                                <TableCell numeric padding="none" className={c}>{getRounded(output.variance, 2)}%</TableCell>
+                                            </TableRow>
+                                        )})}
+                                        </TableBody>
+                                    </Table>
+                                </Hidden>
+                                {/* Output graph */}
+                                <div className={classes.graphArea}>
+                                    <ResponsiveContainer width="100%" height={400}>
+                                        <LineChart 
+                                        data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
+                                        margin={{top: 20, bottom: 20, left: 30, right: 30}}
+                                        >
+                                            <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
+                                            <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
+                                            <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
+                                                <Label value="Zoom" position="bottom" color="white" fill="white" />
+                                            </XAxis>
+                                            <YAxis stroke="#CCC">
+                                            <Label value="cm" offset={0} position="left" color="white" fill="white" />
+                                            </YAxis>
+                                            <CartesianGrid stroke="#888" strokeDasharray="5 5" />
+                                            <Tooltip />
+                                            <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
+                                        </LineChart>
+                                    </ResponsiveContainer></div>
+                                </div>
+                                }
+                                {   // Otherwise show the message box
+                                !ready &&
+                                <MessageBox align="center">No output to show</MessageBox>
+                                }
+                            </div>
+                        </div>
+                    </Paper>
+                </Grid>
+            const MiscSettingsHTML = !game.hasOwnProperty("settings") ? <div/> :
+                /* MISC SETTINGS */
+                <Grid item xs={12}>
+                    <Paper>
+                        <div className={classes.paper}>
+                            <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
+                                Miscellaneous Settings
+                            </Typography>
+                            <div className={classes.subsection}>
+                                <List subheader={<li />} dense>
+                                    {Object.keys(game.settings).map(category => (
+                                        <div key={category}>
+                                        <ListItem>
+                                            <ListItemText primary={category} />
+                                        </ListItem>
+                                        {game.settings[category].map(setting => (
+                                            <ListItem key={setting.text}>
+                                                {setting.critical &&
+                                                <ListItemIcon>
+                                                    <Icon>star</Icon>
+                                                </ListItemIcon>
+                                                }
+                                                <ListItemText
+                                                primary={setting.text}
+                                                secondary={replaceSettingsArrows(setting.info)}
+                                                inset
+                                                />
+                                                    <ListItemSecondaryAction>
+                                                    <Typography variant="subheading">{setting.value}</Typography>
+                                                    </ListItemSecondaryAction>
+                                            </ListItem>
+                                        ))}
+                                        </div>
+                                    ))}
+                                </List>
+                            </div>
+                        </div>
+                    </Paper>
+                </Grid>
             return (
                 <div className={classes.root}>
                     <Typography variant="display1" gutterBottom>
                         {game.name}
                     </Typography>
                     <Grid container spacing={spacing}>
-                        <Grid item xs={12} lg={6}> {/* LEFT DIVISION */}
+                        <Grid item xs={12} xl={6}> {/* LEFT DIVISION */}
                             <Grid container spacing={spacing}>
                                 <Grid item xs={12}>
                                     <Paper>{/* AIM SETTINGS */}
@@ -208,6 +358,7 @@ class GamePage extends React.Component {
                                                     checked={isInArray(this.props.profile.gamesOverriden, game.alias)}
                                                     onChange={this.toggleOverride(game.alias)}
                                                     className={classes.overrideSwitch}
+                                                    color="primary"
                                                 />
                                             </div>
                                             {/* OVERRIDE SECTION */}
@@ -259,7 +410,7 @@ class GamePage extends React.Component {
                                                     Options
                                                 </Typography>
                                                 {game.options.map(option =>
-                                                    <Grid item xs={12}>
+                                                    <Grid item xs={12} key={option.name}>
                                                         <GameOption 
                                                         gameAlias={gameAlias}
                                                         userOptions={userOptions} 
@@ -278,9 +429,9 @@ class GamePage extends React.Component {
                                                     In-Game Settings
                                                 </Typography>
                                                 { // Output game settings if ready
-                                                ready &&
+                                                ready && 
                                                 gameOutput.settings.map(item => ([
-                                                    <div className={classes.clear}>
+                                                    <div className={classes.clear} key={item.name}>
                                                         <div className={classes.setting}>
                                                             <div className={classes.settingName}>
                                                                 <Typography variant="headline" className={classes.settingText}>{item.name}</Typography>
@@ -293,115 +444,36 @@ class GamePage extends React.Component {
                                                     </div>
                                                 ]))
                                                 }
+                                                { // Output settings help if ready
+                                                ready && isValid(gameOutput.settingsHelp) && <MessageBox align="left">{gameOutput.settingsHelp}</MessageBox>
+                                                }
                                                 { // Otherwise show message box
                                                 !ready &&
-                                                <MessageBox>
-                                                    To calculate settings for this game, you'll need to <a href="../..">make a profile</a> or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, gameAlias)}>enter preferences manually</a>.
+                                                <MessageBox align="center">
+                                                    To calculate settings for this game, you'll need to <Link to="/">make a profile</Link> or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, gameAlias)}>enter preferences manually</a>.
                                                 </MessageBox>
                                                 }
                                             </div>
                                         </div>
                                     </Paper>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Paper>{/* OUTPUT SETTINGS */}
-                                        <div className={classes.paper}>
-                                            <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
-                                                Output
-                                            </Typography>
-                                            <div className={classes.subsection}>
-                                                {/* Output table */}
-                                                { // Output table / graph if ready
-                                                ready && <div>
-                                                <Hidden smDown>
-                                                    <Table className={classes.table}>
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell padding="dense">View</TableCell>
-                                                                <TableCell padding="dense">Zoom</TableCell>
-                                                                <TableCell padding="dense">FOV</TableCell>
-                                                                <TableCell padding="dense">{Copy.cm360}</TableCell>
-                                                                <TableCell padding="dense">Ideal</TableCell>
-                                                                <TableCell padding="dense">Variance</TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                        {gameOutput.output.map(output => {
-                                                            let c = classes.goodOutput
-                                                            if(output.variance > 2)
-                                                                c = classes.badOutput
-                                                            else if(output.variance > 1)
-                                                                c = classes.mediumOutput
-                                                            return (
-                                                            <TableRow>
-                                                                <TableCell padding="dense">{output.name}</TableCell>
-                                                                <TableCell padding="dense">{getRounded(output.zoom, 2)}</TableCell>
-                                                                <TableCell padding="dense">{getRounded(output.fov, 2)}</TableCell>
-                                                                <TableCell padding="dense">{getRounded(output.cm360, 2)}</TableCell>
-                                                                <TableCell padding="dense">{getRounded(output.ideal, 2)}</TableCell>
-                                                                <TableCell padding="dense" className={c}>{getRounded(output.variance, 2)}%</TableCell>
-                                                            </TableRow>
-                                                        )})}
-                                                        </TableBody>
-                                                    </Table>
-                                                </Hidden>
-                                                <Hidden mdUp>
-                                                    <Table className={classes.table}>
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell padding="none">View</TableCell>
-                                                                <TableCell padding="none">{Copy.cm360}</TableCell>
-                                                                <TableCell padding="none">Ideal</TableCell>
-                                                                <TableCell padding="none">Variance</TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                        {gameOutput.output.map(output => (
-                                                            <TableRow>
-                                                                <TableCell padding="none">{output.name}</TableCell>
-                                                                <TableCell padding="none">{getRounded(output.zoom, 2)}</TableCell>
-                                                                <TableCell padding="none">{getRounded(output.ideal, 2)}</TableCell>
-                                                                <TableCell padding="none">{getRounded(output.variance, 2)}%</TableCell>
-                                                            </TableRow>
-                                                        ))}
-                                                        </TableBody>
-                                                    </Table>
-                                                </Hidden>
-                                                {/* Output graph */}
-                                                <div className={classes.graphArea}>
-                                                    <ResponsiveContainer width="100%" height={400}>
-                                                        <LineChart 
-                                                        data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
-                                                        margin={{top: 20, bottom: 20, left: 30, right: 30}}
-                                                        >
-                                                            <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
-                                                            <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
-                                                            <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
-                                                                <Label value="Zoom" position="bottom" color="white" fill="white" />
-                                                            </XAxis>
-                                                            <YAxis stroke="#CCC">
-                                                            <Label value="cm" offset={0} position="left" color="white" fill="white" />
-                                                            </YAxis>
-                                                            <CartesianGrid stroke="#888" strokeDasharray="5 5" />
-                                                            <Tooltip />
-                                                            <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
-                                                        </LineChart>
-                                                    </ResponsiveContainer></div>
-                                                </div>
-                                                }
-                                                {   // Otherwise show the message box
-                                                !ready &&
-                                                <MessageBox>No output to show</MessageBox>
-                                                }
-                                            </div>
-                                        </div>
-                                    </Paper>
-                                </Grid>
+                                <Hidden xlUp>
+                                    {OutputHTML} {/* OUTPUT ON MOBILE */}
+                                </Hidden>
+                                <Hidden lgDown>
+                                    {MiscSettingsHTML} {/* OUTPUT ON DESKTOP */}
+                                </Hidden>
                             </Grid>
                         </Grid>
                         {/* RIGHT DIVISION */}
-                        <Grid item xs={12} lg={6}>
+                        <Grid item xs={12} xl={6}>
                             <Grid container spacing={spacing}>
+                                <Hidden lgDown>
+                                    {OutputHTML} {/* OUTPUT ON DESKTOP */}
+                                </Hidden>
+                                <Hidden xlUp>
+                                    {MiscSettingsHTML} {/* OUTPUT ON MOBILE */}
+                                </Hidden>
                                 {/* STATS */}
                                 <Grid item xs={12}>
                                 <Paper>
@@ -415,46 +487,7 @@ class GamePage extends React.Component {
                                     </div>
                                 </Paper>
                                 </Grid>
-                                {game.hasOwnProperty("settings") &&
-                                /* MISC SETTINGS */
-                                <Grid item xs={12}>
-                                    <Paper>
-                                        <div className={classes.paper}>
-                                            <Typography variant="title" className={classes.floatLeft} gutterBottom paragraph>
-                                                Miscellaneous Settings
-                                            </Typography>
-                                            <div className={classes.subsection}>
-                                                <List subheader={<li />} dense>
-                                                    {Object.keys(game.settings).map(category => (
-                                                        <div>
-                                                        <ListItem>
-                                                            <ListItemText primary={category} />
-                                                        </ListItem>
-                                                        {game.settings[category].map(setting => (
-                                                            <ListItem>
-                                                                {setting.critical &&
-                                                                <ListItemIcon>
-                                                                    <Icon>star</Icon>
-                                                                </ListItemIcon>
-                                                                }
-                                                                <ListItemText
-                                                                primary={setting.text}
-                                                                secondary={replaceSettingsArrows(setting.info)}
-                                                                inset
-                                                                />
-                                                                    <ListItemSecondaryAction>
-                                                                    <Typography variant="subheading">{setting.value}</Typography>
-                                                                    </ListItemSecondaryAction>
-                                                            </ListItem>
-                                                        ))}
-                                                        </div>
-                                                    ))}
-                                                </List>
-                                            </div>
-                                        </div>
-                                    </Paper>
-                                </Grid>
-                                }
+                                
                             </Grid>
                         </Grid>
                     </Grid>

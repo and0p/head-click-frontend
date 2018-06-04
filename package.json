@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
+    "@material-ui/lab": "^1.0.0-alpha.4",
     "classnames": "^2.2.5",
     "gaussian": "^1.1.0",
     "history": "^4.7.2",

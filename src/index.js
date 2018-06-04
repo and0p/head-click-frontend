@@ -26,10 +26,10 @@ const history = createHistory()
 // Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history)
 // Log initial state
-console.log(store.getState());
+// console.log(store.getState());
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
-  console.log(store.getState())
+  //console.log(store.getState())
 })
 
 const homeComponent = state => {

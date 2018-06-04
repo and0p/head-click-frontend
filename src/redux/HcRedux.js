@@ -467,7 +467,6 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.SET_GAMEPAGE_SORT:
-            console.log("fired sort")
             return update(state, {
                 ui: {
                     gameSelect: {

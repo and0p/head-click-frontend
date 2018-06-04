@@ -1,3 +1,4 @@
+import React from 'react'
 import { getRounded, getIdealCm360AtFOV, normalizeLowPercentage, getHorPlusFromVerticalFOV } from '../../../math'
 
 // Dots to rotate 360, if zoomed then assuming zoom modified is "50"
@@ -52,7 +53,6 @@ const getInGameSensitivity = (desiredCm360, dpi, sightBaseDots) => {
 const getCm360ForSight = (gameSetting, configSetting, dpi, modifier, sight) => {
     // Get config setting variance
     let multiplier = configSetting / 0.02
-    console.log(multiplier)
     if(sight.name == "Hip Fire")
         return sight.baseDots / gameSetting / dpi * 2.54 / multiplier
     else
@@ -69,7 +69,6 @@ const getInfo = (settings, options) => {
     // Get in-game setting that reflects this TODO also add config file option
     let gameSetting = options["Method"] == "Config File" ? 50 : getRounded(getInGameSensitivity(baseDesiredCM, settings.dpi.actual, sights.hip.baseDots), 0)
     let configSetting = options["Method"] == "Config File" ? getConfigSensitivity(baseDesiredCM, settings.dpi.actual) : 0.02
-    console.log(configSetting)
     let settingsJSON = [
         {
             name: 'Mouse Sensitivity Horizontal',
@@ -89,7 +88,7 @@ const getInfo = (settings, options) => {
         {
             name: "FOV",
             subtext: 'Settings ~ Display',
-            value: idealFOV
+            value: options["FOV"]
         },
         {
             name: 'MouseSensitivityMultiplierUnit',
@@ -114,6 +113,7 @@ const getInfo = (settings, options) => {
     })
     return {
         settings: settingsJSON,
+        settingsHelp: options["Method"] == "Config File" ? <span>The most accurate method to adjust sensitivity for Rainbow Six Siege is to change the multiplier in the user configuration file. This file is usually in a randomly generated folder found in: <p/>%USERPROFILE%/Documents/My Games/Rainbow Six Siege/<p/>While the game is not running, open the file in a text editor, modify the MouseSensitivityMultiplierUnit variable to the value seen above, and save the file. Changes to the file made while the game is running are ignored and overwritten.</span> : <span>This method assumes the user config file remains unmodified. The standard multiplier variable is listed above for reference.</span>,
         output: outputJSON
     }
 }
@@ -125,12 +125,12 @@ export const R6Siege = {
     hasLogo: false,
     math: {
         fov: {
-            min: 70,
+            min: 60,
             max: 90,
-            default: 90,
-            recommended: 90,
-            horizontal: true,
-            basedOnSD: false
+            default: 60,
+            recommended: 74,
+            horizontal: false,
+            basedOnSD: true
         },
         sensitivity: {
             min: 1,
@@ -162,6 +162,7 @@ export const R6Siege = {
                 "In-Game"
             ],
             default: "Config File",
+            recommended: "Config File"
         },
         {
             name: "Preferred Sight",
@@ -174,13 +175,12 @@ export const R6Siege = {
         },
         {
             name: "FOV",
-            type: "buttons",
-            values: [
-                "60",
-                "73",
-                "90"
-            ],
-            default: "73",
+            type: "slider",
+            min: 60,
+            max: 90,
+            step: 1,
+            recommended: 74,
+            default: 74
         }
     ]
 }
