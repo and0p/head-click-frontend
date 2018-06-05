@@ -56,7 +56,7 @@ export const getOverrideFromSettings = settings => {
     {
         j.sensitivity.actual = settings.sensitivity.actual
         j.dpi.actual = settings.dpi.actual
-        j.monitor = {}
+        j.monitor = { }
         Object.assign(j.monitor, settings.monitor)
     }
     else

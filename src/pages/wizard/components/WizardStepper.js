@@ -12,9 +12,10 @@ import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import Hidden from '@material-ui/core/Hidden';
+import { Link } from "react-router-dom";
 import * as Symbols from '../../../redux/HcSymbols'
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const styles = theme => ({
     desktopRoot: {
@@ -29,7 +30,7 @@ const styles = theme => ({
       paddingBottom: theme.spacing.unit * 2,
       backgroundColor: theme.palette.background.default,
       [theme.breakpoints.only('md')]: {
-        marginLeft: '-24px',
+        marginLeft: '-8px',
       }
     },
     mobileRoot: {
@@ -53,7 +54,7 @@ const styles = theme => ({
       backgroundColor: theme.palette.background.default,
       paddingBottom: theme.spacing.unit
     }
-  });
+  })
 
   class WizardStepper extends React.Component {
 
@@ -118,9 +119,9 @@ const styles = theme => ({
     }
     
     render() {
-      const { classes, theme } = this.props;
+      console.log(this.props)
+      const { classes, theme } = this.props
       const nextText = "Next" // Will eventually calculate as "finish"
-      console.log(theme.breakpoints)
       return(
         <div>
           {/* Mobile stepper */}
@@ -134,12 +135,12 @@ const styles = theme => ({
               nextButton={
                 <Button size="small" onClick={this.handleNext} disabled={!this.isNextEnabled()}>
                   {this.getNextText()}
-                  {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                  <KeyboardArrowLeft />
                 </Button>
               }
               backButton={
                 <Button size="small" onClick={this.handleBack} disabled={!this.isBackEnabled()}>
-                  {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                  <KeyboardArrowRight />
                   BACK
                 </Button>
               }
@@ -164,12 +165,12 @@ const styles = theme => ({
                   </Step>
                 </Stepper>
                 <Button size="small" onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
-                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                <KeyboardArrowLeft />
                     BACK
                 </Button>
-                <Button size="small" onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
+                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
                     {this.getNextText()}
-                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                    <KeyboardArrowRight />
                 </Button>
               </div>
           </Hidden>
@@ -178,23 +179,23 @@ const styles = theme => ({
     }
   }
 
-  const mapStateToProps = (state) => {
-    return {
-      activePage: state.wizard.activePage,
-      pagesReady: state.wizard.pagesReady,
-      monitorConcern: state.wizard.monitorConcern
-    }
+const mapStateToProps = (state) => {
+  return {
+    activePage: state.wizard.activePage,
+    pagesReady: state.wizard.pagesReady,
+    monitorConcern: state.wizard.monitorConcern
   }
-  
-  const mapDispatchToProps = dispatch => {
-    return {
-        nextPage: () => dispatch({
-            type: Symbols.WIZARD_NEXT,
-        }),
-        goBack: () => dispatch({
-          type: Symbols.WIZARD_BACK
-        })
-    }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+      nextPage: () => dispatch({
+          type: Symbols.WIZARD_NEXT,
+      }),
+      goBack: () => dispatch({
+        type: Symbols.WIZARD_BACK
+      })
+  }
 }
 
 export default connect(

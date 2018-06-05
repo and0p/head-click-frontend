@@ -37,8 +37,8 @@ const styles = theme => ({
     },
     monitorButton: {
         width: '100%',
-        height: '80px',
-        padding: theme.spacing.unit * 1,
+        height: '50px',
+        padding: theme.spacing.unit,
         textAlign: 'center',
         color: theme.palette.text.secondary,
         verticalAlign: 'middle',
@@ -46,24 +46,15 @@ const styles = theme => ({
     },
     monitorButtonSelected: {
         width: '100%',
-        height: '80px',
+        height: '50px',
         padding: theme.spacing.unit * 1,
         textAlign: 'center',
         color: theme.palette.text.secondary,
         verticalAlign: 'middle',
         backgroundColor: theme.palette.primary.main
     },
-    showMoreButton: {
-        width: '100%',
-        height: '80px',
-        padding: theme.spacing.unit * 1,
-        textAlign: 'center',
-        color: '#888888',
-        verticalAlign: 'middle',
-        backgroundColor: theme.palette.background.light
-    },
     resolutionAxisInput: {
-        marginTop: theme.spacing.unit,
+        marginTop: '-2px',
         maxWidth: '117px',
         width: '100%'
       },
@@ -85,17 +76,6 @@ const MonitorButton = (props) => (
             className={props.selected ? props.classes.monitorButtonSelected : props.classes.monitorButton }
         >
             <Typography variant="subheading">{props.hasOwnProperty("nameOverride") ? props.nameOverride : props.monitor.name}</Typography>
-        </Button>
-    </Grid>
-)
-
-const ShowMoreButton = props => (
-    <Grid item xs={3}>
-        <Button 
-            onClick={props.func}
-            className={props.classes.showMoreButton}
-        >
-            <Typography variant="subheading">Show More</Typography>
         </Button>
     </Grid>
 )
@@ -133,9 +113,7 @@ class MonitorSelect extends React.Component {
                         <div key={key}>
                             <Typography variant="body2" className={classes.ratioText}>{key}</Typography>
                             <Grid container spacing={16} className={classes.gridRoot}>
-                                {Object.values(monitors[key]).map((monitor) => {
-                                    if(monitor.common || this.props.expanded[key])
-                                        return(
+                                {Object.values(monitors[key]).map((monitor) => (
                                         <MonitorButton
                                             key= {monitor.name}
                                             selectMonitor={() => this.props.selectMonitor(monitor)}
@@ -143,11 +121,8 @@ class MonitorSelect extends React.Component {
                                             monitor={monitor}
                                             selected={this.props.selectedMonitor === monitor}
                                         />
-                                        )
-                                    else
-                                        return(null)
-                                })}
-                                {this.props.expanded[key] ? null : <ShowMoreButton classes={classes} func={() => this.props.expandCategory(key)} /> }
+                                ))}
+                                {/*this.props.expanded[key] ? null : <ShowMoreButton classes={classes} func={() => this.props.expandCategory(key)} /> */}
                             </Grid>
                         </div>
                     ))}

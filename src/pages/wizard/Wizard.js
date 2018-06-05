@@ -22,7 +22,7 @@ const styles = theme => ({
         maxWidth: '1000px',
         marginLeft: 'auto',
         marginRight: 'auto',
-        paddingBottom: theme.spacing.unit * 6,
+        paddingBottom: theme.spacing.unit * 4,
         [theme.breakpoints.up('md')]: {
             marginBottom: desktopStepperHeight
         }
@@ -30,10 +30,8 @@ const styles = theme => ({
 });
 
 class Wizard extends React.Component {
-
     render() {
-        const { classes, theme } = this.props;
-
+        const { classes, theme } = this.props
         let page = <div />
         switch(this.props.activePage) {
             case 0:
@@ -58,7 +56,7 @@ class Wizard extends React.Component {
         return (
             <div className={classes.root}>
                 {page}
-                <WizardStepper theme={theme} />
+                <WizardStepper />
             </div>
         );
     }

@@ -92,17 +92,17 @@ const img = {
         "logo": {
             "1x": asset_root + '/games/csgo/logo/logo@1x.png',
             "1.5x": asset_root + '/games/csgo/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/csgo/logo/logo@2x.png',
+            "2x": asset_root + '/games/csgo/logo/logo@1_5x.png',
         },
         "logo_big": {
             "1x": asset_root + '/games/csgo/logo/logo_big@1x.png',
             "1.5x": asset_root + '/games/csgo/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/csgo/logo/logo_big@2x.png',
+            "2x": asset_root + '/games/csgo/logo/logo_big@1_5x.png',
         },
         "logo_mini": {
             "1x": asset_root + '/games/csgo/logo/logo_mini@1x.png',
             "1.5x": asset_root + '/games/csgo/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/csgo/logo/logo_mini@2x.png',
+            "2x": asset_root + '/games/csgo/logo/logo_mini@1_5x.png',
         },
     },
     

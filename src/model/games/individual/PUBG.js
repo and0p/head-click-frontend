@@ -1,4 +1,4 @@
-import { getRounded, normalizeLowPercentage, clamp, getPercentageOfBaseFOV, getIdealCm360AtFOV } from '../../../math'
+import { getRounded, normalizeLowPercentage, clamp, getPercentageOfBaseFOV, getIdealCm360AtFOV, getVFOVFromHorizontalFOV, getHorPlusFromVerticalFOV } from '../../../math'
 
 let baseDots = 12960;
 let minSensitivity = 0;
@@ -48,6 +48,7 @@ const getCm360FromGameSettings = (dpi, gameSetting, fov) => {
 const getInfo = (settings, options) => {
     // Get the FOV from user Head Click options
     let fov = options["View"] == "First Person" ? options["FOV"] : 80
+    let vfov = getVFOVFromHorizontalFOV(16, 9, fov) // JSON fovs are hor+ assuming 16:9
     FOVs.General = fov
     FOVs.Vehicle = fov
     FOVs.Targetting = fov
@@ -56,7 +57,10 @@ const getInfo = (settings, options) => {
     let outputJSON = []
     Object.keys(FOVs).map(key => {
         let thisFOV = FOVs[key]
-        let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisFOV)
+        let thisVFOV = getVFOVFromHorizontalFOV(16, 9, thisFOV)
+        let thisHFOV = getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, thisVFOV)
+        let zoom = vfov / thisVFOV
+        let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisVFOV, "vertical")
         let setting = getSensitivity(idealCm360, settings.dpi.actual, thisFOV)
         let output = getCm360FromGameSettings(settings.dpi.actual, setting, thisFOV)
         settingsJSON.push({
@@ -67,8 +71,8 @@ const getInfo = (settings, options) => {
         outputJSON.push({
             name: key == "Scoping" ? "ADS" : key,
             alias: aliases[key],
-            fov: thisFOV,
-            zoom: getRounded(fov / thisFOV, 2),
+            fov: thisHFOV,
+            zoom: getRounded(zoom, 2),
             cm360: output,
             ideal: idealCm360,
             variance: normalizeLowPercentage(idealCm360 / output - 1) * 100

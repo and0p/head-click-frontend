@@ -13,6 +13,7 @@ import { store, persistor } from './redux/HcRedux'
 import theme from './theme.js'
 import { PersistGate } from 'redux-persist/integration/react'
 // Pages & styles
+import Splash from './pages/splash/Splash'
 import Dashboard from './pages/dashboard/Dashboard'
 import MaterialRoot from './pages/materialroot/MaterialRoot'
 import GamePage from './pages/gamepage/GamePage'
@@ -25,19 +26,21 @@ import Alert from './components/Alert'
 const history = createHistory()
 // Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history)
-// Log initial state
-// console.log(store.getState());
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
-  //console.log(store.getState())
+  console.log(store.getState())
 })
 
 const homeComponent = state => {
   if(state.profile.ready)
     return <Dashboard />
   else
-    return <Wizard theme={theme} />
+    return <Splash />
 }
+
+// Delete the loading icon
+let loader = document.getElementById("loader")
+loader.parentElement.removeChild(loader)
 
 class App extends React.Component {
 
@@ -49,6 +52,7 @@ class App extends React.Component {
           <MuiThemeProvider theme={theme}>
             <MaterialRoot>
               <Route exact path="/" render={() => homeComponent(store.getState())}/>
+              <Route exact path="/wizard" component={Wizard} />
               <Route exact path="/browse_games" component={SelectGames} />
               <Route path="/game/:name" component={GamePage} />
             </MaterialRoot>

@@ -64,7 +64,10 @@ const styles = theme => ({
             padding: theme.spacing.unit * 2
         },
         [theme.breakpoints.down('xs')]: {
-            padding: theme.spacing.unit
+            paddingTop: theme.spacing.unit * 2,
+            paddingBottom: theme.spacing.unit * 2,
+            paddingLeft: theme.spacing.unit,
+            paddingRight: theme.spacing.unit
         },
         textAlign: 'left',
     },
@@ -104,7 +107,7 @@ const styles = theme => ({
         paddingLeft: theme.spacing.unit,
         paddingTop: theme.spacing.unit,
         paddingBottom: theme.spacing.unit,
-        minHeight: '48px'
+        minHeight: '56px'
     },
     settingName: {
         [theme.breakpoints.up('sm')]: {
@@ -117,7 +120,7 @@ const styles = theme => ({
         color: theme.palette.custom.subtle,
     },
     settingText: {
-        fontWeight: 300
+        fontWeight: 300,
     },
     settingValue: {
         [theme.breakpoints.up('sm')]: {
@@ -127,6 +130,22 @@ const styles = theme => ({
             marginTop: -theme.spacing.unit * 2
         },
         textAlign: 'right'
+    },
+    settingValueHighlighted: {
+        [theme.breakpoints.up('sm')]: {
+            float: 'right',
+            background: 'linear-gradient(-45deg, #4979C3, #8B41B0)',
+            "-webkitBackgroundClip": 'text',
+            textFillColor: 'transparent',
+        },
+        [theme.breakpoints.down('xs')]: {
+            marginTop: -theme.spacing.unit * 2,
+            background: 'linear-gradient(-45deg, #4979C3, #8B41B0 25%)',
+            "-webkitBackgroundClip": 'text',
+            textFillColor: 'transparent',
+        },
+        textAlign: 'right',
+
     },
     outputValue: {
         overflow: 'hidden',
@@ -144,10 +163,14 @@ const styles = theme => ({
     graphArea: {
         marginLeft: -theme.spacing.unit * 2,
         marginRight: -theme.spacing.unit * 2
+    },
+    specialEffect: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     }
 });
 
 const spacing = 8
+const animationTime = 500
 
 const labelReformat = ({ x, y, stroke, value }) => {
     return (
@@ -155,18 +178,25 @@ const labelReformat = ({ x, y, stroke, value }) => {
     )
 }
 
+const tooltipValueReformat = (value, name, props) => getRounded(value, 2)
+
 class GamePage extends React.Component {
     constructor(props) {
         super(props)
+        this.state = { currentGameAlias: this.props.match.params.name, animationEnabled: false }
     }
 
-    // prepGame = gameName => {
-    //     // Make sure we have options
-    //     if(this.props.)
-    // }
+    // Enable and disable animations based on whether or not we've recieved a new game
+    static getDerivedStateFromProps(props, state) {
+        if(props.match.params.name != state.currentGameAlias)
+            return { currentGameAlias: props.match.params.name, animationEnabled: false }
+        else
+        {
+            return { currentGameAlias: props.match.params.name, animationEnabled: true }
+        }
+    }
 
     toggleOverride = gameName => event => {
-        console.log("toggling")
         this.props.setOverride(event.target.checked, gameName)
       };
 
@@ -175,8 +205,7 @@ class GamePage extends React.Component {
     };
    
     render() {
-        const { classes, theme } = this.props;
-
+        const { classes, theme } = this.props
         let gameAlias = this.props.match.params.name
         // See if we have this game
         if(games.hasOwnProperty(gameAlias)) {
@@ -254,6 +283,7 @@ class GamePage extends React.Component {
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell padding="none">View</TableCell>
+                                                <TableCell numeric padding="none">FOV</TableCell>
                                                 <TableCell numeric padding="none">{Copy.cm360}</TableCell>
                                                 <TableCell numeric padding="none">Ideal</TableCell>
                                                 <TableCell numeric padding="none">Variance</TableCell>
@@ -269,7 +299,8 @@ class GamePage extends React.Component {
                                             return (
                                             <TableRow key={output.name}>
                                                 <TableCell padding="none">{output.name}</TableCell>
-                                                <TableCell numeric padding="none">{getRounded(output.zoom, 2)}</TableCell>
+                                                <TableCell numeric padding="none">{getRounded(output.fov, 2)}</TableCell>
+                                                <TableCell numeric padding="none">{getRounded(output.cm360, 2)}</TableCell>
                                                 <TableCell numeric padding="none">{getRounded(output.ideal, 2)}</TableCell>
                                                 <TableCell numeric padding="none" className={c}>{getRounded(output.variance, 2)}%</TableCell>
                                             </TableRow>
@@ -282,10 +313,10 @@ class GamePage extends React.Component {
                                     <ResponsiveContainer width="100%" height={400}>
                                         <LineChart 
                                         data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
-                                        margin={{top: 20, bottom: 20, left: 30, right: 30}}
+                                        margin={{top: 20, bottom: 20, left: 38, right: 38}}
                                         >
-                                            <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' />
-                                            <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5"/>
+                                            <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' animationDuration={animationTime} isAnimationActive={this.state.animationEnabled} />
+                                            <Line name="Desired" type="monotone" dataKey="ideal" stroke='#4979C3' strokeDasharray="5 5" animationDuration={animationTime} isAnimationActive={this.state.animationEnabled} />
                                             <XAxis dataKey="alias" interval={0} domain={[1, 16]} stroke="#CCC">
                                                 <Label value="Zoom" position="bottom" color="white" fill="white" />
                                             </XAxis>
@@ -293,7 +324,7 @@ class GamePage extends React.Component {
                                             <Label value="cm" offset={0} position="left" color="white" fill="white" />
                                             </YAxis>
                                             <CartesianGrid stroke="#888" strokeDasharray="5 5" />
-                                            <Tooltip />
+                                            <Tooltip formatter={tooltipValueReformat} />
                                             <Legend verticalAlign="top" height={36} wrapperStyle={{ color: "#FFF" }}/>
                                         </LineChart>
                                     </ResponsiveContainer></div>
@@ -371,6 +402,7 @@ class GamePage extends React.Component {
                                                 />
                                             </div>
                                             {/* OVERRIDE SECTION */}
+                                            {ready &&
                                             <Collapse 
                                             in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
                                             timeout="auto" 
@@ -386,7 +418,6 @@ class GamePage extends React.Component {
                                                                     <TextField
                                                                         id="name"
                                                                         label="Desired cm/360"
-                                                                        //className={classes.textField}
                                                                         value={settings.sensitivity.actual}
                                                                         onChange={this.handleOverrideChange('cm360', game.alias)}
                                                                         margin="dense"
@@ -398,12 +429,32 @@ class GamePage extends React.Component {
                                                                     <TextField
                                                                         id="name"
                                                                         label="DPI"
-                                                                        //className={classes.textField}
                                                                         value={settings.dpi.actual}
                                                                         onChange={this.handleOverrideChange('dpi', game.alias)}
                                                                         margin="dense"
                                                                         type="number"
-                                                                        step={400}
+                                                                        fullWidth
+                                                                    />
+                                                                </Grid>
+                                                                <Grid item xs={6} md={3}>
+                                                                    <TextField
+                                                                        id="name"
+                                                                        label="Resolution X"
+                                                                        value={settings.monitor.width}
+                                                                        onChange={this.handleOverrideChange('resolutionx', game.alias)}
+                                                                        margin="dense"
+                                                                        type="number"
+                                                                        fullWidth
+                                                                    />
+                                                                </Grid>
+                                                                <Grid item xs={6} md={3}>
+                                                                    <TextField
+                                                                        id="name"
+                                                                        label="Resolution Y"
+                                                                        value={settings.monitor.height}
+                                                                        onChange={this.handleOverrideChange('resolutiony', game.alias)}
+                                                                        margin="dense"
+                                                                        type="number"
                                                                         fullWidth
                                                                     />
                                                                 </Grid>
@@ -412,6 +463,7 @@ class GamePage extends React.Component {
                                                 </div>
                                                 <Divider/>
                                             </Collapse>
+                                            }
                                             {/* OPTIONS SECTION */}
                                             {game.hasOwnProperty("options") && game["options"].length > 0 && [
                                             <div className={classes.subsection}>
@@ -446,8 +498,8 @@ class GamePage extends React.Component {
                                                                 <Typography variant="headline" className={classes.settingText}>{item.name}</Typography>
                                                                 <Typography variant="caption" className={classes.settingDescription}>{replaceSettingsArrows(item.subtext)}</Typography>
                                                             </div>
-                                                            <div className={classes.settingValue}>
-                                                                <Typography variant="display1" className={classes.settingText}>{item.value}</Typography>
+                                                            <div className={item.important ? classes.settingValueHighlighted : classes.settingValueHighlighted }>
+                                                                <Typography variant="display2" className={classes.settingText}>{item.value}</Typography>
                                                             </div>
                                                         </div>
                                                     </div>

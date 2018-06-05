@@ -158,7 +158,7 @@ class MaterialRoot extends React.Component {
     // Drawer HTML, used in both responsive and static
     const drawer = (
       <div>
-          <Paper elevation={4} className={classes.drawerHeader}>
+          <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
             <ResponsiveAsset category="headclick" asset="logo_dark" className={classes.logo} />
           </Paper>
           <div className={classes.drawerContent}>

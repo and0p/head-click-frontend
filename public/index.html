@@ -20,6 +20,95 @@
     <meta name="msapplication-TileColor" content="#8B41B0">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#8B41B0">
+    <style>
+    .loader-container {
+      width: 100%;
+    }
+
+    .loader {
+      width: 65px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 300px;
+    }
+
+    .spinner {
+      -webkit-animation: rotator 1.4s linear infinite;
+              animation: rotator 1.4s linear infinite;
+    }
+
+    @-webkit-keyframes rotator {
+      0% {
+        -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(270deg);
+                transform: rotate(270deg);
+      }
+    }
+
+    @keyframes rotator {
+      0% {
+        -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(270deg);
+                transform: rotate(270deg);
+      }
+    }
+    .path {
+      stroke-dasharray: 187;
+      stroke-dashoffset: 0;
+      -webkit-transform-origin: center;
+              transform-origin: center;
+      -webkit-animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+              animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+    }
+
+    @-webkit-keyframes colors {
+      0% {
+        stroke: #8B41B0;
+      }
+    }
+
+    @keyframes colors {
+      0% {
+        stroke: #8B41B0;
+      }
+    }
+    @-webkit-keyframes dash {
+      0% {
+        stroke-dashoffset: 187;
+      }
+      50% {
+        stroke-dashoffset: 46.75;
+        -webkit-transform: rotate(135deg);
+                transform: rotate(135deg);
+      }
+      100% {
+        stroke-dashoffset: 187;
+        -webkit-transform: rotate(450deg);
+                transform: rotate(450deg);
+      }
+    }
+    @keyframes dash {
+      0% {
+        stroke-dashoffset: 187;
+      }
+      50% {
+        stroke-dashoffset: 46.75;
+        -webkit-transform: rotate(135deg);
+                transform: rotate(135deg);
+      }
+      100% {
+        stroke-dashoffset: 187;
+        -webkit-transform: rotate(450deg);
+                transform: rotate(450deg);
+      }
+    }
+    </style>
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
@@ -38,10 +127,18 @@
     -->
     <title>Head Click</title>
   </head>
-  <body style="margin: 0">
+  <body style="margin: 0; background-color: #1e1d23">
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <div id="loader" class="loader-container">
+      <div class="loader">
+        <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
+      </div>
+    </div>
+
     <div id="app"></div>
     <!--
       This HTML file is a template.

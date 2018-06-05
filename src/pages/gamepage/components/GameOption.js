@@ -53,7 +53,7 @@ const styles = theme => ({
         marginTop: '4px',
         marginRight: '4px',
         [theme.breakpoints.down('xs')]: {
-            width: '90%'
+            width: '80%'
         }
     },
     sliderValue: {
@@ -61,7 +61,7 @@ const styles = theme => ({
         float: 'left',
         paddingTop: '10px',
         paddingRight: theme.spacing.unit,
-        paddingLeft: theme.spacing.unit
+        paddingLeft: theme.spacing.unit * 2
     },
     button: {
         marginLeft: theme.spacing.unit
@@ -78,7 +78,7 @@ const styles = theme => ({
         color: theme.palette.custom.subtle,
         [theme.breakpoints.down('xs')]: {
             position: 'relative',
-            bottom: '-1px'
+            bottom: '-3px'
         }
     }
   });
