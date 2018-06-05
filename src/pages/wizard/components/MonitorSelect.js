@@ -19,8 +19,13 @@ import * as Symbols from '../../../redux/HcSymbols'
 import { isValid } from '../../../util' 
 
 const styles = theme => ({
+    root: {
+        maxWidth: '784px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+    },
     gridRoot : {
-        flexGrow: 1
+        flexGrow: 1,
     },
     ratioText: {
         marginTop: theme.spacing.unit * 1,
@@ -121,7 +126,7 @@ class MonitorSelect extends React.Component {
         console.log(this.props.customMonitor)
         console.log(this.props.customMonitor == this.props.selectedMonitor)
         return(
-            <div>
+            <div className={classes.root}>
                 <div className={classes.section}>
                     <Typography variant="title" gutterBottom>Select your resolution:</Typography>
                     {Object.keys(monitors).map((key) => (

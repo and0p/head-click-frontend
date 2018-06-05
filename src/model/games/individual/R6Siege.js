@@ -171,7 +171,7 @@ export const R6Siege = {
                 "ADS / Reflex",
                 "Zoom"
             ],
-            default: "ACOG & Glaz",
+            default: "Zoom",
         },
         {
             name: "FOV",

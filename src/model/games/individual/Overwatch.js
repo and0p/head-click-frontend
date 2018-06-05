@@ -1,3 +1,4 @@
+import React from 'react'
 import { getRounded, normalizeLowPercentage, clamp } from '../../../math'
 
 let baseHipDots = 54543
@@ -6,8 +7,9 @@ let minSensitivity = 1
 let maxSensitivity = 100
 let idealFOV = 103
 let widowFOV = 38
+let zoomModifier = 50
 
-const getSensitivity = (settings, options) => {
+const getSensitivity = (settings) => {
     return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
 }
 
@@ -21,24 +23,39 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 const getInfo = (settings, options) => {
     let sensitivity = clamp(getSensitivity(settings), minSensitivity, maxSensitivity)
     let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
-    let outputWidow = getCm360FromGameSettings(settings, sensitivity, baseWidowDots)
+    let outputWidow = outputHipFire * 2
     return {
         settings: [
             {
                 name: 'Sensitivity',
-                subtext: 'Settings ~ Controls',
+                subtext: 'Settings ~ Controls ~ Mouse',
                 icon: 'settings_ethernet',
                 value: getRounded(sensitivity, 2),
                 color: 'purple'
             },
             {
-                name: "FOV",
+                name: 'Widowmaker Zoom',
+                subtext: 'Settings ~ Controls ~ Hero',
+                icon: 'settings_ethernet',
+                value: zoomModifier,
+                color: 'purple'
+            },
+            {
+                name: 'Ana Zoom',
+                subtext: 'Settings ~ Controls ~ Hero',
+                icon: 'settings_ethernet',
+                value: zoomModifier,
+                color: 'purple'
+            },
+            {
+                name: "Field of View",
                 subtext: 'Settings ~ Video',
                 icon: 'videocam',
                 value: 103,
                 color: 'blue'
             }
         ],
+        settingsHelp: <span>The Ana and Widowmaker settings can be found by going to Settings, Controls, and then selecting them in the dropdown in the top-right corner. Additional options will be revealed under "Hero".<p/>Set "relative aim sensitivity while zoomed" to 50 for both heroes.</span>,
         output: [
             {
                 name: "Hip Fire",
@@ -50,8 +67,8 @@ const getInfo = (settings, options) => {
                 variance: normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100,
             },
             {
-                name: "Widowmaker",
-                alias: "Widow",
+                name: "Ana / Widowmaker",
+                alias: "Zoom",
                 fov: 50.91,
                 zoom: 2.02,
                 cm360: outputWidow,
@@ -110,7 +127,6 @@ const Overwatch = {
                     text: "Reduce Buffer",
                     value: "ON",
                     note: false,
-                    subtext: "Options ~ Display ~ Reduce Buffering",
                     info: "Reduce input lag by removing miscellaneous buffering.",
                     critical: true
                 },
@@ -118,23 +134,20 @@ const Overwatch = {
                     text: "VSYNC",
                     value: "OFF",
                     note: true,
-                    subtext: "Options ~ Display ~ VSYNC",
                     info: "Less screen tearing with performance cost.",
                     critical: false
                 },
                 {
-                    text: "Limit FPS - OFF*",
+                    text: "Limit FPS",
                     value: "OFF",
                     note: true,
-                    subtext: "Options ~ Display ~ Limit FPS",
                     info: "Set this to OFF, or at least reasonably higher than your monitor's refresh rate.",
                     critical: false
                 },
                 {
-                    text: "Render Scale",
+                    text: "Graphics Quality - Advanced - Render Scale",
                     value: "100%",
                     note: false,
-                    subtext: "Options ~ Display ~ Graphics Quality ~ Advanced ~ Render Scale",
                     info: "Render the game at your full resolution, improving clarity. Lower this for improved performance as a last resort.",
                     critical: false
                 }

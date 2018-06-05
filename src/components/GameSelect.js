@@ -23,7 +23,10 @@ const gamesPerPage = 12
 
 const styles = theme => ({
     pageRoot: {
-        marginBottom: theme.spacing.unit * 6
+        marginBottom: theme.spacing.unit * 6,
+        maxWidth: '784px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
     },
     gridRoot: {
         flexGrow: 1,

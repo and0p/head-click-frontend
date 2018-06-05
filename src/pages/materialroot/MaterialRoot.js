@@ -180,9 +180,9 @@ class MaterialRoot extends React.Component {
             <div className={classes.drawerCategory}><Typography variant="button">LIBRARY</Typography></div>
             {sidebarGamesList}
             <SidebarButton 
-              link="/select_games"
+              link="/browse_games"
               icon="add_circle_outline"
-              text="Add Games"
+              text="Browse Games"
               enabled={this.props.profile.ready}
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />

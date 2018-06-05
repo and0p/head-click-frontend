@@ -49,19 +49,27 @@ import * as Copy from '../../copy'
 const styles = theme => ({
     root: {
       flexGrow: 1,
-    //   display: 'flex',
-    //   flexWrap: 'wrap',
-    //   boxSizing: 'border-box'
+    },
+    rootGridContainer: {
+        [theme.breakpoints.between('md', 'lg')]: {
+            maxWidth: '784px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            paddingLeft: -theme.spacing.unit,
+            paddingRight: theme.spacing.unit
+        }
     },
     paper: {
-      padding: theme.spacing.unit * 2,
-      textAlign: 'left',
-      //color: theme.palette.text.secondary,
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing.unit * 2
+        },
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing.unit
+        },
+        textAlign: 'left',
     },
     openPaper: {
         marginTop: theme.spacing.unit
-        //padding: theme.spacing.unit * 2,
-        //paddingBottom: 0
     },
     subsection: {
         clear: 'both',
@@ -101,7 +109,7 @@ const styles = theme => ({
     settingName: {
         [theme.breakpoints.up('sm')]: {
             float: 'left',
-            maxWidth: '80%'
+            maxWidth: '70%'
         }
     },
     settingDescription: {
@@ -209,7 +217,7 @@ class GamePage extends React.Component {
                                 {/* Output table */}
                                 { // Output table / graph if ready
                                 ready && <div>
-                                <Hidden smDown>
+                                <Hidden xsDown>
                                     <Table className={classes.table}>
                                         <TableHead>
                                             <TableRow>
@@ -241,7 +249,7 @@ class GamePage extends React.Component {
                                         </TableBody>
                                     </Table>
                                 </Hidden>
-                                <Hidden mdUp>
+                                <Hidden smUp>
                                     <Table className={classes.table}>
                                         <TableHead>
                                             <TableRow>
@@ -254,9 +262,9 @@ class GamePage extends React.Component {
                                         <TableBody>
                                         {gameOutput.output.map(output => {
                                             let c = classes.goodOutput
-                                            if(output.variance > 2)
+                                            if(output.variance > 4)
                                                 c = classes.badOutput
-                                            else if(output.variance > 1)
+                                            else if(output.variance > 2)
                                                 c = classes.mediumOutput
                                             return (
                                             <TableRow key={output.name}>
@@ -338,12 +346,13 @@ class GamePage extends React.Component {
                         </div>
                     </Paper>
                 </Grid>
+            // MAIN RETURN ///////////////////////////////////////////
             return (
                 <div className={classes.root}>
                     <Typography variant="display1" gutterBottom>
                         {game.name}
                     </Typography>
-                    <Grid container spacing={spacing}>
+                    <Grid container spacing={spacing} className={classes.rootGridContainer}>
                         <Grid item xs={12} xl={6}> {/* LEFT DIVISION */}
                             <Grid container spacing={spacing}>
                                 <Grid item xs={12}>

@@ -9,13 +9,15 @@ const styles = theme => ({
         border: '1px solid ' + theme.palette.custom.subtle,
         textAlign: 'center',
         padding: theme.spacing.unit * 2,
-        margin: theme.spacing.unit
+        margin: theme.spacing.unit,
     },
     alignCenter: {
         textAlign: 'center',
+        color: theme.palette.custom.subtle
     },
     alignLeft: {
         textAlign: 'left',
+        color: theme.palette.custom.subtle
     }
 });
 

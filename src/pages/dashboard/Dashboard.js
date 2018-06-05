@@ -17,6 +17,12 @@ const styles = theme => ({
     root: {
         flexGrow: 1
     },
+    rootGridContainer: {
+        [theme.breakpoints.down('lg')]: {
+            maxWidth: '784px',
+            margin: 'auto'
+        }
+    },
     pageHeader: {
         marginBottom: theme.spacing.unit * 2
     },
@@ -34,7 +40,7 @@ const styles = theme => ({
     }
 });
 
-const spacing = 16
+const spacing = 8
 
 class Dashboard extends React.Component {
 
@@ -43,7 +49,9 @@ class Dashboard extends React.Component {
         if(this.props.profile.ready)
         return(
             <div className={classes.root}>
-                <Typography variant="title" className={classes.pageHeader}>Dashboard</Typography>
+                <Typography variant="display1" className={classes.pageHeader}>
+                     Dashboard
+                </Typography>
                 <Grid container spacing={spacing}>
                     {/* Profile card */}
                     <Grid item xs={12} className={classes.profileCard}>

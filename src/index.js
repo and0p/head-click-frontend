@@ -49,7 +49,7 @@ class App extends React.Component {
           <MuiThemeProvider theme={theme}>
             <MaterialRoot>
               <Route exact path="/" render={() => homeComponent(store.getState())}/>
-              <Route exact path="/select_games" component={SelectGames} />
+              <Route exact path="/browse_games" component={SelectGames} />
               <Route path="/game/:name" component={GamePage} />
             </MaterialRoot>
             <Alert />

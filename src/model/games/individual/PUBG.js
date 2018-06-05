@@ -74,10 +74,17 @@ const getInfo = (settings, options) => {
             variance: normalizeLowPercentage(idealCm360 / output - 1) * 100
         })
     })
+    settingsJSON.push({
+        name: "Vertical Sens. Multiplier",
+        subtext: 'Settings ~ Control ~ Mouse',
+        icon: 'videocam',
+        value: 1.00,
+        color: 'blue'
+    })
     if(options["View"] == "First Person")
         settingsJSON.push({
             name: "FPSCameraFOV",
-            subtext: 'Settings ~ Graphics ~ Screen',
+            subtext: 'Settings ~ Graphics ~ Display Settings',
             icon: 'videocam',
             value: fov,
             color: 'blue'
@@ -123,14 +130,31 @@ const PUBG = {
         }
     },
     infoFunction: getInfo,
-    // settings: {
-    //     optimization: [
-            
-    //     ],
-    //     gameplay: [
-            
-    //     ]
-    // },
+    settings: {
+        "Graphics": [
+            {
+                text: "Foliage",
+                value: "LOW",
+                note: false,
+                info: "Makes targets easier to spot in the wild.",
+                critical: true
+            },
+            {
+                text: "V-Sync",
+                value: "OFF",
+                note: false,
+                info: "Performance boost, unless your computer is good enough.",
+                critical: false
+            },
+            {
+                text: "Motion Blur",
+                value: "OFF",
+                note: false,
+                info: "Performance boost amd improved clarity.",
+                critical: false
+            },
+        ]
+    },
     overrides: {
         cm360: true,
         dpi: true,
