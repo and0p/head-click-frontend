@@ -1,5 +1,5 @@
 import React from 'react'
-import { getRounded, normalizeLowPercentage, clamp } from '../../../math'
+import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV } from '../../../math'
 
 let baseHipDots = 54543
 let baseWidowDots = 181819
@@ -9,8 +9,8 @@ let idealFOV = 103
 let widowFOV = 38
 let zoomModifier = 50
 
-const getSensitivity = (settings) => {
-    return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / settings.sensitivity.actual), minSensitivity, maxSensitivity), 2)
+const getSensitivity = (ideal, settings) => {
+    return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / ideal), minSensitivity, maxSensitivity), 2)
 }
 
 const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
@@ -21,7 +21,8 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 }
 
 const getInfo = (settings, options) => {
-    let sensitivity = clamp(getSensitivity(settings), minSensitivity, maxSensitivity)
+    let ideal = getIdealCm360AtFOV(settings.sensitivity.actual, 103, "hor+")
+    let sensitivity = clamp(getSensitivity(ideal, settings), minSensitivity, maxSensitivity)
     let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
     let outputWidow = outputHipFire * 2
     return {
@@ -63,8 +64,8 @@ const getInfo = (settings, options) => {
                 fov: 103,
                 zoom: 1,
                 cm360: outputHipFire,
-                ideal: settings.sensitivity.actual,
-                variance: normalizeLowPercentage(settings.sensitivity.actual / outputHipFire - 1) * 100,
+                ideal: ideal,
+                variance: normalizeLowPercentage(ideal / outputHipFire - 1) * 100,
             },
             {
                 name: "Ana / Widowmaker",
@@ -72,8 +73,8 @@ const getInfo = (settings, options) => {
                 fov: 50.91,
                 zoom: 2.02,
                 cm360: outputWidow,
-                ideal: settings.sensitivity.actual * 2.02,
-                variance: normalizeLowPercentage((settings.sensitivity.actual * 2.02) / outputWidow - 1) * 100
+                ideal: ideal * 2.02,
+                variance: normalizeLowPercentage((ideal * 2.02) / outputWidow - 1) * 100
             }
         ]
     }

@@ -1,4 +1,13 @@
-import { getRounded, normalizeLowPercentage, clamp, getPercentageOfBaseFOV, getIdealCm360AtFOV, getVFOVFromHorizontalFOV, getHorPlusFromVerticalFOV } from '../../../math'
+import { 
+    getRounded,
+    normalizeLowPercentage,
+    clamp,
+    getPercentageOfBaseFOV,
+    getIdealCm360AtFOV,
+    getVFOVFromHorizontalFOV,
+    getHorPlusFromVerticalFOV,
+    baseHFOV 
+} from '../../../math'
 
 let baseDots = 12960;
 let minSensitivity = 0;
@@ -59,8 +68,8 @@ const getInfo = (settings, options) => {
         let thisFOV = FOVs[key]
         let thisVFOV = getVFOVFromHorizontalFOV(16, 9, thisFOV)
         let thisHFOV = getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, thisVFOV)
-        let zoom = vfov / thisVFOV
-        let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisVFOV, "vertical")
+        let zoom = fov / thisFOV
+        let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisFOV)
         let setting = getSensitivity(idealCm360, settings.dpi.actual, thisFOV)
         let output = getCm360FromGameSettings(settings.dpi.actual, setting, thisFOV)
         settingsJSON.push({

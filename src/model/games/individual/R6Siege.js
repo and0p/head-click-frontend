@@ -60,6 +60,7 @@ const getCm360ForSight = (gameSetting, configSetting, dpi, modifier, sight) => {
 }
 
 const getInfo = (settings, options) => {
+    console.log(options["Preferred Sight"])
     // Get base FOV from options
     let baseHFOV = getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, options["FOV"])
     let baseVFOV = options["FOV"]
@@ -119,7 +120,8 @@ const getInfo = (settings, options) => {
     return {
         settings: settingsJSON,
         settingsHelp: options["Method"] == "Config File" ? <span>The most accurate method to adjust sensitivity for Rainbow Six Siege is to change the multiplier in the user configuration file. This file is usually in a randomly generated folder found in: <p/>%USERPROFILE%/Documents/My Games/Rainbow Six Siege/<p/>While the game is not running, open the file in a text editor, modify the MouseSensitivityMultiplierUnit variable to the value seen above, and save the file. Changes to the file made while the game is running are ignored and overwritten.</span> : <span>This method assumes the user config file remains unmodified. The standard multiplier variable is listed above for reference.</span>,
-        output: outputJSON
+        output: outputJSON,
+        anotherThing: Math.random()
     }
 }
 

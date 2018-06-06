@@ -249,6 +249,7 @@ function profileReducer (state = initialState, action) {
                 })
             }
         case Symbols.UPDATE_GAME_OVERRIDE: 
+        console.log("updating override")
             if(action.value.override == 'cm360')
                 return update(state, {
                     profile: {
@@ -274,29 +275,29 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             else if(action.value.override == 'resolutionx')
-            return update(state, {
-                profile: {
-                    overrides: {
-                        [action.value.gameName]: {
-                            monitor: {
-                                width: {$set: action.value.value}
+                return update(state, {
+                    profile: {
+                        overrides: {
+                            [action.value.gameName]: {
+                                monitor: {
+                                    width: {$set: action.value.value}
+                                }
                             }
                         }
                     }
-                }
             })
             else if(action.value.override == 'resolutiony')
-            return update(state, {
-                profile: {
-                    overrides: {
-                        [action.value.gameName]: {
-                            monitor: {
-                                height: {$set: action.value.value}
+                return update(state, {
+                    profile: {
+                        overrides: {
+                            [action.value.gameName]: {
+                                monitor: {
+                                    height: {$set: action.value.value}
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
             else
                 return state
         case Symbols.UPDATE_GAME_OPTION:

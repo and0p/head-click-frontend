@@ -107,7 +107,7 @@ const styles = theme => ({
         paddingLeft: theme.spacing.unit,
         paddingTop: theme.spacing.unit,
         paddingBottom: theme.spacing.unit,
-        minHeight: '56px'
+        minHeight: '48px'
     },
     settingName: {
         [theme.breakpoints.up('sm')]: {
@@ -183,17 +183,46 @@ const tooltipValueReformat = (value, name, props) => getRounded(value, 2)
 class GamePage extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { currentGameAlias: this.props.match.params.name, animationEnabled: false }
+        this.state = { gameAlias: this.props.match.params.name }
     }
 
     // Enable and disable animations based on whether or not we've recieved a new game
     static getDerivedStateFromProps(props, state) {
-        if(props.match.params.name != state.currentGameAlias)
-            return { currentGameAlias: props.match.params.name, animationEnabled: false }
-        else
-        {
-            return { currentGameAlias: props.match.params.name, animationEnabled: true }
+        let ns = {}
+        let gameAlias = props.match.params.name
+        ns.gameAlias = gameAlias
+        // See if we have this game
+        if(games.hasOwnProperty(gameAlias)) {
+            // Set page as valid
+            ns.valid = true
+            // Grab Game object
+            ns.game = new Game(games[gameAlias])
+            // See if it's different from before and allow animation only if not
+            ns.gameChanged = gameAlias != state.gameAlias
+            ns.animationEnabled = gameAlias == state.gameAlias
+            // See if we're overriding the profile at all and use overrides if so
+            if(isInArray(props.profile.gamesOverriden, gameAlias))
+            {
+                ns.settings = props.profile.overrides[gameAlias]
+                ns.ready = true
+            }
+            else
+            {
+                ns.settings = props.profile.settings
+                ns.ready = props.profile.ready
+            }
+            // Set options
+            if(props.profile.options.hasOwnProperty(gameAlias))
+                ns.userOptions = props.profile.options[gameAlias]
+            else
+                ns.userOptions = ns.game.getDefaultOptions()
+            // Get the game's output
+            if(ns.game)
+                ns.gameOutput = ns.game.infoFunction(ns.settings, ns.userOptions)
         }
+        else
+            ns.valid = false
+        return ns
     }
 
     toggleOverride = gameName => event => {
@@ -206,34 +235,8 @@ class GamePage extends React.Component {
    
     render() {
         const { classes, theme } = this.props
-        let gameAlias = this.props.match.params.name
         // See if we have this game
-        if(games.hasOwnProperty(gameAlias)) {
-            // Grab Game object
-            let game = new Game(games[gameAlias])
-            // See if we're overriding the profile at all and use overrides if so
-            let settings = null, ready = false
-            if(isInArray(this.props.profile.gamesOverriden, gameAlias))
-            {
-                settings = this.props.profile.overrides[gameAlias]
-                ready = true
-            }
-            else
-            {
-                settings = this.props.profile.settings
-                ready = this.props.profile.ready
-            }
-            // Set options
-            let userOptions = {}
-            if(this.props.profile.options.hasOwnProperty(gameAlias))
-                userOptions = this.props.profile.options[gameAlias]
-            else
-                userOptions = game.getDefaultOptions()
-            // Get the game's output
-            let gameOutput = {}
-            if(ready)
-                gameOutput = game.infoFunction(settings, userOptions)
-
+        if(this.state.valid) {
             // Create const for output and misc settings and reorder based on window size
             const OutputHTML = 
                 <Grid item xs={12}>
@@ -244,22 +247,22 @@ class GamePage extends React.Component {
                             </Typography>
                             <div className={classes.subsection}>
                                 {/* Output table */}
-                                { // Output table / graph if ready
-                                ready && <div>
+                                { // Output table / graph if this.state.ready
+                                this.state.ready && <div>
                                 <Hidden xsDown>
                                     <Table className={classes.table}>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell padding="dense">View</TableCell>
                                                 <TableCell numeric padding="dense">Zoom</TableCell>
-                                                <TableCell numeric padding="dense">FOV</TableCell>
+                                                <TableCell numeric padding="dense">H.FOV</TableCell>
                                                 <TableCell numeric padding="dense">{Copy.cm360}</TableCell>
                                                 <TableCell numeric padding="dense">Ideal</TableCell>
                                                 <TableCell numeric padding="dense">Variance</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                        {gameOutput.output.map(output => {
+                                        {this.state.gameOutput.output.map(output => {
                                             let c = classes.goodOutput
                                             if(output.variance > 4)
                                                 c = classes.badOutput
@@ -283,14 +286,14 @@ class GamePage extends React.Component {
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell padding="none">View</TableCell>
-                                                <TableCell numeric padding="none">FOV</TableCell>
+                                                <TableCell numeric padding="none">H.FOV</TableCell>
                                                 <TableCell numeric padding="none">{Copy.cm360}</TableCell>
                                                 <TableCell numeric padding="none">Ideal</TableCell>
                                                 <TableCell numeric padding="none">Variance</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                        {gameOutput.output.map(output => {
+                                        {this.state.gameOutput.output.map(output => {
                                             let c = classes.goodOutput
                                             if(output.variance > 4)
                                                 c = classes.badOutput
@@ -312,7 +315,7 @@ class GamePage extends React.Component {
                                 <div className={classes.graphArea}>
                                     <ResponsiveContainer width="100%" height={400}>
                                         <LineChart 
-                                        data={gameOutput.hasOwnProperty("graph") ? gameOutput.graph : gameOutput.output}
+                                        data={this.state.gameOutput.hasOwnProperty("graph") ? this.state.gameOutput.graph : this.state.gameOutput.output}
                                         margin={{top: 20, bottom: 20, left: 38, right: 38}}
                                         >
                                             <Line name="Actual" type="monotone" dataKey="cm360" stroke='#8B41B0' animationDuration={animationTime} isAnimationActive={this.state.animationEnabled} />
@@ -331,14 +334,14 @@ class GamePage extends React.Component {
                                 </div>
                                 }
                                 {   // Otherwise show the message box
-                                !ready &&
+                                !this.state.ready &&
                                 <MessageBox align="center">No output to show</MessageBox>
                                 }
                             </div>
                         </div>
                     </Paper>
                 </Grid>
-            const MiscSettingsHTML = !game.hasOwnProperty("settings") ? <div/> :
+            const MiscSettingsHTML = !this.state.game.hasOwnProperty("settings") ? <div/> :
                 /* MISC SETTINGS */
                 <Grid item xs={12}>
                     <Paper>
@@ -348,12 +351,12 @@ class GamePage extends React.Component {
                             </Typography>
                             <div className={classes.subsection}>
                                 <List subheader={<li />} dense>
-                                    {Object.keys(game.settings).map(category => (
+                                    {Object.keys(this.state.game.settings).map(category => (
                                         <div key={category}>
                                         <ListItem>
                                             <ListItemText primary={category} />
                                         </ListItem>
-                                        {game.settings[category].map(setting => (
+                                        {this.state.game.settings[category].map(setting => (
                                             <ListItem key={setting.text}>
                                                 {setting.critical &&
                                                 <ListItemIcon>
@@ -377,11 +380,11 @@ class GamePage extends React.Component {
                         </div>
                     </Paper>
                 </Grid>
-            // MAIN RETURN ///////////////////////////////////////////
+            // MAIN RETURN ///////////////////////////////////////////////////////////////////////////////////////////////
             return (
                 <div className={classes.root}>
                     <Typography variant="display1" gutterBottom>
-                        {game.name}
+                        {this.state.game.name}
                     </Typography>
                     <Grid container spacing={spacing} className={classes.rootGridContainer}>
                         <Grid item xs={12} xl={6}> {/* LEFT DIVISION */}
@@ -395,16 +398,16 @@ class GamePage extends React.Component {
                                             <div className={classes.floatRight}>
                                                 <Typography variant="button" className={classes.overrideText}>Override</Typography>
                                                 <Switch
-                                                    checked={isInArray(this.props.profile.gamesOverriden, game.alias)}
-                                                    onChange={this.toggleOverride(game.alias)}
+                                                    checked={isInArray(this.props.profile.gamesOverriden, this.state.game.alias)}
+                                                    onChange={this.toggleOverride(this.state.game.alias)}
                                                     className={classes.overrideSwitch}
                                                     color="primary"
                                                 />
                                             </div>
                                             {/* OVERRIDE SECTION */}
-                                            {ready &&
+                                            {this.state.ready &&
                                             <Collapse 
-                                            in={isInArray(this.props.profile.gamesOverriden, game.alias)} 
+                                            in={isInArray(this.props.profile.gamesOverriden, this.state.game.alias)} 
                                             timeout="auto" 
                                             className={classes.collapse}
                                             unmountOnExit>
@@ -418,8 +421,8 @@ class GamePage extends React.Component {
                                                                     <TextField
                                                                         id="name"
                                                                         label="Desired cm/360"
-                                                                        value={settings.sensitivity.actual}
-                                                                        onChange={this.handleOverrideChange('cm360', game.alias)}
+                                                                        value={this.state.settings.sensitivity.actual}
+                                                                        onChange={this.handleOverrideChange('cm360', this.state.game.alias)}
                                                                         margin="dense"
                                                                         type="number"
                                                                         fullWidth
@@ -429,8 +432,8 @@ class GamePage extends React.Component {
                                                                     <TextField
                                                                         id="name"
                                                                         label="DPI"
-                                                                        value={settings.dpi.actual}
-                                                                        onChange={this.handleOverrideChange('dpi', game.alias)}
+                                                                        value={this.state.settings.dpi.actual}
+                                                                        onChange={this.handleOverrideChange('dpi', this.state.game.alias)}
                                                                         margin="dense"
                                                                         type="number"
                                                                         fullWidth
@@ -440,8 +443,8 @@ class GamePage extends React.Component {
                                                                     <TextField
                                                                         id="name"
                                                                         label="Resolution X"
-                                                                        value={settings.monitor.width}
-                                                                        onChange={this.handleOverrideChange('resolutionx', game.alias)}
+                                                                        value={this.state.settings.monitor.width}
+                                                                        onChange={this.handleOverrideChange('resolutionx', this.state.game.alias)}
                                                                         margin="dense"
                                                                         type="number"
                                                                         fullWidth
@@ -451,8 +454,8 @@ class GamePage extends React.Component {
                                                                     <TextField
                                                                         id="name"
                                                                         label="Resolution Y"
-                                                                        value={settings.monitor.height}
-                                                                        onChange={this.handleOverrideChange('resolutiony', game.alias)}
+                                                                        value={this.state.settings.monitor.height}
+                                                                        onChange={this.handleOverrideChange('resolutiony', this.state.game.alias)}
                                                                         margin="dense"
                                                                         type="number"
                                                                         fullWidth
@@ -465,18 +468,18 @@ class GamePage extends React.Component {
                                             </Collapse>
                                             }
                                             {/* OPTIONS SECTION */}
-                                            {game.hasOwnProperty("options") && game["options"].length > 0 && [
+                                            {this.state.game.hasOwnProperty("options") && this.state.game["options"].length > 0 && [
                                             <div className={classes.subsection}>
                                                 <Typography variant="subheading">
                                                     Options
                                                 </Typography>
-                                                {game.options.map(option =>
+                                                {this.state.game.options.map(option =>
                                                     <Grid item xs={12} key={option.name}>
                                                         <GameOption 
-                                                        gameAlias={gameAlias}
-                                                        userOptions={userOptions} 
+                                                        gameAlias={this.state.gameAlias}
+                                                        userOptions={this.state.userOptions} 
                                                         option={option} 
-                                                        value={userOptions[option.name]}
+                                                        value={this.state.userOptions[option.name]}
                                                         />
                                                     </Grid>
                                                 )
@@ -490,28 +493,28 @@ class GamePage extends React.Component {
                                                     In-Game Settings
                                                 </Typography>
                                                 { // Output game settings if ready
-                                                ready && 
-                                                gameOutput.settings.map(item => ([
+                                                this.state.ready && 
+                                                this.state.gameOutput.settings.map(item => (
                                                     <div className={classes.clear} key={item.name}>
                                                         <div className={classes.setting}>
                                                             <div className={classes.settingName}>
                                                                 <Typography variant="headline" className={classes.settingText}>{item.name}</Typography>
                                                                 <Typography variant="caption" className={classes.settingDescription}>{replaceSettingsArrows(item.subtext)}</Typography>
                                                             </div>
-                                                            <div className={item.important ? classes.settingValueHighlighted : classes.settingValueHighlighted }>
-                                                                <Typography variant="display2" className={classes.settingText}>{item.value}</Typography>
+                                                            <div className={ classes.settingValue }>
+                                                                <Typography variant="display1" className={classes.settingText}>{item.value}</Typography>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                ]))
+                                                ))
                                                 }
                                                 { // Output settings help if ready
-                                                ready && isValid(gameOutput.settingsHelp) && <MessageBox align="left">{gameOutput.settingsHelp}</MessageBox>
+                                                this.state.ready && isValid(this.state.gameOutput.settingsHelp) && <MessageBox align="left">{this.state.gameOutput.settingsHelp}</MessageBox>
                                                 }
                                                 { // Otherwise show message box
-                                                !ready &&
+                                                !this.state.ready &&
                                                 <MessageBox align="center">
-                                                    To calculate settings for this game, you'll need to <Link to="/">make a profile</Link> or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, gameAlias)}>enter preferences manually</a>.
+                                                    To calculate settings for this game, you'll need to <Link to="/">make a profile</Link> or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, this.state.gameAlias)}>enter preferences manually</a>.
                                                 </MessageBox>
                                                 }
                                             </div>
