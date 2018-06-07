@@ -5,6 +5,7 @@ import Drawer from '@material-ui/core/Drawer'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
 import Hidden from '@material-ui/core/Hidden'
@@ -18,6 +19,8 @@ import { connect } from 'react-redux'
 import * as Symbols from '../../redux/HcSymbols'
 // Utility imports
 import theme from '../../theme.js'
+// HC Imports
+import { games } from '../../model/HcModel'
 // Assets
 import ResponsiveAsset from '../../assets'
 
@@ -95,7 +98,11 @@ const styles = theme => ({
   },
   barLogo: {
     //marginTop: '-6px',
-    marginLeft: theme.spacing.unit
+    marginLeft: theme.spacing.unit,
+    flex: 1
+  },
+  barButton: {
+    marginRight: theme.spacing.unit
   },
   content: {
     [theme.breakpoints.up('md')]: {
@@ -143,14 +150,14 @@ class MaterialRoot extends React.Component {
 
     // Games list HTML
     const sidebarGamesList = (
-      this.props.profile.ownedGames.map((game) =>
+      this.props.profile.ownedGames.map((gameAlias) =>
         <SidebarButton
-          link={"/game/" + game.alias}
-          image={<ResponsiveAsset category={game.alias} asset="logo_mini" className={classes.gameLogo} />}
-          text={game.shortName}
+          link={"/game/" + gameAlias}
+          image={<ResponsiveAsset category={gameAlias} asset="logo_mini" className={classes.gameLogo} />}
+          text={games[gameAlias].shortName}
           innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
           enabled={ this.props.profile.ready }
-          key={game.alias}
+          key={gameAlias}
           />
       )
     );
@@ -204,6 +211,7 @@ class MaterialRoot extends React.Component {
               <Icon>menu</Icon>
             </IconButton>
             <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo_mobile} /></Hidden></div>
+            <Button disabled className={classes.barButton} variant="outlined" color="primary">Log in</Button>
           </Toolbar>
         </AppBar>
         <Hidden mdUp>

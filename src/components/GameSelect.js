@@ -162,10 +162,10 @@ class GameSelect extends React.Component {
                     </Grid>
                     {
                         gameArray.filter(this.filterFunction).slice(0, this.props.gamePagesRevealed * gamesPerPage).map((game) => (
-                        <GameButton 
+                        <GameButton
                             key={game.name}
                             game={game}
-                            selected={this.props.ownedGames.includes(game)}
+                            selected={this.props.ownedGames.includes(game.alias)}
                             classes={classes}
                             click={() => this.props.toggleGame(game)}
                         />

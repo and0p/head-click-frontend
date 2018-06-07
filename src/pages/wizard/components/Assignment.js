@@ -4,6 +4,7 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography';
+import copy from '../../../copy'
 import constants from '../../../constants'
 import Grid from '@material-ui/core/Grid'
 
@@ -39,38 +40,42 @@ const styles = theme => ({
     },
     image: {
         marginTop: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit * 2
+        marginBottom: theme.spacing.unit * 2,
+        maxWidth: '80%'
     }
 });
 
-const SensitivityAssignment = props => {
+const Assignment = props => {
     const { classes, theme } = props;
+    const image = {
+        width: '90%',
+        maxWidth: '600px',
+        margin: 'auto',
+    }
+    let thisCopy = props.version == "dpi" ? copy["en"].assignment.dpi : copy["en"].assignment.sensitivity
+    let assignment = props.version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
     return (
     <div className={classes.root}>
         <Typography variant="display1" className={classes.headline}>
-            We've assigned you a {constants.cm360Text} of {props.sensitivityAssigned}
+            {thisCopy.headline + assignment}
         </Typography>
         <Typography variant="body1" className={classes.subtle} gutterBottom>
             (You can change this at any time from the dashboard.)
         </Typography>
-        <img className={classes.image} src="http://placehold.it/500x300&text=assignment_notification" />
+        <div className={classes.imageContainer}>
+                <img style={image} src="http://placehold.it/600x400&text=assignment_notification" />
+        </div>
         <div className={classes.hookSection}>
+            {thisCopy.points.map(point => 
             <div className={classes.hook}>
                 <Typography variant="subheading" className={classes.subheader} gutterBottom>
-                    Your {constants.cm360Text} is your sensitivity across all your games.
+                    {point.primary}
                 </Typography>
                 <Typography variant="body1" className={classes.subtle}>
-                    It's a mapping of mouse movement in real-life centimeters to a full in-game rotation. This is the only consistent measurement we can use between various games, resolutions, aspect ratios, field of views, etc.
+                    {point.secondary}
                 </Typography>
             </div>
-            <div className={classes.hook}>
-                <Typography variant="subheading" className={classes.subheader} gutterBottom>
-                    We recommend {constants.cm360Text} based on what games / roles you play
-                </Typography>
-                <Typography variant="body1" className={classes.subtle}>
-                    Read more...
-                </Typography>
-            </div>
+            )}
         </div>
     </div>
     )
@@ -78,7 +83,7 @@ const SensitivityAssignment = props => {
 
 const mapStateToProps = (state) => {
     return {
-        sensitivityAssigned: state.profile.settings.sensitivity.recommended
+        profile: state.profile
     }
 }
   
@@ -90,4 +95,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(withStyles(styles)(SensitivityAssignment))
+)(withStyles(styles)(Assignment))

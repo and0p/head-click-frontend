@@ -10,19 +10,19 @@ import Typography from '@material-ui/core/Typography';
 import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
 import MonitorSelect from './components/MonitorSelect'
-import DpiAssignment from './components/DpiAssignment'
+import Assignment from './components/Assignment'
 import GameSelect from '../../components/GameSelect'
-import SensitivityAssignment from './components/SensitivityAssignment'
+import copy from '../../copy'
 import * as Symbols from '../../redux/HcSymbols'
 
-const desktopStepperHeight = '150px' 
+const desktopStepperHeight = '130px' 
 
 const styles = theme => ({
     root: {
         maxWidth: '1000px',
         marginLeft: 'auto',
         marginRight: 'auto',
-        paddingBottom: theme.spacing.unit * 4,
+        paddingBottom: theme.spacing.unit * 2,
         [theme.breakpoints.up('md')]: {
             marginBottom: desktopStepperHeight
         }
@@ -41,13 +41,13 @@ class Wizard extends React.Component {
                 page = <MonitorSelect />
                 break
             case 2:
-                page = <DpiAssignment />
+                page = <Assignment version="dpi" />
                 break
             case 3:
                 page = <div><Typography variant="title" gutterBottom>Select games you play:</Typography><GameSelect /></div>
                 break
             case 4:
-                page = <SensitivityAssignment />
+                page = <Assignment version="sensitivity" />
                 break
             default:
                 page = <div />

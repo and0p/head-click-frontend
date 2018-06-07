@@ -42,6 +42,15 @@ const theme = createMuiTheme({
             color: "#AA00FF"
           } 
         }
+      },
+      button: {
+        a: {
+          "&:link": "#000000",
+          "&:visited": "#000000"
+        }
+      },
+      display2: {
+        fontWeight: 700
       }
     },
     overrides: {
@@ -55,10 +64,6 @@ const theme = createMuiTheme({
         gutters: {
           paddingLeft: '8px',
           paddingRight: '8px',
-          // [breakpoints.up('sm')]: {
-          //   paddingLeft: '16px',
-          //   paddingRight: '16px',
-          // }
         }
       }
     },

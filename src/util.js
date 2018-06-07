@@ -35,19 +35,7 @@ export const replaceSettingsArrows = text => {
 export const assetPath = 'file:///C:/Users/Andrew/Pictures/head.click/'
 
 export const getRecommendedDpi = games => {
-    if(games.length > 0)
-    {
-        // Get average from all games
-        let allRecommended = []
-        games.forEach(game => {
-            allRecommended.push(game.math.recommended.ideal)
-        })
-        return stats.mean(allRecommended)
-    }
-    else
-    {
-        return 0
-    }
+    return 42
 }
 
 export const getOverrideFromSettings = settings => {

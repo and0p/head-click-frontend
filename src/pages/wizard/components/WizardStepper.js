@@ -135,12 +135,12 @@ const styles = theme => ({
               nextButton={
                 <Button size="small" onClick={this.handleNext} disabled={!this.isNextEnabled()}>
                   {this.getNextText()}
-                  <KeyboardArrowLeft />
+                  <KeyboardArrowRight />
                 </Button>
               }
               backButton={
                 <Button size="small" onClick={this.handleBack} disabled={!this.isBackEnabled()}>
-                  <KeyboardArrowRight />
+                  <KeyboardArrowLeft />
                   BACK
                 </Button>
               }
@@ -164,13 +164,13 @@ const styles = theme => ({
                     <StepLabel>Select games</StepLabel>
                   </Step>
                 </Stepper>
-                <Button size="small" onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
-                <KeyboardArrowLeft />
-                    BACK
+                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={{fontWeight: 400, color: "#FFFFFF"}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
+                  <KeyboardArrowLeft />
+                  BACK
                 </Button>
-                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
-                    {this.getNextText()}
-                    <KeyboardArrowRight />
+                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={{fontWeight: 400, color: "#FFFFFF"}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
+                  {this.getNextText()}
+                  <KeyboardArrowRight />
                 </Button>
               </div>
           </Hidden>

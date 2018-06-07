@@ -49,7 +49,7 @@ const initialState = {
     },
     wizard: {
         wizardCompleted: false,
-        activePage: 0,
+        activePage: 1,
         pagesReady: [true, false, true, false, true],
         monitorConcern: false,
         monitorSelected: false,
@@ -110,7 +110,7 @@ function profileReducer (state = initialState, action) {
         case Symbols.TOGGLE_GAME:
             if(isValid(action.value) && games.hasOwnProperty(action.value.alias)) {
                 // See if we have this game already
-                let index = state.profile.ownedGames.indexOf(action.value)
+                let index = state.profile.ownedGames.indexOf(action.value.alias)
                 if(index > -1) {
                     // Remove game
                     return update(state, {
@@ -123,7 +123,7 @@ function profileReducer (state = initialState, action) {
                     // Add game
                     return update(state, {
                         profile: {
-                            ownedGames: { $push: [action.value] },
+                            ownedGames: { $push: [action.value.alias] },
                             options: { 
                                 [action.value.alias]: { $set: action.value.getDefaultOptions() }
                             }
@@ -401,7 +401,7 @@ function wizardReducer (state = initialState, action) {
             else
                 return state
         case Symbols.WIZARD_BACK:
-            if(state.wizard.activePage > 0) {
+            if(state.wizard.activePage > 1) {
                 return update(state, {
                     wizard: {
                         activePage: { $set: state.wizard.activePage - 1 },
@@ -535,7 +535,7 @@ const HCTransform = createTransform(
         {
             return { 
                 ...inboundState, 
-                ownedGames: inboundState.ownedGames.map(game => game.alias),
+                //ownedGames: inboundState.ownedGames.map(game => game.alias),
                 settings: {
                     ...inboundState.settings,
                     monitor: inboundState.settings.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
@@ -552,7 +552,7 @@ const HCTransform = createTransform(
         {
             return {  
                 ...outboundState,
-                ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
+                //ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
                 settings: {
                     ...outboundState.settings,
                     monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
