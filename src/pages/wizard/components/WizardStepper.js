@@ -133,13 +133,13 @@ const styles = theme => ({
               activeStep={this.props.activePage}
               className={classes.mobileRoot}
               nextButton={
-                <Button size="small" onClick={this.handleNext} disabled={!this.isNextEnabled()}>
+                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>
               }
               backButton={
-                <Button size="small" onClick={this.handleBack} disabled={!this.isBackEnabled()}>
+                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={this.props.activePage == 4 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>
@@ -164,11 +164,11 @@ const styles = theme => ({
                     <StepLabel>Select games</StepLabel>
                   </Step>
                 </Stepper>
-                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={{fontWeight: 400, color: "#FFFFFF"}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
+                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>
-                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={{fontWeight: 400, color: "#FFFFFF"}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
+                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={this.props.activePage == 4 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>

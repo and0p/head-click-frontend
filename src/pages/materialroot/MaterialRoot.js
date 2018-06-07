@@ -77,6 +77,7 @@ const styles = theme => ({
   drawerContent: {
   },
   logo: {
+    float: 'left',
     [theme.breakpoints.up('sm')]: {
       marginTop: '12px',
       height: '40px'
@@ -86,20 +87,48 @@ const styles = theme => ({
       height: '32px'
     }
   },
-  logo_mobile: {
+  logoMobile: {
+    float: 'left',
     [theme.breakpoints.up('sm')]: {
+      marginTop: '7px',
+      height: '40px'
+    },
+    [theme.breakpoints.down('xs')]: {
       marginTop: '4px',
-      height: '40px'
-    },
-    [theme.breakpoints.down('xs')]: {
-      marginTop: '5px',
       height: '32px'
     }
   },
-  barLogo: {
-    //marginTop: '-6px',
-    marginLeft: theme.spacing.unit,
+  barLogoContainer: {
     flex: 1
+  },
+  // barLogo: {
+  //   //marginTop: '-6px',
+  //   marginLeft: 'theme.spacing.unit',
+  //   float: 'left'
+  // },
+  versionLight: {
+    color: '#FFFFFF',
+    //fontWeight: 600,
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: '28px',
+      paddingLeft: '104px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      paddingTop: '18px',
+      paddingLeft: '84px',
+    }
+  },
+  versionDark: {
+    color: "#55266e",
+    //fontWeight: 600,
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: '35px',
+      paddingLeft: '102px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      paddingTop: '28px',
+      paddingLeft: '81px',
+    }
   },
   barButton: {
     marginRight: theme.spacing.unit
@@ -167,6 +196,7 @@ class MaterialRoot extends React.Component {
       <div>
           <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
             <ResponsiveAsset category="headclick" asset="logo_dark" className={classes.logo} />
+            <Typography variant="body1" className={classes.versionDark}>alpha</Typography>
           </Paper>
           <div className={classes.drawerContent}>
             <SidebarButton 
@@ -177,7 +207,7 @@ class MaterialRoot extends React.Component {
               innerClick={() => { this.props.selectSidebarItem(0) }}
               />
             <SidebarButton 
-              link="/"
+              link="/stats"
               icon="insert_chart"
               text="Stats"
               enabled={this.props.profile.ready}
@@ -210,7 +240,12 @@ class MaterialRoot extends React.Component {
             >
               <Icon>menu</Icon>
             </IconButton>
-            <div className={classes.barLogo}><Hidden mdUp><ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo_mobile} /></Hidden></div>
+            <div className={classes.barLogoContainer}>
+            <Hidden mdUp>
+                <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logoMobile} />
+                <Typography variant="body2" className={classes.versionLight}>alpha</Typography>
+            </Hidden>
+            </div>
             <Button disabled className={classes.barButton} variant="outlined" color="primary">Log in</Button>
           </Toolbar>
         </AppBar>

@@ -25,6 +25,9 @@ const styles = theme => ({
         paddingBottom: theme.spacing.unit * 2,
         [theme.breakpoints.up('md')]: {
             marginBottom: desktopStepperHeight
+        },
+        [theme.breakpoints.down('md')]: {
+            marginBottom: '30px'
         }
     }
 });

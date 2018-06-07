@@ -50,7 +50,8 @@ const theme = createMuiTheme({
         }
       },
       display2: {
-        fontWeight: 700
+        fontWeight: 700,
+        color: "#FFFFFF"
       }
     },
     overrides: {

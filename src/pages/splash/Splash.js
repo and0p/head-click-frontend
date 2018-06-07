@@ -14,7 +14,12 @@ import Button from '@material-ui/core/Button'
 const styles = theme => ({
     root: {
       flexGrow: 1,
-      marginTop: theme.spacing.unit * 4
+      [theme.breakpoints.up('sm')]: {
+        marginTop: theme.spacing.unit * 4
+      },
+      [theme.breakpoints.down('sm')]: {
+        marginTop: theme.spacing.unit * 2
+      },
     },
     centered: {
       textAlign: 'center'
@@ -53,6 +58,9 @@ const styles = theme => ({
     button: {
       width: '250px',
       maxWidth: '100%',
+    },
+    buttonCaption: {
+      color: theme.palette.custom.subtle
     }
 })
 
@@ -76,7 +84,7 @@ class Splash extends React.Component {
                 <Typography variant="display2">{copy.en.splash.tagline}</Typography>
               </ReactFitText>
               <div className={classes.imageContainer}>
-                <img style={splashImage} src="http://placehold.it/600x400&text=splash_placeholder" />
+                <img style={splashImage} src="http://placehold.it/600x300&text=splash_placeholder" />
               </div>
             </Grid>
             <Hidden smDown>
@@ -112,7 +120,7 @@ class Splash extends React.Component {
               >
                 Log In
               </Button>
-              <Typography variant="caption">Feature not available in alpha.</Typography>
+              <Typography className={classes.buttonCaption} variant="caption">Feature not available in alpha.</Typography>
             </Grid>
             <Grid item xs={0} sm={0} md={3} className={classes.padGrid}/>
           </Grid>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
+import ReactFitText from 'react-fittext'
 import Typography from '@material-ui/core/Typography';
 import copy from '../../../copy'
 import constants from '../../../constants'
@@ -12,9 +13,10 @@ const styles = theme => ({
     root: {
         flex: 1,
         textAlign: 'center',
-        //maxWidth: constants.wizardPageWidth,
+        marginTop: theme.spacing.unit * 2,
         marginLeft: 'auto',
-        marginRight: 'auto'
+        marginRight: 'auto',
+        maxWidth: '800px'
     },
     headline: {
         color: '#FFFFFF'
@@ -56,9 +58,11 @@ const Assignment = props => {
     let assignment = props.version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
     return (
     <div className={classes.root}>
-        <Typography variant="display1" className={classes.headline}>
-            {thisCopy.headline + assignment}
-        </Typography>
+        <ReactFitText minFontSize={24} maxFontSize={36}>
+            <Typography variant="display2" className={classes.headline}>
+                {thisCopy.headline + assignment}
+            </Typography>
+        </ReactFitText>
         <Typography variant="body1" className={classes.subtle} gutterBottom>
             (You can change this at any time from the dashboard.)
         </Typography>
