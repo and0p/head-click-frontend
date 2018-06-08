@@ -51,7 +51,7 @@ const styles = theme => ({
         float: 'right',
         minWidth: '200px',
         marginTop: '4px',
-        marginRight: '4px',
+        marginRight: '8px',
         [theme.breakpoints.down('xs')]: {
             width: '80%'
         }

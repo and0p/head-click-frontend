@@ -11,7 +11,19 @@ import EditIcon from '../../components/EditIcon'
 import ProfileEditDialog from '../../components/ProfileEditDialog'
 import ComingSoon from '../../components/ComingSoon'
 import constants from '../../constants'
+import MessageBox from '../../components/MessageBox'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import Icon from '@material-ui/core/Icon'
+import copy from '../../copy'
+import axios from 'axios'
 import * as Symbols from '../../redux/HcSymbols'
+
+const spacing = 8
 
 const styles = theme => ({
     root: {
@@ -37,12 +49,38 @@ const styles = theme => ({
     },
     profileCard: {
         //paddingBottom: theme.spacing.unit
+    },
+    messageBoxContainer: {
+        margin: -spacing
     }
 });
 
-const spacing = 8
-
 class Dashboard extends React.Component {
+    constructor(props){
+        super(props)
+        this.state= { blogContent: <div/>}
+        axios.get('https://blog.head.click/ghost/api/v0.1/posts/', {
+            params: {
+                client_id: 'ghost-frontend',
+                client_secret: 'f8dee5ed9d9d',
+                limit: '5'
+            }})
+            .then(response => {console.log(response); this.populateBlogContent(response)})
+            .catch(error => console.log("blog request bad"))
+    }
+
+    populateBlogContent = response => {
+        let blogContent = (
+            <List subheader={<li />}>
+            {response.data.posts.map(post => (
+                <ListItem key={post.id}>
+                    <ListItemText primary={post.title} secondary={post.custom_excerpt} />
+                </ListItem>
+            ))}
+            </List>
+        )
+        this.setState({blogContent: blogContent})
+    }
 
     render() {
         const { classes, theme } = this.props;
@@ -90,6 +128,19 @@ class Dashboard extends React.Component {
                             </Typography>
                             <ComingSoon />
                         </Paper>
+                    </Grid>
+                    <Grid item xs={12} xl={6}>
+                        <Paper className={classes.paper}>
+                            <Typography variant="subheading" component="h3" gutterBottom>
+                                Blog
+                            </Typography>
+                            {this.state.blogContent}
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} xl={6}>
+                        <div className={classes.messageBoxContainer}>
+                            <MessageBox>{copy["en"].misc.versionWarning}</MessageBox>
+                        </div>
                     </Grid>
                 </Grid>
             </div> 

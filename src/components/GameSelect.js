@@ -17,6 +17,7 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button'
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ResponsiveAsset from '../assets'
+import ReactFitText from 'react-fittext'
 import * as Symbols from '../redux/HcSymbols'
 
 const gamesPerPage = 12
@@ -131,7 +132,9 @@ class GameSelect extends React.Component {
             gameArray = gamesByPopularity
         return (
             <div className={classes.pageRoot}>
-                
+                <ReactFitText minFontSize={24} maxFontSize={36}>
+                    <Typography variant="display2" gutterBottom>Select games you play:</Typography>
+                </ReactFitText>
                 <Grid container spacing={16} className={classes.gridRoot}>
                     <Grid item xs={8} sm={9} >
                         <TextField

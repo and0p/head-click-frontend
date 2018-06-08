@@ -81,6 +81,7 @@ const getInfo = (settings, options) => {
             name: key == "Scoping" ? "ADS" : key,
             alias: aliases[key],
             fov: thisHFOV,
+            vfov: thisVFOV,
             zoom: getRounded(zoom, 2),
             cm360: output,
             ideal: idealCm360,
@@ -156,7 +157,7 @@ const PUBG = {
                 text: "V-Sync",
                 value: "OFF",
                 note: false,
-                info: "Performance boost, unless your computer is good enough.",
+                info: "Performance boost and lag reduction, unless your computer is powerful enough.",
                 critical: false
             },
             {

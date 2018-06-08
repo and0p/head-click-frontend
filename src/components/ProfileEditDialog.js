@@ -119,7 +119,6 @@ class ProfileEditDialog extends React.Component {
         aria-labelledby="edit-profile"
         onEnter={this.reopened}
       >
-      {console.log("dialog innards")}
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <form noValidate autoComplete="off">

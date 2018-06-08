@@ -12,16 +12,13 @@ import Icon from '@material-ui/core/Icon'
 const styles = theme => ({
     subtle: {
         color: '#888888'
-    },
-    activia: {
-        marginLeft: '40px'
     }
 })
 
-const activeStyle = {
+const activeStyle = theme => ({
     borderLeft: 'solid 4px #8B41B0',
     paddingLeft: '20px'
-}
+})
 
 class SidebarButton extends React.Component {
     constructor(props) {
@@ -31,12 +28,24 @@ class SidebarButton extends React.Component {
     render() {
         const { classes, theme } = this.props;
         let icon = <ListItemIcon><Icon>{this.props.icon}</Icon></ListItemIcon>
-        return(
-            <ListItem component={this.props.enabled ? NavLink : 'ul'} exact activeStyle={activeStyle} to={this.props.link} button onClick={this.props.innerClick}>
-                {this.props.hasOwnProperty("image") ? this.props.image : icon}
-                <ListItemText className={classes.subtle} primary={this.props.text} />
-            </ListItem>
-        );
+        if(this.props.link.startsWith("http"))
+        {
+            return(
+                <ListItem component={this.props.enabled ? 'a' : 'ul'} href={this.props.link} target="_blank" button>
+                    {this.props.hasOwnProperty("image") ? this.props.image : icon}
+                    <ListItemText className={classes.subtle} primary={this.props.text} />
+                </ListItem>
+            )
+        }
+        else
+        {
+            return(
+                <ListItem component={this.props.enabled ? NavLink : 'ul'} exact activeStyle={activeStyle(theme)} to={this.props.link} button onClick={this.props.innerClick}>
+                    {this.props.hasOwnProperty("image") ? this.props.image : icon}
+                    <ListItemText className={classes.subtle} primary={this.props.text} />
+                </ListItem>
+            )
+        }
     }
 }
 

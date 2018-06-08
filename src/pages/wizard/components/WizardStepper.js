@@ -133,13 +133,13 @@ const styles = theme => ({
               activeStep={this.props.activePage}
               className={classes.mobileRoot}
               nextButton={
-                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
+                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={this.props.activePage == 4 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>
               }
               backButton={
-                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={this.props.activePage == 4 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
+                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>

@@ -17,6 +17,7 @@ import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider'
 import * as Symbols from '../../../redux/HcSymbols'
 import { isValid } from '../../../util' 
+import ReactFitText from 'react-fittext'
 
 const styles = theme => ({
     root: {
@@ -108,7 +109,9 @@ class MonitorSelect extends React.Component {
         return(
             <div className={classes.root}>
                 <div className={classes.section}>
-                    <Typography variant="title" gutterBottom>Select your resolution:</Typography>
+                    <ReactFitText minFontSize={24} maxFontSize={36}>
+                        <Typography variant="display2" gutterBottom>Select your monitor resolution:</Typography>
+                    </ReactFitText>
                     {Object.keys(monitors).map((key) => (
                         <div key={key}>
                             <Typography variant="body2" className={classes.ratioText}>{key}</Typography>

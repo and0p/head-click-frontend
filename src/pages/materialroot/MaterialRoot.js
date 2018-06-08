@@ -21,6 +21,7 @@ import * as Symbols from '../../redux/HcSymbols'
 import theme from '../../theme.js'
 // HC Imports
 import { games } from '../../model/HcModel'
+import MessageBox from '../../components/MessageBox'
 // Assets
 import ResponsiveAsset from '../../assets'
 
@@ -166,6 +167,9 @@ const styles = theme => ({
   gameLogo: {
     width: '24px',
     marginRight: theme.spacing.unit * 2
+  },
+  messageBox: {
+    marginTop: theme.spacing.unit * 2
   }
 });
 
@@ -178,18 +182,28 @@ class MaterialRoot extends React.Component {
     const { classes, theme } = this.props;
 
     // Games list HTML
-    const sidebarGamesList = (
-      this.props.profile.ownedGames.map((gameAlias) =>
-        <SidebarButton
-          link={"/game/" + gameAlias}
-          image={<ResponsiveAsset category={gameAlias} asset="logo_mini" className={classes.gameLogo} />}
-          text={games[gameAlias].shortName}
-          innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
-          enabled={ this.props.profile.ready }
-          key={gameAlias}
-          />
-      )
-    );
+    const sidebarGamesList = () => (
+      <div>
+        <div className={classes.drawerCategory}><Typography variant="button">LIBRARY</Typography></div>
+        {this.props.profile.ownedGames.map((gameAlias) =>
+          <SidebarButton
+            link={"/game/" + gameAlias}
+            image={<ResponsiveAsset category={gameAlias} asset="logo_mini" className={classes.gameLogo} />}
+            text={games[gameAlias].shortName}
+            innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
+            enabled={ this.props.profile.ready }
+            key={gameAlias}
+            />
+        )}
+        <SidebarButton 
+        link="/browse_games"
+        icon="add_circle_outline"
+        text="Browse Games"
+        enabled={this.props.profile.ready}
+        innerClick={() => { this.props.selectSidebarItem(0) }}
+        />
+      </div>
+    )
 
     // Drawer HTML, used in both responsive and static
     const drawer = (
@@ -202,7 +216,7 @@ class MaterialRoot extends React.Component {
             <SidebarButton 
               link="/"
               icon="home"
-              text="Dashboard"
+              text={this.props.profile.ready ? "Dashboard" : "Welcome"}
               enabled={true}
               innerClick={() => { this.props.selectSidebarItem(0) }}
               />
@@ -213,16 +227,15 @@ class MaterialRoot extends React.Component {
               enabled={this.props.profile.ready}
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />
-            <Divider />
-            <div className={classes.drawerCategory}><Typography variant="button">LIBRARY</Typography></div>
-            {sidebarGamesList}
             <SidebarButton 
-              link="/browse_games"
-              icon="add_circle_outline"
-              text="Browse Games"
-              enabled={this.props.profile.ready}
-              innerClick={() => { this.props.selectSidebarItem(0) }}
+              link="http://blog.head.click"
+              icon="subject"
+              text="Blog"
+              enabled={true}
+              //innerClick={() => { this.props.selectSidebarItem(0) }}
             />
+            <Divider />
+            {this.props.profile.ready ? sidebarGamesList() : <div className={classes.messageBox}><MessageBox>Create a profile or log in to access the rest of the site.</MessageBox></div>}
           </div>
       </div>
     )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getRounded, getIdealCm360AtFOV, normalizeLowPercentage, getHorPlusFromVerticalFOV } from '../../../math'
+import { getRounded, getIdealCm360AtFOV, normalizeLowPercentage, getHorPlusFromVerticalFOV, getVFOVFromHorizontalFOV } from '../../../math'
 
 // Dots to rotate 360, if zoomed then assuming zoom modified is "50"
 let sights = {
@@ -111,6 +111,7 @@ const getInfo = (settings, options) => {
                 name: name,
                 alias: name == "Reflex Sights" ? "Reflex" : name == "Iron Sights" ? "ADS" : name,
                 fov: sightHFOV,
+                vfov: baseVFOV / sights[sight].zoom,
                 zoom: sights[sight].zoom,
                 cm360: output,
                 ideal: desiredCm360,

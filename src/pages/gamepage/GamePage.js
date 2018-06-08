@@ -129,7 +129,8 @@ const styles = theme => ({
         [theme.breakpoints.down('xs')]: {
             marginTop: -theme.spacing.unit * 2
         },
-        textAlign: 'right'
+        textAlign: 'right',
+        color: "#FFFFFF"
     },
     settingValueHighlighted: {
         [theme.breakpoints.up('sm')]: {
@@ -145,7 +146,7 @@ const styles = theme => ({
             textFillColor: 'transparent',
         },
         textAlign: 'right',
-
+        color: "#FFFFFF"
     },
     outputValue: {
         overflow: 'hidden',
@@ -217,7 +218,7 @@ class GamePage extends React.Component {
             else
                 ns.userOptions = ns.game.getDefaultOptions()
             // Get the game's output
-            if(ns.game)
+            if(ns.ready)
                 ns.gameOutput = ns.game.infoFunction(ns.settings, ns.userOptions)
         }
         else
@@ -256,6 +257,7 @@ class GamePage extends React.Component {
                                                 <TableCell padding="dense">View</TableCell>
                                                 <TableCell numeric padding="dense">Zoom</TableCell>
                                                 <TableCell numeric padding="dense">H.FOV</TableCell>
+                                                <TableCell numeric padding="dense">V.FOV</TableCell>
                                                 <TableCell numeric padding="dense">{Copy.cm360}</TableCell>
                                                 <TableCell numeric padding="dense">Ideal</TableCell>
                                                 <TableCell numeric padding="dense">Variance</TableCell>
@@ -273,6 +275,7 @@ class GamePage extends React.Component {
                                                 <TableCell padding="dense">{output.name}</TableCell>
                                                 <TableCell numeric padding="dense">{getRounded(output.zoom, 2)}</TableCell>
                                                 <TableCell numeric padding="dense">{getRounded(output.fov, 2)}</TableCell>
+                                                <TableCell numeric padding="dense">{getRounded(output.vfov, 2)}</TableCell>
                                                 <TableCell numeric padding="dense">{getRounded(output.cm360, 2)}</TableCell>
                                                 <TableCell numeric padding="dense">{getRounded(output.ideal, 2)}</TableCell>
                                                 <TableCell numeric padding="dense" className={c}>{getRounded(output.variance, 2)}%</TableCell>
@@ -502,7 +505,7 @@ class GamePage extends React.Component {
                                                                 <Typography variant="caption" className={classes.settingDescription}>{replaceSettingsArrows(item.subtext)}</Typography>
                                                             </div>
                                                             <div className={ classes.settingValue }>
-                                                                <Typography variant="display1" className={classes.settingText}>{item.value}</Typography>
+                                                                <Typography variant="display1" className={classes.settingText} style={{color: "#FFFFFF"}}>{item.value}</Typography>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -514,7 +517,7 @@ class GamePage extends React.Component {
                                                 { // Otherwise show message box
                                                 !this.state.ready &&
                                                 <MessageBox align="center">
-                                                    To calculate settings for this game, you'll need to <Link to="/">make a profile</Link> or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, this.state.gameAlias)}>enter preferences manually</a>.
+                                                    To calculate settings for this game, you'll need to <Link to="/">make a profile, log in</Link>, or <a href="" onClick={e => e.preventDefault() || this.props.setOverride(true, this.state.gameAlias)}>enter preferences manually</a>.
                                                 </MessageBox>
                                                 }
                                             </div>

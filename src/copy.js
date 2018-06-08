@@ -26,6 +26,9 @@ const copy = {
                 verbose: "Compare your settings to pro gamers and streamers."
             }
         },
+        wizard: {
+
+        },
         assignment: {
             dpi: {
                 headline: "We've assigned you a DPI of ",
@@ -45,6 +48,9 @@ const copy = {
                     },
                 ]
             }
+        },
+        misc: {
+            versionWarning: <span>Welcome to the Head Click alpha! This site is currently in its earliest stages of development, so there are still bugs and missing features. Read more about ongoing development <a href="https://blog.head.click/alpha">here</a>.</span>
         }
     }
 }

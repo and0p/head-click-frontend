@@ -18,7 +18,6 @@ const SelectGames = props => {
     const { classes, theme } = props
     return(
         <div className={classes.root}>
-            <Typography variant="title">Select games you play:</Typography>,
             <GameSelect />
         </div>
     )

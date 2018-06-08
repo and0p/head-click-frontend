@@ -49,6 +49,16 @@ const monitorData = {
             nonDescriptiveName: false,
             common: false,
             usable: true
+        },
+        "1600x1200": {
+            name: "1600x1200",
+            width: 1600,
+            height: 1200,
+            aspectRatio: "4:3",
+            recommendedDpi: 1200,
+            nonDescriptiveName: false,
+            common: false,
+            usable: true
         }
     },
     "16:9": {
@@ -66,6 +76,16 @@ const monitorData = {
             name: "1366x768",
             width: 1366,
             height: 768,
+            aspectRatio: "16:9",
+            recommendedDpi: 800,
+            nonDescriptiveName: false,
+            common: false,
+            usable: true
+        },
+        "1600x900": {
+            name: "1600x900",
+            width: 1600,
+            height: 900,
             aspectRatio: "16:9",
             recommendedDpi: 800,
             nonDescriptiveName: false,
