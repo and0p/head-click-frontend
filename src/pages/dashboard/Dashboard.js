@@ -58,23 +58,44 @@ const styles = theme => ({
     }
 });
 
+let blogRequested = false
+let blogContent = <div/>
+let featuredBlogContent = <div/>
+let blogResponse = null
+let blogFeaturedResponse = null
+
 class Dashboard extends React.Component {
     constructor(props){
         super(props)
-        this.state= { blogContent: <div/>}
-        axios.get('https://blog.head.click/ghost/api/v0.1/posts/', {
-            params: {
-                client_id: 'ghost-frontend',
-                client_secret: 'f8dee5ed9d9d',
-                limit: '5',
-                fields: "title, slug, feature_image, featured, custom_excerpt"
-            }})
-            .then(response => {console.log(response); this.populateBlogContent(response)})
-            .catch(error => console.log("blog request bad"))
+        this.state = { blogContent: blogContent, featuredBlogContent: featuredBlogContent }
+        // Grab blog content
+        if(!blogRequested) {
+            // Grab 6 latest blog posts
+            axios.get('https://blog.head.click/ghost/api/v0.1/posts/', {
+                params: {
+                    client_id: 'ghost-frontend',
+                    client_secret: 'f8dee5ed9d9d',
+                    limit: '6',
+                    fields: "id, title, slug, featured, custom_excerpt"
+                }})
+                .then(response => { console.log(response); blogResponse = response; this.populateBlogContent(response) })
+                .catch(error => console.log(error))
+            axios.get('https://blog.head.click/ghost/api/v0.1/posts/', {
+                params: {
+                    client_id: 'ghost-frontend',
+                    client_secret: 'f8dee5ed9d9d',
+                    limit: '1',
+                    filter: "featured:true",
+                    fields: "title, slug, feature_image, featured, custom_excerpt"
+                }})
+                .then(response => { console.log(response); blogResponse = response; this.populateFeaturedBlogContent(response) })
+                .catch(error => console.log(error))
+            blogRequested = true
+        }
     }
 
     populateBlogContent = response => {
-        let blogContent = (
+        blogContent = (
             <List subheader={<li />}>
             {response.data.posts.map(post => (
                 <ListItem key={post.id}>
@@ -84,6 +105,26 @@ class Dashboard extends React.Component {
             </List>
         )
         this.setState({blogContent: blogContent})
+    }
+
+    populateFeaturedBlogContent = response => {
+        if(response.data.posts.length > 0) {
+            let post = response.data.posts[0]
+            featuredBlogContent = (
+                <List subheader={<li />}>
+                    <ListItem key={post.id}>
+                        <ListItemText primary={post.title} secondary={<span>{post.custom_excerpt} <a href={"https://blog.head.click/"+ post.slug} target="_blank">Read More...</a></span>} />
+                    </ListItem>
+                </List>)
+        }
+        else {
+
+        }
+        this.setState({featuredBlogContent: featuredBlogContent})
+    }
+
+    populateBlogError = error => {
+        
     }
 
     render() {
@@ -144,6 +185,15 @@ class Dashboard extends React.Component {
                                 <div className={classes.messageBoxContainer}>
                                     <MessageBox>{copy["en"].misc.versionWarning}</MessageBox>
                                 </div>
+                            </Grid>
+                            {/* Featured Blog */}
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" component="h3" gutterBottom>
+                                        Featured
+                                    </Typography>
+                                    {this.state.featuredBlogContent}
+                                </Paper>
                             </Grid>
                             {/* Blog */}
                             <Grid item xs={12}>
