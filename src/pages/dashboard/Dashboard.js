@@ -30,9 +30,12 @@ const styles = theme => ({
         flexGrow: 1
     },
     rootGridContainer: {
-        [theme.breakpoints.down('lg')]: {
+        [theme.breakpoints.between('md', 'lg')]: {
             maxWidth: '784px',
-            margin: 'auto'
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            paddingLeft: -theme.spacing.unit,
+            paddingRight: theme.spacing.unit
         }
     },
     pageHeader: {
@@ -63,7 +66,8 @@ class Dashboard extends React.Component {
             params: {
                 client_id: 'ghost-frontend',
                 client_secret: 'f8dee5ed9d9d',
-                limit: '5'
+                limit: '5',
+                fields: "title, slug, feature_image, featured, custom_excerpt"
             }})
             .then(response => {console.log(response); this.populateBlogContent(response)})
             .catch(error => console.log("blog request bad"))
@@ -74,7 +78,7 @@ class Dashboard extends React.Component {
             <List subheader={<li />}>
             {response.data.posts.map(post => (
                 <ListItem key={post.id}>
-                    <ListItemText primary={post.title} secondary={post.custom_excerpt} />
+                    <ListItemText primary={post.title} secondary={<span>{post.custom_excerpt} <a href={"https://blog.head.click/"+ post.slug} target="_blank">Read More...</a></span>} />
                 </ListItem>
             ))}
             </List>
@@ -90,59 +94,70 @@ class Dashboard extends React.Component {
                 <Typography variant="display1" className={classes.pageHeader}>
                      Dashboard
                 </Typography>
-                <Grid container spacing={spacing}>
-                    {/* Profile card */}
-                    <Grid item xs={12} className={classes.profileCard}>
-                        <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
-                            Profile
-                        </Typography>
-                        <EditIcon onClick={this.props.editProfile}/>
+                <Grid container spacing={spacing} className={classes.rootGridContainer}>
+                    {/* LEFT COLUMN  */}
+                    <Grid item xs={12} xl={6}>
                         <Grid container spacing={spacing}>
-                            <Grid item xs={12} lg={4}>
-                                <InfoCard name={constants.cm360Text} value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple"/>
+                            {/* Profile card */}
+                            <Grid item xs={12} className={classes.profileCard}>
+                                <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
+                                    Profile
+                                </Typography>
+                                <EditIcon onClick={this.props.editProfile}/>
+                                <Grid container spacing={spacing}>
+                                    <Grid item xs={12}>
+                                        <InfoCard name={constants.cm360Text} value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple"/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <InfoCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue"/>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <InfoCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal"/>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} lg={4}>
-                                <InfoCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue"/>
+                            {/* Gear card */}
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" component="h3" gutterBottom>
+                                        Gear
+                                    </Typography>
+                                    <ComingSoon />
+                                </Paper>
                             </Grid>
-                            <Grid item xs={12} lg={4}>
-                                <InfoCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal"/>
+                            {/* Stats card */}
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" component="h3" gutterBottom>
+                                        Stats
+                                    </Typography>
+                                    <ComingSoon />
+                                </Paper>
                             </Grid>
                         </Grid>
                     </Grid>
-                    {/* Edit profile dialog */}
-                    <ProfileEditDialog />
-                    {/* Gear card */}
+                    {/* RIGHT COLUMN  */}
                     <Grid item xs={12} xl={6}>
-                        <Paper className={classes.paper}>
-                            <Typography variant="subheading" component="h3" gutterBottom>
-                                Gear
-                            </Typography>
-                            <ComingSoon />
-                        </Paper>
-                    </Grid>
-                    {/* Stats card */}
-                    <Grid item xs={12} xl={6}>
-                        <Paper className={classes.paper}>
-                            <Typography variant="subheading" component="h3" gutterBottom>
-                                Stats
-                            </Typography>
-                            <ComingSoon />
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12} xl={6}>
-                        <Paper className={classes.paper}>
-                            <Typography variant="subheading" component="h3" gutterBottom>
-                                Blog
-                            </Typography>
-                            {this.state.blogContent}
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12} xl={6}>
-                        <div className={classes.messageBoxContainer}>
-                            <MessageBox>{copy["en"].misc.versionWarning}</MessageBox>
-                        </div>
+                        <Grid container spacing={spacing}>
+                            {/* development warning card */}
+                            <Grid item xs={12}>
+                                <div className={classes.messageBoxContainer}>
+                                    <MessageBox>{copy["en"].misc.versionWarning}</MessageBox>
+                                </div>
+                            </Grid>
+                            {/* Blog */}
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" component="h3" gutterBottom>
+                                        Latest Blog Posts
+                                    </Typography>
+                                    {this.state.blogContent}
+                                </Paper>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
+                <ProfileEditDialog />
             </div> 
         )
         else

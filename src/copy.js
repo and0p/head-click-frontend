@@ -50,7 +50,7 @@ const copy = {
             }
         },
         misc: {
-            versionWarning: <span>Welcome to the Head Click alpha! This site is currently in its earliest stages of development, so there are still bugs and missing features. Read more about ongoing development <a href="https://blog.head.click/alpha">here</a>.</span>
+            versionWarning: <span>Welcome to the Head Click alpha! This site is currently in its earliest stages of development, so there are still bugs and missing features. Read more about ongoing development <a href="https://blog.head.click/alpha" target="_blank">here</a>.</span>
         }
     }
 }

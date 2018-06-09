@@ -158,6 +158,7 @@ const CSGO = {
         dpi: true,
         resolution: false
     },
+    options: []
 }
 
 export default CSGO
