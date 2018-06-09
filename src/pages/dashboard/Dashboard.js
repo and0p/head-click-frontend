@@ -78,7 +78,7 @@ class Dashboard extends React.Component {
                     limit: '6',
                     fields: "id, title, slug, featured, custom_excerpt"
                 }})
-                .then(response => { console.log(response); blogResponse = response; this.populateBlogContent(response) })
+                .then(response => { console.log(response); blogResponse = response; this.populateBlogContent() })
                 .catch(error => console.log(error))
             axios.get('https://blog.head.click/ghost/api/v0.1/posts/', {
                 params: {
@@ -88,13 +88,30 @@ class Dashboard extends React.Component {
                     filter: "featured:true",
                     fields: "title, slug, feature_image, featured, custom_excerpt"
                 }})
-                .then(response => { console.log(response); blogResponse = response; this.populateFeaturedBlogContent(response) })
+                .then(response => { console.log(response); blogFeaturedResponse = response; this.populateBlogContent() })
                 .catch(error => console.log(error))
             blogRequested = true
         }
     }
 
-    populateBlogContent = response => {
+    populateBlogContent = () => {
+        // Make sure both have returned
+        if(blogResponse != null && blogFeaturedResponse != null) {
+            let allPosts = blogResponse.data.posts
+            let featuredPostArray = blogFeaturedResponse
+            // See if we got a featured post back at all
+            if(featuredPostArray.lengh > 0)
+            {
+                // Strip that post out of the other post list
+                allPosts = allPosts.filter()
+            }
+            // Strip the featured response out of all posts, if it exists there
+            
+        }
+
+    }
+
+    populateaBlogContent = response => {
         blogContent = (
             <List subheader={<li />}>
             {response.data.posts.map(post => (
