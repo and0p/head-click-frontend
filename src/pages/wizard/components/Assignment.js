@@ -67,7 +67,7 @@ const Assignment = props => {
             (You can change this at any time from the dashboard.)
         </Typography>
         <div className={classes.imageContainer}>
-                <img style={image} src="http://placehold.it/600x400&text=assignment_notification" />
+                <img style={image} src="https://s3.amazonaws.com/head-click/public/placeholder_image.png" />
         </div>
         <div className={classes.hookSection}>
             {thisCopy.points.map(point => 

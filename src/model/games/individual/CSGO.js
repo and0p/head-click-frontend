@@ -147,8 +147,8 @@ const CSGO = {
                 text: "Motion Blur",
                 value: "Disabled",
                 note: false,
-                info: "Makes targets easier to spot in the wild.",
-                critical: true
+                info: "Makes scanning and target acquisition more easiler.",
+                critical: false
             }
         ]
     },

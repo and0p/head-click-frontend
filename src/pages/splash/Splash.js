@@ -54,7 +54,8 @@ const styles = theme => ({
         width: '250px',
       },
       maxWidth: '75%',
-      margin: 'auto'
+      margin: 'auto',
+      textAlign: 'center'
     },
     padGrid: {
       [theme.breakpoints.down('sm')]: {
@@ -99,7 +100,7 @@ class Splash extends React.Component {
                 <Typography variant="display2">{copy.en.splash.tagline}</Typography>
               </ReactFitText>
               <div className={classes.imageContainer}>
-                <img style={splashImage} src="http://placehold.it/600x300&text=splash_placeholder" />
+                <img style={splashImage} src="https://s3.amazonaws.com/head-click/public/placeholder_image.png" />
               </div>
             </Grid>
             <Hidden xsDown>

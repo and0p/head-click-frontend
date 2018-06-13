@@ -94,7 +94,7 @@ const styles = theme => ({
         },
     },
     featuredExcerpt: {
-        marginTop: theme.spacing.unit * 2
+        marginTop: theme.spacing.unit * 2,
     }
 });
 

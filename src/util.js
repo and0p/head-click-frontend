@@ -35,7 +35,7 @@ export const replaceSettingsArrows = text => {
 export const assetPath = 'file:///C:/Users/Andrew/Pictures/head.click/'
 
 export const getRecommendedDpi = games => {
-    return 42
+    return 40
 }
 
 export const getOverrideFromSettings = settings => {
