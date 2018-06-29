@@ -12,8 +12,6 @@ import Hidden from '@material-ui/core/Hidden'
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
 import { withRouter } from "react-router-dom"
-// Component imports
-import SidebarButton from './components/SidebarButton'
 // Redux imports
 import { connect } from 'react-redux'
 import * as Symbols from '../../redux/HcSymbols'
@@ -22,6 +20,8 @@ import theme from '../../theme.js'
 // HC Imports
 import { games } from '../../model/HcModel'
 import MessageBox from '../../components/MessageBox'
+import SidebarButton from './components/SidebarButton'
+import AccountMenu from './components/AccountMenu'
 // Assets
 import ResponsiveAsset from '../../assets'
 
@@ -134,6 +134,10 @@ const styles = theme => ({
   barButton: {
     marginRight: theme.spacing.unit
   },
+  saveButton: {
+    marginTop: '6px',
+    marginRight: theme.spacing.unit
+  },
   content: {
     [theme.breakpoints.up('md')]: {
       marginLeft: drawerWidth,
@@ -170,7 +174,7 @@ const styles = theme => ({
   },
   messageBox: {
     marginTop: theme.spacing.unit * 2
-  }
+  },
 });
 
 class MaterialRoot extends React.Component {
@@ -224,7 +228,7 @@ class MaterialRoot extends React.Component {
               link="/stats"
               icon="insert_chart"
               text="Stats"
-              enabled={this.props.profile.ready}
+              enabled
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />
             <SidebarButton 
@@ -259,7 +263,16 @@ class MaterialRoot extends React.Component {
                 <Typography variant="body2" className={classes.versionLight}>alpha</Typography>
             </Hidden>
             </div>
-            <Button disabled className={classes.barButton} variant="outlined" color="primary">Log in</Button>
+            {!this.props.identity.loggedIn && 
+              <Button className={classes.barButton} variant="contained" color="primary" onClick={this.props.openIdentityDialog}>Log in</Button>
+            }
+            {this.props.identity.loggedIn &&
+              <div>
+                <Button disabled={!this.props.profile.modified} className={classes.saveButton} variant="contained" color="secondary" onClick={() => console.log("saved")}>Save</Button>
+                <AccountMenu />
+              </div>
+            }
+            {console.log(this.props.profile.modified)}
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
@@ -308,8 +321,9 @@ MaterialRoot.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    open: state.sidebar.mobileMenuOpen,
-    profile: state.profile
+    open: state.ui.mobileMenuOpen,
+    profile: state.profile,
+    identity: state.identity
   }
 }
 
@@ -324,6 +338,9 @@ const mapDispatchToProps = dispatch => {
     }),
     closeSidebar : () => dispatch({
       type: Symbols.CLOSE_SIDEBAR
+    }),
+    openIdentityDialog : () => dispatch({
+      type: Symbols.OPEN_ID_DIALOG
     })
   }
 }

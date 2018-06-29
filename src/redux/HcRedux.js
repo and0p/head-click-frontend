@@ -1,7 +1,11 @@
-import { applyMiddleware, combineReducers, createStore, } from 'redux';
+// Redux imports
+import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
 import reduceReducers from 'reduce-reducers'
 import { persistStore, persistReducer, createTransform  } from 'redux-persist'
+import { createBrowserHistory } from 'history'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import storage from 'redux-persist/lib/storage'
+// HC import
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
@@ -9,10 +13,6 @@ import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, clamp }
 
 // States
 const initialState = {
-    sidebar: {
-        mobileMenuOpen: false,
-        selectedMenuItem: Symbols.HOME_MENU
-    },
     profile: {
         settings: {
             monitor: null,
@@ -45,7 +45,8 @@ const initialState = {
         ready: false,
         gamesOverriden: [],
         overrides: {},
-        options: {}
+        options: {},
+        modified: false
     },
     wizard: {
         wizardCompleted: false,
@@ -68,7 +69,24 @@ const initialState = {
             type: 0
         },
         editingProfile: false,
-        drawerOpenOnMobile: false
+        drawerOpenOnMobile: false,
+        mobileMenuOpen: false,
+        selectedMenuItem: Symbols.HOME_MENU,
+        userMenuOpen: false
+    },
+    identity: {
+        user: {
+            email: null
+        },
+        loggedIn: false,
+        idDialogOpen: false,
+        idDialogFunction: "LOGIN",  // LOGIN, SIGNUP, RESET, NEWPASS
+        idActionPending: false, 
+        error: "",
+        jwt: null,
+        loginProcess: {
+            isFetching: false
+        }
     }
 }
 
@@ -313,34 +331,16 @@ function profileReducer (state = initialState, action) {
                     }
                 }
             })
+        case Symbols.LOGIN_SUCCESS:
+            // TODO make sure profile is good
+            if(action.value.profile != null)
+                return update(state, {
+                    profile: { $set: loadProfileTransform(JSON.parse(action.value.profile))}
+                })
+            else
+                return state
         default:
             return state
-    }
-}
-
-function sidebarReducer (state = initialState, action) {
-    switch(action.type) {
-        case Symbols.OPEN_SIDEBAR:
-            return update(state, {
-                sidebar: {
-                    mobileMenuOpen: { $set: true }
-                }
-            })
-        case Symbols.CLOSE_SIDEBAR:
-            return update(state, {
-                sidebar: {
-                    mobileMenuOpen: { $set: false }
-                }
-            })
-        case Symbols.SELECT_SIDEBAR_ITEM:
-            return update(state, {
-                sidebar: {
-                    mobileMenuOpen: { $set: false },
-                    selectedMenuItem: { $set: action.value}
-                }
-            })
-        default:
-            return state;
     }
 }
 
@@ -453,18 +453,33 @@ function wizardReducer (state = initialState, action) {
 
 function uiReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.OPEN_SIDEBAR:
+            return update(state, {
+                ui: {
+                    mobileMenuOpen: { $set: true }
+                }
+            })
+        case Symbols.CLOSE_SIDEBAR:
+            return update(state, {
+                ui: {
+                    mobileMenuOpen: { $set: false }
+                }
+            })
         case Symbols.SELECT_SIDEBAR_ITEM:
-            if(!state.profile.ready)
+            //if(!state.profile.ready)
                 return update(state, {
                     ui: {
-                        alert: {
-                            open: { $set: true },
-                            text: { $set: "Please complete the wizard first!"}
-                        }
+                        mobileMenuOpen: { $set: false },
+                        selectedMenuItem: { $set: action.value},
+                        // alert: {
+                        //     open: { $set: true },
+                        //     text: { $set: "Please complete the wizard first!"}
+                        // }
                     }
                 })
-            else
-                return state
+            //     })
+            // else
+            //     return state
         case Symbols.CLOSE_ALERT:
             return update(state, {
                 ui: {
@@ -507,6 +522,81 @@ function uiReducer (state = initialState, action) {
                     }
                 }
             })
+        case Symbols.OPEN_USER_MENU:
+            return update(state, {
+                ui: {
+                    userMenuOpen: { $set: true }
+                }
+            })
+        case Symbols.CLOSE_USER_MENU:
+            return update(state, {
+                ui: {
+                    userMenuOpen: { $set: false }
+                }
+            })
+        default:
+            return state
+    }
+}
+
+function identityReducer (state = initialState, action)  {
+    switch(action.type) {
+        case Symbols.OPEN_ID_DIALOG:
+            return update(state, {
+                identity: {
+                    idDialogOpen: { $set: true }
+                }
+            })
+        case Symbols.CLOSE_ID_DIALOG:
+            return update(state, {
+                identity: {
+                    idDialogOpen: { $set: false }
+                }
+            })
+        case Symbols.ID_ACTION_STARTED:
+            return update(state, {
+                identity: {
+                    idActionPending: { $set: true }
+                }
+            })
+        case Symbols.ID_ACTION_FINISHED:
+            return update(state, {
+                identity: {
+                    idActionPending: { $set: false }
+                }
+            })
+        case Symbols.SET_ID_FUNCTION:
+            if(action.value != "undefined")
+                return update(state, {
+                    identity: {
+                        idDialogFunction: { $set: action.value },
+                        idActionPending: { $set: false }
+                    }
+                })
+            else
+                return state
+        case Symbols.SET_ID_FAILURE:
+            return update(state, {
+                identity: {
+                    error: { $set: action.value },
+                    idActionPending: { $set: false }
+                }
+            })
+        case Symbols.LOGIN_SUCCESS:
+            return update(state, {
+                identity: {
+                    user: {
+                        email: { $set: action.value.email }
+                    },
+                    loggedIn: { $set: true },
+                    jwt: { $set: action.value.jwt },
+                    idActionPending: { $set: false },
+                    idDialogOpen: { $set: false }
+                }
+                // TODO set profile
+            })
+        case Symbols.LOGOUT: 
+            return initialState
         default:
             return state
     }
@@ -519,63 +609,94 @@ const updateCustomMonitorDetails = customMonitor => {
 // Combine reducers
 const rootReducer = reduceReducers(
     profileReducer,
-    sidebarReducer,
     wizardReducer,
-    uiReducer
+    uiReducer,
+    identityReducer
 )
 
 /*
-/* Persistence
-*/
+ * Persistence
+ */
+
+const saveProfileTransform = inboundState => {
+    if(inboundState.ready)
+        return { 
+            ...inboundState,
+            modified: false,
+            settings: {
+                ...inboundState.settings,
+                monitor: inboundState.settings.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
+            }
+        }
+    else
+        return inboundState
+}
+
+const loadProfileTransform = outboundState => {
+    if(outboundState.ready)
+    {
+        let newState = {
+            ...outboundState,
+            modified: false,
+            settings: {
+                ...outboundState.settings,
+                monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
+            }
+        }
+        console.log("new state:")
+        console.log(newState)
+        return newState
+    }
+    else
+        return outboundState
+}
 
 // Transform owned games from objects to keys and back
 const HCTransform = createTransform(
-    (inboundState, key) => {
-        if(inboundState.ready)
-        {
-            return { 
-                ...inboundState, 
-                //ownedGames: inboundState.ownedGames.map(game => game.alias),
-                settings: {
-                    ...inboundState.settings,
-                    monitor: inboundState.settings.usingCustomMonitor ? inboundState.settings.monitor : [inboundState.settings.monitor.aspectRatio, inboundState.settings.monitor.name]
-                }
-            }
-        }
-        else
-        {
-            return inboundState
+    (inboundState, key) => 
+    {
+        switch(key) {
+            case 'profile':
+                return(saveProfileTransform(inboundState))
+            default:
+                return inboundState
         }
     },
-    (outboundState, key) => {
-        if(outboundState.ready)
-        {
-            return {  
-                ...outboundState,
-                //ownedGames: outboundState.ownedGames.map(gameName => games[gameName]),
-                settings: {
-                    ...outboundState.settings,
-                    monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
-                }
-            };
-        }
-        else
-        {
-            return outboundState
+    (outboundState, key) => 
+    {
+        switch(key) {
+            case 'profile':
+                return(loadProfileTransform(outboundState))
+            default:
+                return outboundState
         }
     },
-    { whitelist: ['profile'] }
-);
+    { whitelist: ['profile', 'identity'] });
 
 // Config
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['profile'],
+    whitelist: ['profile', 'identity'],
     transforms: [HCTransform]
 }
 
-// Create and export persisted reducer
+// Create and export persisted reducer, connected to router + history
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-export const store = createStore(persistedReducer)
+// Create a history of your choosing (we're using a browser history in this case)
+export const history = createBrowserHistory()
+// Build the middleware for intercepting and dispatching navigation actions
+const middleware = routerMiddleware(history)
+// Create store
+export const store = createStore(
+  connectRouter(history)(persistedReducer), // new root reducer with router state
+  initialState,
+  compose(
+    applyMiddleware(
+      routerMiddleware(history), // for dispatching history actions
+      // ... other middlewares ...
+    ),
+  ),
+)
+console.log(store)
 export const persistor = persistStore(store)

@@ -21,7 +21,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { monitors } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
-import { clamp } from '../util'
+import { clamp } from '../math'
 
 const styles = theme => ({
   root: {

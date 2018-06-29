@@ -2,14 +2,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
 // React router w/ redux
+import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { ConnectedRouter, routerReducer, routerMiddleware, push} from 'react-router-redux'
-import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
+import { ConnectedRouter } from 'connected-react-router'
 // Utility imports
-import { store, persistor } from './redux/HcRedux'
+import { store, history, persistor } from './redux/HcRedux'
 import theme from './theme.js'
 import { PersistGate } from 'redux-persist/integration/react'
 // Pages & styles
@@ -22,11 +21,8 @@ import Stats from './pages/stats/Stats.js'
 import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
 import Alert from './components/Alert'
+import IdentityDialog from './pages/account/IdentityDialog'
 
-// Create a history of your choosing (we're using a browser history in this case)
-const history = createHistory()
-// Build the middleware for intercepting and dispatching navigation actions
-const middleware = routerMiddleware(history)
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
   console.log(store.getState())
@@ -57,6 +53,7 @@ class App extends React.Component {
               <Route exact path="/browse_games" component={SelectGames} />
               <Route exact path="/stats" component={Stats} />
               <Route path="/game/:name" component={GamePage} />
+              <IdentityDialog />
             </MaterialRoot>
             <Alert />
           </MuiThemeProvider>
