@@ -22,6 +22,7 @@ import { games } from '../../model/HcModel'
 import MessageBox from '../../components/MessageBox'
 import SidebarButton from './components/SidebarButton'
 import AccountMenu from './components/AccountMenu'
+import { save } from '../../identity'
 // Assets
 import ResponsiveAsset from '../../assets'
 
@@ -268,7 +269,7 @@ class MaterialRoot extends React.Component {
             }
             {this.props.identity.loggedIn &&
               <div>
-                <Button disabled={!this.props.profile.modified} className={classes.saveButton} variant="contained" color="secondary" onClick={() => console.log("saved")}>Save</Button>
+                <Button disabled={!this.props.profile.modified} className={classes.saveButton} variant="contained" color="secondary" onClick={save}>Save</Button>
                 <AccountMenu />
               </div>
             }

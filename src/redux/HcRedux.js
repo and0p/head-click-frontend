@@ -11,6 +11,9 @@ import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
 import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, clamp } from '../util'
 
+// Profile when it was last saved, for reverting
+let lastSavedProfile = {}
+
 // States
 const initialState = {
     profile: {
@@ -111,6 +114,7 @@ function profileReducer (state = initialState, action) {
                             },
                             usingCustomMonitor: {$set: action.value === state.profile.customMonitor }
                         },
+                        modified: { $set: true }
                     }
                 })
             }
@@ -121,7 +125,8 @@ function profileReducer (state = initialState, action) {
             if(action.value != null)
                 return update(state, {
                     profile: {
-                        refreshRate: { $set: action.value }
+                        refreshRate: { $set: action.value },
+                        modified: { $set: true }
                     }
                 })
             else return state
@@ -133,7 +138,8 @@ function profileReducer (state = initialState, action) {
                     // Remove game
                     return update(state, {
                         profile: {
-                            ownedGames: { $splice: [[index, 1]] }
+                            ownedGames: { $splice: [[index, 1]] },
+                            modified: { $set: true }
                         }
                     })
                 }
@@ -144,7 +150,8 @@ function profileReducer (state = initialState, action) {
                             ownedGames: { $push: [action.value.alias] },
                             options: { 
                                 [action.value.alias]: { $set: action.value.getDefaultOptions() }
-                            }
+                            },
+                            modified: { $set: true }
                         }
                     })
                 }
@@ -202,7 +209,8 @@ function profileReducer (state = initialState, action) {
                         customMonitor: { $set: cMonitor },
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
-                        }
+                        },
+                        modified: { $set: true }
                     }
                 })
             }
@@ -222,7 +230,8 @@ function profileReducer (state = initialState, action) {
                         customMonitor: { $set: cMonitor},
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
-                        }
+                        },
+                        modified: { $set: true }
                     }
                 })
             }
@@ -245,14 +254,16 @@ function profileReducer (state = initialState, action) {
                             gamesOverriden: { $push: [action.value.gameName] },
                             overrides: {
                                 [action.value.gameName]: {$set: overrides}
-                            }
+                            },
+                            modified: { $set: true }
                         }
                     })
                 }
                 else
                     return update(state, {
                         profile: {
-                            gamesOverriden: { $push: [action.value.gameName] }
+                            gamesOverriden: { $push: [action.value.gameName] },
+                            modified: { $set: true }
                         }
                     })
             }
@@ -262,7 +273,8 @@ function profileReducer (state = initialState, action) {
                 let index = state.profile.gamesOverriden.findIndex(item => item === action.value.gameName);
                 return update(state, {
                     profile: {
-                        gamesOverriden: { $unset: [index] }
+                        gamesOverriden: { $unset: [index] },
+                        modified: { $set: true }
                     }
                 })
             }
@@ -277,7 +289,8 @@ function profileReducer (state = initialState, action) {
                                     actual: {$set: action.value.value}
                                 }
                             }
-                        }
+                        },
+                        modified: { $set: true }
                     }
                 })
             else if(action.value.override == 'dpi')
@@ -289,7 +302,8 @@ function profileReducer (state = initialState, action) {
                                     actual: {$set: action.value.value}
                                 }
                             }
-                        }
+                        },
+                        modified: { $set: true }
                     }
                 })
             else if(action.value.override == 'resolutionx')
@@ -301,7 +315,8 @@ function profileReducer (state = initialState, action) {
                                     width: {$set: action.value.value}
                                 }
                             }
-                        }
+                        },
+                        modified: { $set: true }
                     }
             })
             else if(action.value.override == 'resolutiony')
@@ -313,7 +328,8 @@ function profileReducer (state = initialState, action) {
                                     height: {$set: action.value.value}
                                 }
                             }
-                        }
+                        },
+                        modified: { $set: true }
                     }
                 })
             else
@@ -328,7 +344,8 @@ function profileReducer (state = initialState, action) {
                         [action.value.gameAlias]: {
                             [action.value.optionName]: { $set: action.value.value }
                         }
-                    }
+                    },
+                    modified: { $set: true }
                 }
             })
         case Symbols.LOGIN_SUCCESS:
@@ -618,7 +635,7 @@ const rootReducer = reduceReducers(
  * Persistence
  */
 
-const saveProfileTransform = inboundState => {
+export const saveProfileTransform = inboundState => {
     if(inboundState.ready)
         return { 
             ...inboundState,
@@ -632,7 +649,7 @@ const saveProfileTransform = inboundState => {
         return inboundState
 }
 
-const loadProfileTransform = outboundState => {
+export const loadProfileTransform = outboundState => {
     if(outboundState.ready)
     {
         let newState = {
