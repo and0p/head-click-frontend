@@ -244,8 +244,6 @@ class MaterialRoot extends React.Component {
           </div>
       </div>
     )
-
-    console.log("rendering material root!")
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar} color="default">
@@ -265,15 +263,14 @@ class MaterialRoot extends React.Component {
             </Hidden>
             </div>
             {!this.props.identity.loggedIn && 
-              <Button className={classes.barButton} variant="contained" color="primary" onClick={this.props.openIdentityDialog}>Log in</Button>
+              <Button className={classes.barButton} variant="contained" color="secondary" onClick={this.props.openIdentityDialog}>Log in</Button>
             }
-            {this.props.identity.loggedIn &&
+            {this.props.profile.ready &&
               <div>
                 <Button disabled={!this.props.profile.modified} className={classes.saveButton} variant="contained" color="secondary" onClick={save}>Save</Button>
                 <AccountMenu />
               </div>
             }
-            {console.log(this.props.profile.modified)}
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
@@ -324,7 +321,8 @@ const mapStateToProps = (state) => {
   return {
     open: state.ui.mobileMenuOpen,
     profile: state.profile,
-    identity: state.identity
+    identity: state.identity,
+    ui: state.ui
   }
 }
 

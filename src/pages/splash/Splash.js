@@ -10,6 +10,7 @@ import Hidden from '@material-ui/core/Hidden'
 import Typography from '@material-ui/core/Typography'
 import ReactFitText from 'react-fittext'
 import Button from '@material-ui/core/Button'
+import * as Symbols from '../../redux/HcSymbols'
 
 const styles = theme => ({
     root: {
@@ -131,11 +132,11 @@ class Splash extends React.Component {
                 variant="contained"
                 color="secondary"
                 className={classes.button}
-                disabled
+                onClick={this.props.openIdentityDialog}
               >
                 Log In
               </Button>
-              <Typography className={classes.buttonCaption} variant="caption">Feature not available in alpha.</Typography>
+              {/*<Typography className={classes.buttonCaption} variant="caption">Feature not available in alpha.</Typography>*/}
             </Grid>
             <Grid item xs={0} sm={0} md={3} className={classes.padGrid}/>
           </Grid>
@@ -152,6 +153,9 @@ const mapStateToProps = (state) => {
   
   const mapDispatchToProps = dispatch => {
     return {
+      openIdentityDialog : () => dispatch({
+        type: Symbols.OPEN_ID_DIALOG
+      })
     }
   }
   

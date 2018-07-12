@@ -9,6 +9,7 @@ import storage from 'redux-persist/lib/storage'
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
+import { validateProfile } from './Validation'
 import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, clamp } from '../util'
 
 // Profile when it was last saved, for reverting
@@ -19,7 +20,7 @@ const initialState = {
     profile: {
         settings: {
             monitor: null,
-            refreshRate: null,
+            refreshRate: 60,
             dpi: {
                 actual: null,
                 recommended: null
@@ -71,25 +72,35 @@ const initialState = {
             text: "",
             type: 0
         },
+        identity: {
+            dialogOpen: false,
+            dialogFunction: "LOGIN",  // LOGIN, SIGNUP, RESET, NEWPASS
+            actionPending: false, 
+            error: "",
+            login: {
+                username: "",
+                password: "",
+                ready: false
+            },
+            register: {
+                username: "",
+                password: "",
+                passwordConfirmation: "",
+                ready: false
+            }
+        },
         editingProfile: false,
         drawerOpenOnMobile: false,
         mobileMenuOpen: false,
         selectedMenuItem: Symbols.HOME_MENU,
-        userMenuOpen: false
+        userMenuOpen: false,
     },
     identity: {
         user: {
             email: null
         },
         loggedIn: false,
-        idDialogOpen: false,
-        idDialogFunction: "LOGIN",  // LOGIN, SIGNUP, RESET, NEWPASS
-        idActionPending: false, 
-        error: "",
-        jwt: null,
-        loginProcess: {
-            isFetching: false
-        }
+        jwt: null
     }
 }
 
@@ -238,100 +249,106 @@ function profileReducer (state = initialState, action) {
             else
                 return state
         case Symbols.SET_GAME_OVERRIDE:
-            if(action.value.set)
-            {
-                // If we haven't overriden game yet, give new overrides from current settings
-                if(!state.profile.overrides.hasOwnProperty(action.value.gameName))
+            if(isValid(action.value.gameName)) {
+                if(action.value.set)
                 {
-                    // See if a profile exists, and use a generic one otherwise
-                    let overrides = {}
-                    if(state.profile.ready)
-                        overrides = getOverrideFromSettings(state.profile.settings)
+                    // If we haven't overriden game yet, give new overrides from current settings
+                    if(!state.profile.overrides.hasOwnProperty(action.value.gameName))
+                    {
+                        // See if a profile exists, and use a generic one otherwise
+                        let overrides = {}
+                        if(state.profile.ready)
+                            overrides = getOverrideFromSettings(state.profile.settings)
+                        else
+                            overrides = getOverrideFromSettings(null)
+                        return update(state, {
+                            profile: {
+                                gamesOverriden: { $push: [action.value.gameName] },
+                                overrides: {
+                                    [action.value.gameName]: {$set: overrides}
+                                },
+                                modified: { $set: true }
+                            }
+                        })
+                    }
                     else
-                        overrides = getOverrideFromSettings(null)
+                        return update(state, {
+                            profile: {
+                                gamesOverriden: { $push: [action.value.gameName] },
+                                modified: { $set: true }
+                            }
+                        })
+                }
+                else    
+                {
+                    // Find the index of that game
                     return update(state, {
                         profile: {
-                            gamesOverriden: { $push: [action.value.gameName] },
-                            overrides: {
-                                [action.value.gameName]: {$set: overrides}
-                            },
+                            gamesOverriden: { $set: state.profile.gamesOverriden.filter( (item) => item !== action.value.gameName) },
                             modified: { $set: true }
                         }
                     })
                 }
-                else
+            }
+            else
+                return state
+        case Symbols.UPDATE_GAME_OVERRIDE: 
+            if(isValid(action.value.gameName)) {
+                if(action.value.override == 'cm360')
                     return update(state, {
                         profile: {
-                            gamesOverriden: { $push: [action.value.gameName] },
+                            overrides: {
+                                [action.value.gameName]: {
+                                    sensitivity: {
+                                        actual: {$set: action.value.value}
+                                    }
+                                }
+                            },
                             modified: { $set: true }
                         }
                     })
+                else if(action.value.override == 'dpi')
+                    return update(state, {
+                        profile: {
+                            overrides: {
+                                [action.value.gameName]: {
+                                    dpi: {
+                                        actual: {$set: action.value.value}
+                                    }
+                                }
+                            },
+                            modified: { $set: true }
+                        }
+                    })
+                else if(action.value.override == 'resolutionx')
+                    return update(state, {
+                        profile: {
+                            overrides: {
+                                [action.value.gameName]: {
+                                    monitor: {
+                                        width: {$set: action.value.value}
+                                    }
+                                }
+                            },
+                            modified: { $set: true }
+                        }
+                })
+                else if(action.value.override == 'resolutiony')
+                    return update(state, {
+                        profile: {
+                            overrides: {
+                                [action.value.gameName]: {
+                                    monitor: {
+                                        height: {$set: action.value.value}
+                                    }
+                                }
+                            },
+                            modified: { $set: true }
+                        }
+                    })
+                else
+                    return state
             }
-            else    
-            {
-                // Find the index of that game
-                let index = state.profile.gamesOverriden.findIndex(item => item === action.value.gameName);
-                return update(state, {
-                    profile: {
-                        gamesOverriden: { $unset: [index] },
-                        modified: { $set: true }
-                    }
-                })
-            }
-        case Symbols.UPDATE_GAME_OVERRIDE: 
-        console.log("updating override")
-            if(action.value.override == 'cm360')
-                return update(state, {
-                    profile: {
-                        overrides: {
-                            [action.value.gameName]: {
-                                sensitivity: {
-                                    actual: {$set: action.value.value}
-                                }
-                            }
-                        },
-                        modified: { $set: true }
-                    }
-                })
-            else if(action.value.override == 'dpi')
-                return update(state, {
-                    profile: {
-                        overrides: {
-                            [action.value.gameName]: {
-                                dpi: {
-                                    actual: {$set: action.value.value}
-                                }
-                            }
-                        },
-                        modified: { $set: true }
-                    }
-                })
-            else if(action.value.override == 'resolutionx')
-                return update(state, {
-                    profile: {
-                        overrides: {
-                            [action.value.gameName]: {
-                                monitor: {
-                                    width: {$set: action.value.value}
-                                }
-                            }
-                        },
-                        modified: { $set: true }
-                    }
-            })
-            else if(action.value.override == 'resolutiony')
-                return update(state, {
-                    profile: {
-                        overrides: {
-                            [action.value.gameName]: {
-                                monitor: {
-                                    height: {$set: action.value.value}
-                                }
-                            }
-                        },
-                        modified: { $set: true }
-                    }
-                })
             else
                 return state
         case Symbols.UPDATE_GAME_OPTION:
@@ -350,9 +367,10 @@ function profileReducer (state = initialState, action) {
             })
         case Symbols.LOGIN_SUCCESS:
             // TODO make sure profile is good
+            console.log(action.value.profile)
             if(action.value.profile != null)
                 return update(state, {
-                    profile: { $set: loadProfileTransform(JSON.parse(action.value.profile))}
+                    profile: { $set: action.value.profile }
                 })
             else
                 return state
@@ -551,6 +569,98 @@ function uiReducer (state = initialState, action) {
                     userMenuOpen: { $set: false }
                 }
             })
+        case Symbols.OPEN_ID_DIALOG:
+            return update(state, {
+                ui: {
+                    identity: {
+                        dialogOpen: { $set: true }
+                    }
+                }
+            })
+        case Symbols.CLOSE_ID_DIALOG:
+            return update(state, {
+                ui: {
+                    identity: {
+                        dialogOpen: { $set: false },
+                        login: { 
+                            email: { $set: "" },
+                            password: { $set: "" },
+                            ready: { $set: false }
+                        },
+                        register: { 
+                            email: { $set: "" },
+                            password: { $set: "" },
+                            passwordConfirmation: { $set: "" },
+                            ready: { $set: false }
+                        }
+                    }
+                }
+            })
+        case Symbols.ID_ACTION_STARTED:
+            return update(state, {
+                ui: {
+                    identity: {
+                        actionPending: { $set: true }
+                    }
+                }
+            })
+        case Symbols.ID_ACTION_FINISHED:
+            return update(state, {
+                ui: {
+                    identity: {
+                        actionPending: { $set: false }
+                    }
+                }
+            })
+        case Symbols.SET_ID_FUNCTION:
+            if(action.value != "undefined")
+                return update(state, {
+                    ui: {
+                        identity: {
+                            dialogFunction: { $set: action.value },
+                        }
+                    }
+                })
+            else
+                return state
+        case Symbols.SET_ID_FAILURE:
+            return update(state, {
+                ui: {
+                    identity: {
+                        error: { $set: action.value },
+                        actionPending: { $set: false }
+                    }
+                }
+            })
+        case Symbols.LOGIN_SUCCESS:
+            return update(state, {
+                ui: {
+                    identity: {
+                        actionPending: { $set: false },
+                        dialogOpen: { $set: false }
+                        }
+                }
+                // TODO set profile
+            })
+        case Symbols.SET_ID_FIELD:
+            // Check for issues in input
+            console.log(action)
+            if(isValid(action.value.section) && isValid(action.value.field))
+            {
+                return update(state, {
+                        ui: {
+                            identity: {
+                                [action.value.section]: {
+                                    [action.value.field]: { $set: action.value.value }
+                                }
+                            }
+                        }
+                    })
+            }
+            else
+            {
+                return state
+            }
         default:
             return state
     }
@@ -561,33 +671,33 @@ function identityReducer (state = initialState, action)  {
         case Symbols.OPEN_ID_DIALOG:
             return update(state, {
                 identity: {
-                    idDialogOpen: { $set: true }
+                    dialogOpen: { $set: true }
                 }
             })
         case Symbols.CLOSE_ID_DIALOG:
             return update(state, {
                 identity: {
-                    idDialogOpen: { $set: false }
+                    dialogOpen: { $set: false }
                 }
             })
         case Symbols.ID_ACTION_STARTED:
             return update(state, {
                 identity: {
-                    idActionPending: { $set: true }
+                    actionPending: { $set: true }
                 }
             })
         case Symbols.ID_ACTION_FINISHED:
             return update(state, {
                 identity: {
-                    idActionPending: { $set: false }
+                    actionPending: { $set: false }
                 }
             })
         case Symbols.SET_ID_FUNCTION:
             if(action.value != "undefined")
                 return update(state, {
                     identity: {
-                        idDialogFunction: { $set: action.value },
-                        idActionPending: { $set: false }
+                        dialogFunction: { $set: action.value },
+                        actionPending: { $set: false }
                     }
                 })
             else
@@ -596,7 +706,7 @@ function identityReducer (state = initialState, action)  {
             return update(state, {
                 identity: {
                     error: { $set: action.value },
-                    idActionPending: { $set: false }
+                    actionPending: { $set: false }
                 }
             })
         case Symbols.LOGIN_SUCCESS:
@@ -607,8 +717,8 @@ function identityReducer (state = initialState, action)  {
                     },
                     loggedIn: { $set: true },
                     jwt: { $set: action.value.jwt },
-                    idActionPending: { $set: false },
-                    idDialogOpen: { $set: false }
+                    actionPending: { $set: false },
+                    dialogOpen: { $set: false }
                 }
                 // TODO set profile
             })
@@ -652,6 +762,7 @@ export const saveProfileTransform = inboundState => {
 export const loadProfileTransform = outboundState => {
     if(outboundState.ready)
     {
+        validateProfile(outboundState)
         let newState = {
             ...outboundState,
             modified: false,
@@ -660,8 +771,6 @@ export const loadProfileTransform = outboundState => {
                 monitor: outboundState.settings.usingCustomMonitor ? outboundState.settings.monitor : monitors[outboundState.settings.monitor[0]][outboundState.settings.monitor[1]]
             }
         }
-        console.log("new state:")
-        console.log(newState)
         return newState
     }
     else
@@ -715,5 +824,4 @@ export const store = createStore(
     ),
   ),
 )
-console.log(store)
 export const persistor = persistStore(store)
