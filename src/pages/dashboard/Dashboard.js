@@ -6,7 +6,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
-import InfoCard from '../../components/InfoCard'
+import SettingCard from './components/SettingCard'
+import VerificationBox from './components/VerificationBox'
 import EditIcon from '../../components/EditIcon'
 import ProfileEditDialog from '../../components/ProfileEditDialog'
 import ComingSoon from '../../components/ComingSoon'
@@ -19,6 +20,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import Icon from '@material-ui/core/Icon'
+import Divider from '@material-ui/core/Divider';
 import copy from '../../copy'
 import axios from 'axios'
 import * as Symbols from '../../redux/HcSymbols'
@@ -55,7 +57,7 @@ const styles = theme => ({
         color: theme.palette.text.secondary,
     },
     sectionHeaderOpen: {
-        marginLeft: theme.spacing.unit * 2,
+        //marginLeft: theme.spacing.unit * 2,
         float: 'left'
     },
     profileCard: {
@@ -94,6 +96,22 @@ const styles = theme => ({
         },
     },
     featuredExcerpt: {
+        marginTop: theme.spacing.unit * 2
+    },
+    profileInfo: {
+        clear: "both"
+    },
+    userIcon: {
+        color: "#FFFFFF"
+    },
+    linkIcon: {
+        fontSize: '1.5em',
+        marginLeft: "2px",
+        marginRight: theme.spacing.unit,
+        marginTop: "-1px",
+        float: "left"
+    },
+    settingsSection: {
         marginTop: theme.spacing.unit * 2
     }
 });
@@ -269,29 +287,49 @@ class Dashboard extends React.Component {
         return(
             <div className={classes.root}>
                 <Typography variant="display1" className={classes.pageHeader}>
-                     Dashboard
+                    Dashboard
                 </Typography>
                 <Grid container spacing={spacing} className={classes.rootGridContainer}>
                     {/* LEFT COLUMN  */}
                     <Grid item xs={12} xl={6}>
                         <Grid container spacing={spacing}>
                             {/* Profile card */}
-                            <Grid item xs={12} className={classes.profileCard}>
-                                <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
-                                    Profile
-                                </Typography>
-                                <EditIcon onClick={this.props.editProfile}/>
-                                <Grid container spacing={spacing}>
-                                    <Grid item xs={12}>
-                                        <InfoCard name={constants.cm360Text} value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple"/>
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
+                                        Profile
+                                    </Typography>
+                                    <EditIcon onClick={this.props.editProfile}/>
+                                    <Grid container className= {classes.settingsSection} spacing={spacing}>
+                                        <Grid item xs={12} lg={6}>
+                                            <div className={classes.profileInfo}>
+                                                <Typography variant="display1" style={{color:"#FFFFFF"}} gutterBottom>
+                                                    <Icon className={classes.userIcon}>person</Icon> {this.props.identity.loggedIn ? this.props.identity.alias : "Unsaved"}
+                                                </Typography>
+                                            </div>
+                                            <div className={classes.profileInfo}>
+                                                <Typography variant="caption" gutterBottom>
+                                                    <Icon className={classes.linkIcon}>link</Icon>
+                                                    {this.props.identity.loggedIn ? "https://head.click/user/" + this.props.identity.alias : "Save your profile to generate a URL"}
+                                                </Typography>
+                                            </div>
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <InfoCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue"/>
+                                    <Grid container className= {classes.settingsSection} spacing={spacing}>
+                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                            <SettingCard name="Sensitivity" value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple" />
+                                        </Grid>
+                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                            <SettingCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue" />
+                                        </Grid>
+                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                            <SettingCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscane' color="teal" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <InfoCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal"/>
-                                    </Grid>
-                                </Grid>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                    <VerificationBox />
                             </Grid>
                             {/* Gear card */}
                             <Grid item xs={12}>
@@ -341,7 +379,8 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-      profile: state.profile
+      profile: state.profile,
+      identity: state.identity
     }
 }
   

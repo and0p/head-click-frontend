@@ -1,22 +1,62 @@
-import { store, saveProfileTransform } from './redux/HcRedux'
+import { store, saveProfileTransform, loadProfileTransform } from './redux/HcRedux'
 import { push } from 'connected-react-router'
 import * as Symbols from './redux/HcSymbols'
 import axios from 'axios'
 
-const apiHost = "localhost:3001" // api.head.click:443
+const apiHost = 'https://api.head.click' // api.head.click:443
 
-export const login = (email, password) => {
+export const register = () => {
+    let state = store.getState()
+    let options = state.ui.identity
+    let identity = state.identity
+    // Check that the passwords match
+    if(!options.ready)
+    {
+        return
+    }
     // Dispatch that we're starting a request
     store.dispatch({ type: Symbols.ID_ACTION_STARTED })
-    let body = JSON.stringify('')
-    axios.post('http://' + apiHost + '/login', { username: email, password: password })
+    // Send request
+    axios.post(apiHost + '/register', { email: options.email, password: options.password, profile: saveProfileTransform(state.profile) })
         .then(response => {
-            console.log(response.data)
-            store.dispatch({ type: Symbols.LOGIN_SUCCESS, value: { email: response.data.profile.email, jwt: response.data.token, profile: response.data.profile.profile }})
-            store.dispatch({ type: Symbols.ID_ACTION_FINISHED })
+            store.dispatch(
+                {
+                    type: Symbols.LOGIN_SUCCESS, 
+                    value: { 
+                        email: response.data.email, 
+                        alias: response.data.alias,
+                        profile: response.data.profile,
+                        verified: response.data.verified,
+                        jwt: response.data.token
+                    }
+                })
         })
         .catch(error => {
-            store.dispatch({ type: Symbols.ID_ACTION_FINISHED })
+            store.dispatch({ type: Symbols.SET_ID_FAILURE, value: "Registration failed!"})
+        })
+}
+
+export const login = () => {
+    let state = store.getState()
+    let options = state.ui.identity
+    let identity = state.identity
+    // Dispatch that we're starting a request
+    store.dispatch({ type: Symbols.ID_ACTION_STARTED })
+    axios.post(apiHost + '/login', { email: options.email, password: options.password })
+        .then(response => {
+            store.dispatch({
+                type: Symbols.LOGIN_SUCCESS,
+                value: {
+                    email: response.data.email,
+                    alias: response.data.alias,
+                    profile: response.data.profile,
+                    verified: response.data.verified,
+                    jwt: response.data.token
+                }
+            })
+        })
+        .catch(error => {
+            console.log("errored")
             store.dispatch({ type: Symbols.SET_ID_FAILURE, value: "Login failed!"})
         })
 }
@@ -24,25 +64,24 @@ export const login = (email, password) => {
 export const save = () => {
     let state = store.getState()
     // See if the user is logged in, if not they need to make an account
-    if(!state.identity.loggedIn)
-        store.dispatch()
-    let jwt = state.identity.jwt
-    // Dispatch that we're starting a request
-        store.dispatch({ type: Symbols.ID_ACTION_STARTED })
-    // Send POST to update page
-    axios.post('http://' + apiHost + '/save',
-        JSON.stringify(saveProfileTransform(state.profile)),
-        { headers: {'Authorization': "bearer " + jwt, 'Content-Type': 'application/json'} })
-        .then(response => {
-            console.log(response)
-            store.dispatch({ type: Symbols.ID_ACTION_FINISHED })
-            //store.dispatch({ type: Symbols.LOGIN_SUCCESS, value: { email: response.data.user.username, jwt: response.data.token, profile: response.data.user.profile }})
-        })
-        .catch(error => {
-            store.dispatch({ type: Symbols.ID_ACTION_FINISHED })
-            console.log(error)
-            //store.dispatch({ type: Symbols.SET_ID_FAILURE, value: "Login failed!"})
-        })
+    if(!store.getState().identity.loggedIn)
+        store.dispatch({ type: Symbols.OPEN_ID_DIALOG, value: "REGISTER" })
+    else {
+        // Send the profile to the server, identifying with your JWT token
+        let jwt = state.identity.jwt
+        // Dispatch that we're starting a request
+            store.dispatch({ type: Symbols.ID_ACTION_STARTED, value : { type: "SAVE" } })
+        // Send POST to update page
+        axios.post(apiHost + '/save',
+            saveProfileTransform(state.profile),
+            { headers: {'Authorization': "bearer " + jwt, 'Content-Type': 'application/json'} })
+            .then(response => {
+                store.dispatch({ type: Symbols.SAVE_SUCCESS })
+            })
+            .catch(error => {
+                store.dispatch({ type: Symbols.ID_ACTION_FINISHED })
+            })
+    }
 }
 
 export const logout = () => {

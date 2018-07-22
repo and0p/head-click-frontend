@@ -11,11 +11,12 @@ import Icon from '@material-ui/core/Icon'
 import Hidden from '@material-ui/core/Hidden'
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
-import { withRouter } from "react-router-dom"
+import CircularProgress from '@material-ui/core/CircularProgress';
 // Redux imports
 import { connect } from 'react-redux'
 import * as Symbols from '../../redux/HcSymbols'
 // Utility imports
+import { withRouter } from "react-router-dom"
 import theme from '../../theme.js'
 // HC Imports
 import { games } from '../../model/HcModel'
@@ -63,9 +64,9 @@ const styles = theme => ({
     borderRight: '0px',
   },
   drawerHeader: {
-    color: '#333333',
+    color: '#FFFFFF',
     alignItems: 'center',
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
     fontSize: '1.5em',
     lineHeight: '1.5em',
     [theme.breakpoints.up('sm')]: {
@@ -176,6 +177,13 @@ const styles = theme => ({
   messageBox: {
     marginTop: theme.spacing.unit * 2
   },
+  saveProgress: {
+    color: theme.palette.custom.purple,
+    position: 'absolute',
+    //top: -6,
+    //left: -6,
+    zIndex: 1,
+  },
 });
 
 class MaterialRoot extends React.Component {
@@ -214,8 +222,8 @@ class MaterialRoot extends React.Component {
     const drawer = (
       <div>
           <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
-            <ResponsiveAsset category="headclick" asset="logo_dark" className={classes.logo} />
-            <Typography variant="body1" className={classes.versionDark}>alpha</Typography>
+            <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo} />
+            <Typography variant="body1" className={classes.versionLight}>alpha</Typography>
           </Paper>
           <div className={classes.drawerContent}>
             <SidebarButton 
@@ -262,12 +270,14 @@ class MaterialRoot extends React.Component {
                 <Typography variant="body2" className={classes.versionLight}>alpha</Typography>
             </Hidden>
             </div>
-            {!this.props.identity.loggedIn && 
-              <Button className={classes.barButton} variant="contained" color="secondary" onClick={this.props.openIdentityDialog}>Log in</Button>
+            {(!this.props.identity.loggedIn && !this.props.profile.ready) && 
+              <Button className={classes.barButton} variant="contained" color="secondary" onClick={this.props.openLoginDialog}>Log in</Button>
             }
             {this.props.profile.ready &&
               <div>
-                <Button disabled={!this.props.profile.modified} className={classes.saveButton} variant="contained" color="secondary" onClick={save}>Save</Button>
+                <Button disabled={!this.props.profile.modified || this.props.ui.identity.actionPending} className={classes.saveButton} variant="contained" color="secondary" onClick={save}>
+                { this.props.ui.identity.actionPending ? <CircularProgress size={24} className={classes.saveProgress} /> : "Save" }
+                </Button>
                 <AccountMenu />
               </div>
             }
@@ -338,8 +348,9 @@ const mapDispatchToProps = dispatch => {
     closeSidebar : () => dispatch({
       type: Symbols.CLOSE_SIDEBAR
     }),
-    openIdentityDialog : () => dispatch({
-      type: Symbols.OPEN_ID_DIALOG
+    openLoginDialog : () => dispatch({
+      type: Symbols.OPEN_ID_DIALOG,
+      value: "LOGIN"
     })
   }
 }

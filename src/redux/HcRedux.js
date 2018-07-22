@@ -30,8 +30,8 @@ const initialState = {
                 recommended: null
             },
             toggle: {
-                actual: null,
-                recommended: null
+                actual: 0,
+                recommended: 0
             },
             usingCustomMonitor: false,
         },
@@ -77,6 +77,10 @@ const initialState = {
             dialogFunction: "LOGIN",  // LOGIN, SIGNUP, RESET, NEWPASS
             actionPending: false, 
             error: "",
+            email: "",
+            password: "",
+            passwordConfirmation: "",
+            ready: false,
             login: {
                 username: "",
                 password: "",
@@ -86,7 +90,9 @@ const initialState = {
                 username: "",
                 password: "",
                 passwordConfirmation: "",
-                ready: false
+                ready: false,
+                passwordsMatch: false,
+                passwordComplex: true
             }
         },
         editingProfile: false,
@@ -96,11 +102,12 @@ const initialState = {
         userMenuOpen: false,
     },
     identity: {
-        user: {
-            email: null
-        },
+        email: null,
+        alias: null,
+        verified: false,
         loggedIn: false,
-        jwt: null
+        jwt: "",
+        lastSaveAttempt: null
     }
 }
 
@@ -125,7 +132,7 @@ function profileReducer (state = initialState, action) {
                             },
                             usingCustomMonitor: {$set: action.value === state.profile.customMonitor }
                         },
-                        modified: { $set: true }
+                        modified: { $set: new Date().getTime() }
                     }
                 })
             }
@@ -137,7 +144,7 @@ function profileReducer (state = initialState, action) {
                 return update(state, {
                     profile: {
                         refreshRate: { $set: action.value },
-                        modified: { $set: true }
+                        modified: { $set: new Date().getTime() }
                     }
                 })
             else return state
@@ -150,7 +157,7 @@ function profileReducer (state = initialState, action) {
                     return update(state, {
                         profile: {
                             ownedGames: { $splice: [[index, 1]] },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                     })
                 }
@@ -162,7 +169,7 @@ function profileReducer (state = initialState, action) {
                             options: { 
                                 [action.value.alias]: { $set: action.value.getDefaultOptions() }
                             },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                     })
                 }
@@ -202,6 +209,7 @@ function profileReducer (state = initialState, action) {
                             usingCustomMonitor: { $set: action.value.monitor == action.value.customMonitor }
                         },
                         customMonitor: { $set: action.value.customMonitor },
+                        modified: { $set: new Date().getTime() }
                     }
                 })
             }
@@ -221,7 +229,7 @@ function profileReducer (state = initialState, action) {
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         },
-                        modified: { $set: true }
+                        modified: { $set: new Date().getTime() }
                     }
                 })
             }
@@ -242,7 +250,7 @@ function profileReducer (state = initialState, action) {
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         },
-                        modified: { $set: true }
+                        modified: { $set: new Date().getTime() }
                     }
                 })
             }
@@ -267,7 +275,7 @@ function profileReducer (state = initialState, action) {
                                 overrides: {
                                     [action.value.gameName]: {$set: overrides}
                                 },
-                                modified: { $set: true }
+                                modified: { $set: new Date().getTime() }
                             }
                         })
                     }
@@ -275,7 +283,7 @@ function profileReducer (state = initialState, action) {
                         return update(state, {
                             profile: {
                                 gamesOverriden: { $push: [action.value.gameName] },
-                                modified: { $set: true }
+                                modified: { $set: new Date().getTime() }
                             }
                         })
                 }
@@ -285,14 +293,14 @@ function profileReducer (state = initialState, action) {
                     return update(state, {
                         profile: {
                             gamesOverriden: { $set: state.profile.gamesOverriden.filter( (item) => item !== action.value.gameName) },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                     })
                 }
             }
             else
                 return state
-        case Symbols.UPDATE_GAME_OVERRIDE: 
+        case Symbols.UPDATE_GAME_OVERRIDE:
             if(isValid(action.value.gameName)) {
                 if(action.value.override == 'cm360')
                     return update(state, {
@@ -304,7 +312,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                     })
                 else if(action.value.override == 'dpi')
@@ -317,7 +325,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                     })
                 else if(action.value.override == 'resolutionx')
@@ -330,7 +338,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                 })
                 else if(action.value.override == 'resolutiony')
@@ -343,7 +351,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: true }
+                            modified: { $set: new Date().getTime() }
                         }
                     })
                 else
@@ -362,7 +370,7 @@ function profileReducer (state = initialState, action) {
                             [action.value.optionName]: { $set: action.value.value }
                         }
                     },
-                    modified: { $set: true }
+                    modified: { $set: new Date().getTime() }
                 }
             })
         case Symbols.LOGIN_SUCCESS:
@@ -370,10 +378,17 @@ function profileReducer (state = initialState, action) {
             console.log(action.value.profile)
             if(action.value.profile != null)
                 return update(state, {
-                    profile: { $set: action.value.profile }
+                    profile: { $set: loadProfileTransform(action.value.profile) }
                 })
             else
                 return state
+        case Symbols.SAVE_SUCCESS:
+          return update(state, {
+                profile: {
+                    // Only set modified to false if the user hasn't updated something since we last saved the profile
+                    modified: { $set: state.identity.lastSaveAttempt < state.profile.modified ? true : false }
+                }
+            })
         default:
             return state
     }
@@ -570,13 +585,23 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.OPEN_ID_DIALOG:
-            return update(state, {
-                ui: {
-                    identity: {
-                        dialogOpen: { $set: true }
+            if(isValid(action.value))
+                return update(state, {
+                    ui: {
+                        identity: {
+                            dialogOpen: { $set: true },
+                            dialogFunction: { $set: action.value }
+                        }
                     }
-                }
-            })
+                })
+            else
+                return update(state, {
+                    ui: {
+                        identity: {
+                            dialogOpen: { $set: true },
+                        }
+                    }
+                })
         case Symbols.CLOSE_ID_DIALOG:
             return update(state, {
                 ui: {
@@ -592,7 +617,8 @@ function uiReducer (state = initialState, action) {
                             password: { $set: "" },
                             passwordConfirmation: { $set: "" },
                             ready: { $set: false }
-                        }
+                        },
+                        error: { $set: "" }
                     }
                 }
             })
@@ -601,6 +627,14 @@ function uiReducer (state = initialState, action) {
                 ui: {
                     identity: {
                         actionPending: { $set: true }
+                    }
+                }
+            })
+        case Symbols.SAVE_SUCCESS:
+            return update(state, {
+                ui: {
+                    identity: {
+                        actionPending: { $set: false }
                     }
                 }
             })
@@ -638,24 +672,54 @@ function uiReducer (state = initialState, action) {
                     identity: {
                         actionPending: { $set: false },
                         dialogOpen: { $set: false }
-                        }
+                    }
                 }
-                // TODO set profile
             })
         case Symbols.SET_ID_FIELD:
+        if(isValid(action.value.field))
+        {
+            console.log(action.value)
             // Check for issues in input
-            console.log(action)
-            if(isValid(action.value.section) && isValid(action.value.field))
-            {
-                return update(state, {
-                        ui: {
-                            identity: {
-                                [action.value.section]: {
-                                    [action.value.field]: { $set: action.value.value }
-                                }
-                            }
+            let j = { 
+                email: state.ui.identity.email,
+                password: state.ui.identity.password,
+                passwordConfirmation: state.ui.identity.passwordConfirmation,
+                ready: false,
+                passwordsMatch: false,
+                passwordComplex: false,
+                error: state.ui.identity.error
+            }
+            j[action.value.field] = action.value.value
+            switch(state.ui.identity.dialogFunction) {
+                case "LOGIN":
+                    j.ready = (j.email && j.password)
+                    j.passwordsMatch = false
+                    break
+                case "REGISTER":
+                    j.passwordsMatch = j.password === j.passwordConfirmation
+                    j.passwordComplex = true // TODO actually check on client side
+                    j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex)  // TODO check for valid email and password complexity
+                    if(j.password && j.passwordConfirmation)
+                        if(!j.passwordsMatch)
+                            j.error = "Passwords do not match."
+                        else
+                            j.error = ""
+                    break
+            }
+            // Return state
+            return update(state, {
+                    ui: {
+                        identity: {
+                            email: { $set: j.email },
+                            password: { $set: j.password },
+                            passwordConfirmation: { $set: j.passwordConfirmation },
+                            passwordsMatch: { $set: j.passwordsMatch },
+                            passwordComplex: { $set: j.passwordComplex },
+                            ready: { $set: j.ready },
+                            error: { $set: j.error }
                         }
-                    })
+                    }
+                })
             }
             else
             {
@@ -668,60 +732,23 @@ function uiReducer (state = initialState, action) {
 
 function identityReducer (state = initialState, action)  {
     switch(action.type) {
-        case Symbols.OPEN_ID_DIALOG:
-            return update(state, {
-                identity: {
-                    dialogOpen: { $set: true }
-                }
-            })
-        case Symbols.CLOSE_ID_DIALOG:
-            return update(state, {
-                identity: {
-                    dialogOpen: { $set: false }
-                }
-            })
-        case Symbols.ID_ACTION_STARTED:
-            return update(state, {
-                identity: {
-                    actionPending: { $set: true }
-                }
-            })
-        case Symbols.ID_ACTION_FINISHED:
-            return update(state, {
-                identity: {
-                    actionPending: { $set: false }
-                }
-            })
-        case Symbols.SET_ID_FUNCTION:
-            if(action.value != "undefined")
-                return update(state, {
-                    identity: {
-                        dialogFunction: { $set: action.value },
-                        actionPending: { $set: false }
-                    }
-                })
-            else
-                return state
-        case Symbols.SET_ID_FAILURE:
-            return update(state, {
-                identity: {
-                    error: { $set: action.value },
-                    actionPending: { $set: false }
-                }
-            })
         case Symbols.LOGIN_SUCCESS:
             return update(state, {
                 identity: {
-                    user: {
-                        email: { $set: action.value.email }
-                    },
-                    loggedIn: { $set: true },
+                    email: { $set: action.value.email },
+                    verified: { $set: action.value.verified },
+                    alias: { $set: action.value.alias },
                     jwt: { $set: action.value.jwt },
-                    actionPending: { $set: false },
-                    dialogOpen: { $set: false }
+                    loggedIn: { $set: true }
                 }
-                // TODO set profile
             })
+        case Symbols.ID_ACTION_STARTED:
+            if(action.value && action.value.type == "SAVE")
+                return update(state, {
+                    identity: {
+                        lastSaveAttempt: { $set: new Date().getTime() }
+                    }
+                })
         case Symbols.LOGOUT: 
             return initialState
         default:

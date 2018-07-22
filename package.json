@@ -7,7 +7,7 @@
     "@material-ui/icons": "^1.1.0",
     "@material-ui/lab": "^1.0.0-alpha.4",
     "axios": "^0.18.0",
-    "classnames": "^2.2.5",
+    "classnames": "^2.2.6",
     "connected-react-router": "^4.3.0",
     "gaussian": "^1.1.0",
     "ghost-client": "^2.0.0",

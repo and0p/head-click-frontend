@@ -72,6 +72,24 @@ const theme = createMuiTheme({
 
 export default theme;
 
+export const gradients = {
+  purple: {
+    background: theme.palette.custom.purple,  // fallback for old browsers
+    background: "-webkit-linear-gradient(to right, " + theme.palette.custom.purple + ", #664ebf)",  // Chrome 10-25, Safari 5.1-6
+    background: "linear-gradient(300deg, " + theme.palette.custom.purple + ", #664ebf)", //* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+  },
+  blue: {
+    background: theme.palette.custom.blue,
+    background: "-webkit-radial-gradient(at 60% bottom, " + theme.palette.custom.blue + ", #50aac2)",
+    background: "radial-gradient(at 80% bottom, " + theme.palette.custom.blue + ", #50aac2)",
+  },
+  teal: {
+    background: theme.palette.custom.teal,
+    background: "-webkit-linear-gradient(to right, " + theme.palette.custom.teal + ", #46bd99)",
+    background: "linear-gradient(45deg, " + theme.palette.custom.teal + ", #46bd99)",
+  }
+}
+
 // {
 //   "breakpoints": {
 //     "keys": [

@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography'
 // Misc imports
-import { login } from '../../identity'
+import { login, register } from '../../identity'
 import * as Symbols from '../../redux/HcSymbols'
 
 const styles = theme => ({
@@ -26,6 +26,7 @@ const styles = theme => ({
       backgroundColor: theme.palette.background.paper
     },
     errorText: {
+      height: '20px',
       color: theme.palette.custom.red
     }
 })
@@ -46,37 +47,99 @@ class IdentityDialog extends React.Component {
         >
           <DialogTitle>Log In</DialogTitle>
           <DialogContent className={classes.root}>
-          <div>
-            <TextField
-              value={this.props.ui.identity.login.email}
-              label="Email"
-              fullWidth
-              onChange={event => {this.props.updateField("login", "email", event.target.value)}}
-              InputLabelProps={{
-                shrink: this.props.ui.identity.login.email != "",
-              }}
-            />
-            <TextField
-              value={this.props.ui.identity.login.password}
-              label="Password"
-              fullWidth
-              onChange={event => {this.props.updateField("login", "password", event.target.value)}}
-              InputLabelProps={{
-                shrink: this.props.ui.identity.login.password != "",
-              }}
-              type="password"
-            />
-          </div>
-          }
-          {this.props.ui.identity.error != "" && <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>}
+            <div>
+              <TextField
+                value={this.props.ui.identity.email}
+                label="Email"
+                fullWidth
+                onChange={event => {this.props.updateField("email", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.email
+                }}
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.password}
+                label="Password"
+                fullWidth
+                onChange={event => {this.props.updateField("password", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.password
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+            </div>
+            }
+            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
           </DialogContent>
           {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
           <DialogActions>
             <Button onClick={this.props.closeDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={() => login(this.props.ui.identity.login.email, this.props.ui.identity.login.password)} variant="contained" color="primary" autoFocus>
+            <Button onClick={() => login(this.props.ui.identity.email, this.props.ui.identity.password)} variant="contained" color="primary" autoFocus>
               Log In
+            </Button>
+          </DialogActions>
+          <LinearProgress value={0} variant={this.props.ui.identity.actionPending ? "indeterminate" : "determinate" } classes={{ colorPrimary: classes.customBarBackground }} />
+        </Dialog>
+      )
+    }
+    else if(this.props.ui.identity.dialogFunction == "REGISTER") {
+      return (
+        <Dialog
+          fullScreen={fullScreen}
+          open={this.props.ui.identity.dialogOpen}
+          aria-labelledby="log-in-or-sign-up"
+          onBackdropClick={this.props.closeDialog}
+          //onEnter={}
+        >
+          <DialogTitle>Sign Up</DialogTitle>
+          <DialogContent className={classes.root}>
+            <div>
+              <TextField
+                value={this.props.ui.identity.email}
+                label="Email"
+                fullWidth
+                onChange={event => {this.props.updateField("email", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.email
+                }}
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.password}
+                label="Password"
+                fullWidth
+                onChange={event => {this.props.updateField("password", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.password
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.passwordConfirmation}
+                label="Confirm Password"
+                fullWidth
+                onChange={event => {this.props.updateField("passwordConfirmation", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.passwordConfirmation
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+            </div>
+            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
+          </DialogContent>
+          {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
+          <DialogActions>
+            <Button onClick={this.props.closeDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => register()} variant="contained" color="primary" autoFocus disabled={!this.props.ui.identity.ready}>
+              Sign Up
             </Button>
           </DialogActions>
           <LinearProgress value={0} variant={this.props.ui.identity.actionPending ? "indeterminate" : "determinate" } classes={{ colorPrimary: classes.customBarBackground }} />
@@ -101,9 +164,9 @@ const mapDispatchToProps = dispatch => {
     closeDialog: value => dispatch({
       type: Symbols.CLOSE_ID_DIALOG
     }),
-    updateField: (section, field, value) => dispatch({
+    updateField: (field, value) => dispatch({
       type: Symbols.SET_ID_FIELD,
-      value: { section: section, field: field, value: value }
+      value: { field: field, value: value }
     })
   }
 }
