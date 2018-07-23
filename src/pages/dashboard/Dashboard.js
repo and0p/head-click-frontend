@@ -11,16 +11,13 @@ import VerificationBox from './components/VerificationBox'
 import EditIcon from '../../components/EditIcon'
 import ProfileEditDialog from '../../components/ProfileEditDialog'
 import ComingSoon from '../../components/ComingSoon'
-import constants from '../../constants'
 import MessageBox from '../../components/MessageBox'
+import Input from '@material-ui/core/Input'
+import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import Icon from '@material-ui/core/Icon'
-import Divider from '@material-ui/core/Divider';
 import copy from '../../copy'
 import axios from 'axios'
 import * as Symbols from '../../redux/HcSymbols'
@@ -104,7 +101,7 @@ const styles = theme => ({
     userIcon: {
         color: "#FFFFFF"
     },
-    linkIcon: {
+    smallIcon: {
         fontSize: '1.5em',
         marginLeft: "2px",
         marginRight: theme.spacing.unit,
@@ -113,6 +110,13 @@ const styles = theme => ({
     },
     settingsSection: {
         marginTop: theme.spacing.unit * 2
+    },
+    button: {
+        margin: theme.spacing.unit,
+        color: theme.palette.custom.yellow
+    },
+    subtle: {
+        color: theme.palette.custom.subtle
     }
 });
 
@@ -301,7 +305,7 @@ class Dashboard extends React.Component {
                                     </Typography>
                                     <EditIcon onClick={this.props.editProfile}/>
                                     <Grid container className= {classes.settingsSection} spacing={spacing}>
-                                        <Grid item xs={12} lg={6}>
+                                        <Grid item xs={12} md={6}>
                                             <div className={classes.profileInfo}>
                                                 <Typography variant="display1" style={{color:"#FFFFFF"}} gutterBottom>
                                                     <Icon className={classes.userIcon}>person</Icon> {this.props.identity.loggedIn ? this.props.identity.alias : "Unsaved"}
@@ -309,10 +313,18 @@ class Dashboard extends React.Component {
                                             </div>
                                             <div className={classes.profileInfo}>
                                                 <Typography variant="caption" gutterBottom>
-                                                    <Icon className={classes.linkIcon}>link</Icon>
+                                                    {this.props.identity.loggedIn ? <Icon className={classes.smallIcon}>link</Icon> : <Icon className={classes.smallIcon} style={{color:"#DA3345"}}>warning</Icon>}
                                                     {this.props.identity.loggedIn ? "https://head.click/user/" + this.props.identity.alias : "Save your profile to generate a URL"}
                                                 </Typography>
+                                                <Typography variant="caption" gutterBottom>
+                                                    <Icon className={classes.smallIcon} style={{color:"#DEBA24"}}>warning</Icon>
+                                                    Verify your account to change name / URL
+                                                </Typography>
                                             </div>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Input value=""/><Button variant="outlined" color="primary" className={classes.button}>Verify</Button>
+                                            <Typography variant="caption">Check your email for code. Resend</Typography>
                                         </Grid>
                                     </Grid>
                                     <Grid container className= {classes.settingsSection} spacing={spacing}>
@@ -323,13 +335,10 @@ class Dashboard extends React.Component {
                                             <SettingCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue" />
                                         </Grid>
                                         <Grid item className={classes.root} lg={4} sm={6} xs={12}>
-                                            <SettingCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscane' color="teal" />
+                                            <SettingCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal" />
                                         </Grid>
                                     </Grid>
                                 </Paper>
-                            </Grid>
-                            <Grid item xs={12}>
-                                    <VerificationBox />
                             </Grid>
                             {/* Gear card */}
                             <Grid item xs={12}>

@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 import * as Symbols from './redux/HcSymbols'
 import axios from 'axios'
 
-const apiHost = 'https://api.head.click' // api.head.click:443
+const apiHost = 'http://localhost:8081' // 'https://api.head.click'
 
 export const register = () => {
     let state = store.getState()

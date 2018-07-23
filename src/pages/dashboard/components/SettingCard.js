@@ -23,7 +23,7 @@ const styles = theme => ({
         [theme.breakpoints.down('md')]: {
             width:"20%",
         },
-        [theme.breakpoints.up('xl')]: {
+        [theme.breakpoints.up('lg')]: {
             width: "30%"
         },
         float: "left",
