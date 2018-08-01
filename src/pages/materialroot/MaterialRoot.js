@@ -193,7 +193,9 @@ class MaterialRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-
+    let canSave = false
+    if(!this.props.ui.actionPending && this.props.identity.lastModified > this.props.identity.lastSaveAttempt)
+      canSave = true
     // Games list HTML
     const sidebarGamesList = () => (
       <div>
@@ -275,8 +277,13 @@ class MaterialRoot extends React.Component {
             }
             {this.props.profile.ready &&
               <div>
-                <Button disabled={!this.props.profile.modified || this.props.ui.identity.actionPending} className={classes.saveButton} variant="contained" color="secondary" onClick={save}>
-                { this.props.ui.identity.actionPending ? <CircularProgress size={24} className={classes.saveProgress} /> : "Save" }
+                <Button 
+                disabled={!canSave}
+                className={classes.saveButton}
+                variant="contained"
+                color="secondary"
+                onClick={save}>
+                  { this.props.ui.identity.actionPending ? <CircularProgress size={24} className={classes.saveProgress} /> : "Save" }
                 </Button>
                 <AccountMenu />
               </div>

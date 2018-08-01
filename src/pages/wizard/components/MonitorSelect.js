@@ -103,9 +103,6 @@ class MonitorSelect extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
-        console.log(this.props.selectedMonitor)
-        console.log(this.props.customMonitor)
-        console.log(this.props.customMonitor == this.props.selectedMonitor)
         return(
             <div className={classes.root}>
                 <div className={classes.section}>

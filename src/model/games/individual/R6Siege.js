@@ -131,6 +131,7 @@ export const R6Siege = {
     shortName: "R6 Siege",
     alias: "r6siege",
     hasLogo: false,
+    type: "average",
     math: {
         fov: {
             min: 60,

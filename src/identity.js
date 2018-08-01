@@ -3,7 +3,9 @@ import { push } from 'connected-react-router'
 import * as Symbols from './redux/HcSymbols'
 import axios from 'axios'
 
-const apiHost = 'http://localhost:8081' // 'https://api.head.click'
+const apiHost = 'https://api.head.click' // 'http://localhost:8081'
+
+let lastAliasChecked = null
 
 export const register = () => {
     let state = store.getState()
@@ -36,6 +38,27 @@ export const register = () => {
         })
 }
 
+export const verify = () => {
+    let state = store.getState()
+    if(!state.ui.identity.verificationTokenReady)
+    {
+        return
+    }
+    let jwt = state.identity.jwt
+    let token = state.ui.identity.verificationToken
+    // Dispatch that we're starting a request
+    store.dispatch({ type: Symbols.ID_ACTION_STARTED })
+    // Send request
+    axios.post(apiHost + '/verify', { token: token },
+    { headers: {'Authorization': "bearer " + jwt, 'Content-Type': 'application/json'} })
+        .then(response => {
+            store.dispatch({type: Symbols.VERIFY_SUCCESS})
+        })
+        .catch(error => {
+            store.dispatch({ type: Symbols.SET_VERIFICATION_FAILURE, value: "Verification failed!"})
+        })
+}
+
 export const login = () => {
     let state = store.getState()
     let options = state.ui.identity
@@ -54,9 +77,9 @@ export const login = () => {
                     jwt: response.data.token
                 }
             })
+            store.dispatch(push('/'))
         })
         .catch(error => {
-            console.log("errored")
             store.dispatch({ type: Symbols.SET_ID_FAILURE, value: "Login failed!"})
         })
 }
@@ -79,9 +102,51 @@ export const save = () => {
                 store.dispatch({ type: Symbols.SAVE_SUCCESS })
             })
             .catch(error => {
-                store.dispatch({ type: Symbols.ID_ACTION_FINISHED })
+                store.dispatch({ type: Symbols.SAVE_FAIL })
             })
     }
+}
+
+// Takes callback from react component, waits to see if they're still typing, and calls API
+export const checkAlias = (alias, callback) => {
+    lastAliasChecked = alias
+    // Wait half a second to see if the user is still typing, and then call the API
+    if(alias != null)
+        setTimeout(() => { if(lastAliasChecked === alias) checkAliasCallback(alias, callback)}, 500)
+}
+
+const checkAliasCallback = (alias, callback) => {
+    let state = store.getState()
+    let jwt = state.identity.jwt
+    // Send request
+    axios.post(apiHost + '/check_alias', { alias: alias },
+    { headers: {'Authorization': "bearer " + jwt, 'Content-Type': 'application/json'} })
+        .then(response => {
+            // Make sure the user hasn't changed what they want
+            if(lastAliasChecked === alias && lastAliasChecked)
+                callback(alias, response.data)
+        })
+        .catch(error => {
+            // Make sure the user hasn't changed what they want
+            if(lastAliasChecked === alias && lastAliasChecked)
+                callback(alias, "Error checking name")
+        })
+}
+
+export const changeAlias = (alias) => {
+    let state = store.getState()
+    let jwt = state.identity.jwt
+    // Send request
+    axios.post(apiHost + '/change_alias', { alias: alias },
+    { headers: {'Authorization': "bearer " + jwt, 'Content-Type': 'application/json'} })
+        .then(response => {
+            // Tell redux it worked
+            store.dispatch({type: Symbols.CHANGE_ALIAS_SUCCESS, value: alias })
+        })
+        .catch(error => {
+            // Tell redux it failed
+            store.dispatch({type: Symbols.CHANGE_ALIAS_FAILURE })
+        })
 }
 
 export const logout = () => {

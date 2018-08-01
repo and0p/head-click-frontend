@@ -19,6 +19,8 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Select from '@material-ui/core/Select';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Icon from '@material-ui/core/Icon'
+import { checkAlias, changeAlias } from '../identity'
 import { monitors } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
 import { clamp } from '../math'
@@ -42,6 +44,12 @@ const styles = theme => ({
   },
   subtle: {
     color: '#888888'
+  },
+  good: {
+    color: theme.palette.custom.blue
+  },
+  error: {
+    color: theme.palette.custom.red
   }
 })
 
@@ -50,10 +58,16 @@ class ProfileEditDialog extends React.Component {
     super(props)
     let cmonitor = Object.assign({}, this.props.profile.customMonitor)
     this.state = {
+      alias: this.props.identity.alias,
+      aliasError: false,
+      lastAliasChange: Date.now(),
+      aliasResponseText: "",
       sensitivity: this.props.profile.settings.sensitivity.actual,
       dpi: this.props.profile.settings.dpi.actual,
       monitor: this.props.profile.settings.usingCustomMonitor ? cmonitor : this.props.profile.settings.monitor,
-      customMonitor: cmonitor
+      customMonitor: cmonitor,
+      profileError: false,
+      ready: true
     }
   }
 
@@ -67,8 +81,18 @@ class ProfileEditDialog extends React.Component {
     })
   }
 
+  submit = () => {
+    // See if we need to change alias
+    if(this.state.alias != this.props.identity.alias)
+      changeAlias(this.state.alias)
+    this.props.saveProfile(this.state)
+  }
+
   cancel = () => {
     this.setState({
+      alias: this.props.identity.alias,
+      aliasError: false,
+      aliasResponseText: "",
       sensitivity: this.props.profile.settings.sensitivity.actual,
       dpi: this.props.profile.settings.dpi.actual,
       monitor: this.props.profile.settings.monitor,
@@ -88,8 +112,52 @@ class ProfileEditDialog extends React.Component {
   }
 
   handleChange = prop => event => {
-      this.setState({ [prop]: event.target.value })
+    let newState = {}
+      if(prop == "alias")
+      {
+        let newAlias = event.target.value
+        if(newAlias.length <= 12) {
+          let valid = newAlias.length <= 12 && newAlias.length > 0 // TODO check for bad characters, etc
+          if(newAlias !== this.props.identity.alias && valid) {
+            newState = { alias: newAlias, aliasError: !valid, aliasResponseText: "Checking availability..." }
+            checkAlias(newAlias, this.nameCheckCallback)
+          }
+          else {
+            newState = { alias: newAlias, aliasError: !valid, aliasResponseText: "" }
+            checkAlias(null, null)
+          }
+        }
+      }
+      else
+      {
+        newState[prop] = event.target.value
+      }
+      // Combine new and old state to check if we're ready
+      let combinedState = Object.assign({}, this.state, newState)
+      if(
+        combinedState.sensitivity < 1 || combinedState.sensitivity == "undefined" || combinedState.sensitivity == null ||
+        combinedState.dpi < 1 || combinedState.dpi == "undefined" || combinedState.dpi == null ||
+        combinedState.aliasError || (combinedState.aliasResponseText != "" && combinedState.aliasResponseText != "Available")        
+      )
+        combinedState.ready = false
+      else
+        combinedState.ready = true
+      this.setState(combinedState)
   };
+
+  nameCheckCallback = (alias, result) => {
+    if(this.state.alias === alias && !this.state.aliasError)
+    {
+      if(
+        this.state.sensitivity < 1 || this.state.sensitivity == "undefined" || this.state.sensitivity == null ||
+        this.state.dpi < 1 || this.state.dpi == "undefined" || this.state.dpi == null ||
+        this.state.aliasError || (result != "" && result != "Available")        
+      )
+        this.setState({ aliasResponseText: result, ready: false })
+      else
+        this.setState({ aliasResponseText: result, ready: true })
+    }
+  }
 
   updateCustomSize = axis => event => {
       if(axis == "width")
@@ -112,6 +180,11 @@ class ProfileEditDialog extends React.Component {
 
   render() {
     const { classes, theme, fullScreen } = this.props
+    let responseClass = classes.subtle
+    if(this.state.aliasResponseText == "Available")
+      responseClass = classes.good
+    else if (this.state.aliasResponseText === "Unavailable")
+      responseClass = classes.error
     return (
       <Dialog
         fullScreen={fullScreen}
@@ -122,6 +195,23 @@ class ProfileEditDialog extends React.Component {
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <form noValidate autoComplete="off">
+            <FormControl className={classes.input}>
+            <FormHelperText>Profile Name</FormHelperText>
+            <Input
+                autoFocus
+                margin="dense"
+                id="alias"
+                label="Alias"
+                value={this.state.alias}
+                error={this.state.aliasError}
+                onChange={this.handleChange('alias')}
+                endAdornment={<InputAdornment position="end"><Icon>person</Icon></InputAdornment>}
+                inputProps={{
+                  'aria-label': 'Sensitivity',
+                }}
+              />
+              <FormHelperText id="profile-name-helper" className={responseClass}>{this.state.aliasResponseText}</FormHelperText>
+            </FormControl><br/>
           {/* SENSITIVITY */}
             <FormControl className={classes.input}>
             <FormHelperText>Sensitivity</FormHelperText>
@@ -213,8 +303,8 @@ class ProfileEditDialog extends React.Component {
           <Button onClick={this.cancel} color="primary">
             Cancel
           </Button>
-          <Button onClick={() => this.props.saveProfile(this.state)} color="primary" autoFocus>
-            Save
+          <Button onClick={this.submit} color="secondary" variant="contained" disabled={!this.state.ready} autoFocus>
+            Apply
           </Button>
         </DialogActions>
       </Dialog>
@@ -225,7 +315,8 @@ class ProfileEditDialog extends React.Component {
 const mapStateToProps = (state) => {
   return {
     profile: state.profile,
-    ui: state.ui
+    ui: state.ui,
+    identity: state.identity
   }
 }
 

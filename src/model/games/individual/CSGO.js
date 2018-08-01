@@ -106,6 +106,7 @@ const CSGO = {
     shortName: "CS:GO",
     alias: "csgo",
     hasLogo: false,
+    type: "tactical",
     math: {
         fov: {
             min: 60,

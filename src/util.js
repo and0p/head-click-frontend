@@ -1,6 +1,35 @@
 import * as stats from 'stats-lite'
 import gaussian from 'gaussian'
 
+const recommendationVars = {
+    'mousePad': {
+        'small': 20,
+        'medium': 28,
+        'wide': 36
+    },
+    'gamePace': {
+        'twitchy': 0.8,
+        'average': 1,
+        'tactical': 1.2
+    },
+    'tryhard': {
+        'casual': 1,
+        'pro': 1.1,
+        'tryhard': 1.2
+    },
+}
+
+export const getTypicalGameStyle = profile => {
+    
+}
+
+export const recommendSensitivity = profile => {
+    let rec = recommendationVars["mousePad"][profile.settings.mousePadSize]
+    let gamePaceMultiplier = recommendationVars["gamePace"][profile.settings.typicalGamePace]
+    let tryhardMultiplier = recommendationVars["tryhard"][profile.settings.tryhardFactor]
+    return Math.round(rec * gamePaceMultiplier * tryhardMultiplier)
+}
+
 // ideal FOV W:H is 106:74 at 16:9 
 export const baseFOV = 106.26
 export const getPercentageOfBaseFOV = (fov) => {

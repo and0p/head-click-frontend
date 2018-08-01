@@ -19,6 +19,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Icon from '@material-ui/core/Icon'
 import copy from '../../copy'
+import { verify } from '../../identity'
 import axios from 'axios'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -113,7 +114,7 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
-        color: theme.palette.custom.yellow
+        //color: theme.palette.custom.yellow
     },
     subtle: {
         color: theme.palette.custom.subtle
@@ -305,7 +306,7 @@ class Dashboard extends React.Component {
                                     </Typography>
                                     <EditIcon onClick={this.props.editProfile}/>
                                     <Grid container className= {classes.settingsSection} spacing={spacing}>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid item xs={12} sm={6}>
                                             <div className={classes.profileInfo}>
                                                 <Typography variant="display1" style={{color:"#FFFFFF"}} gutterBottom>
                                                     <Icon className={classes.userIcon}>person</Icon> {this.props.identity.loggedIn ? this.props.identity.alias : "Unsaved"}
@@ -316,16 +317,32 @@ class Dashboard extends React.Component {
                                                     {this.props.identity.loggedIn ? <Icon className={classes.smallIcon}>link</Icon> : <Icon className={classes.smallIcon} style={{color:"#DA3345"}}>warning</Icon>}
                                                     {this.props.identity.loggedIn ? "https://head.click/user/" + this.props.identity.alias : "Save your profile to generate a URL"}
                                                 </Typography>
+                                                {!this.props.identity.verified &&
                                                 <Typography variant="caption" gutterBottom>
                                                     <Icon className={classes.smallIcon} style={{color:"#DEBA24"}}>warning</Icon>
                                                     Verify your account to change name / URL
                                                 </Typography>
+                                                }
                                             </div>
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            <Input value=""/><Button variant="outlined" color="primary" className={classes.button}>Verify</Button>
-                                            <Typography variant="caption">Check your email for code. Resend</Typography>
+                                        {this.props.identity.loggedIn && !this.props.identity.verified &&
+                                        <Grid item xs={12} sm={6}>
+                                                
+                                            <Input value={this.props.ui.identity.verificationToken} onChange={event => {this.props.updateVerificationToken(event.target.value)}} />
+                                            <Button 
+                                                variant="outlined" 
+                                                color="primary"
+                                                className={classes.button}
+                                                disabled={!this.props.ui.identity.verificationTokenReady}
+                                                onClick={verify}
+                                            >
+                                                Verify
+                                            </Button>
+                                            <Typography variant="caption">
+                                                {this.props.ui.identity.verificationFailure ? "Verification failed! " : "" }Check your email for code. <a href="#">Resend</a>
+                                            </Typography>
                                         </Grid>
+                                        }
                                     </Grid>
                                     <Grid container className= {classes.settingsSection} spacing={spacing}>
                                         <Grid item className={classes.root} lg={4} sm={6} xs={12}>
@@ -389,7 +406,8 @@ class Dashboard extends React.Component {
 const mapStateToProps = (state) => {
     return {
       profile: state.profile,
-      identity: state.identity
+      identity: state.identity,
+      ui: state.ui
     }
 }
   
@@ -397,6 +415,10 @@ const mapDispatchToProps = dispatch => {
     return {
         editProfile: () => dispatch({
             type: Symbols.START_EDIT_PROFILE
+        }),
+        updateVerificationToken: (value) => dispatch({
+            type: Symbols.SET_VERIFICATION_TOKEN,
+            value: value 
         })
     }
 }

@@ -70,7 +70,6 @@ class IdentityDialog extends React.Component {
                 disabled={this.props.ui.identity.actionPending}
               />
             </div>
-            }
             <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
           </DialogContent>
           {this.props.ui.identity.dialogFunction == "RESET" && <div/>}

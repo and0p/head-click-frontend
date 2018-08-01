@@ -10,7 +10,8 @@ import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
 import { validateProfile } from './Validation'
-import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, clamp } from '../util'
+import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity } from '../util'
+import { clamp } from '../math'
 
 // Profile when it was last saved, for reverting
 let lastSavedProfile = {}
@@ -34,6 +35,9 @@ const initialState = {
                 recommended: 0
             },
             usingCustomMonitor: false,
+            tryhardFactor: "casual",
+            mousePadSize: "medium",
+            typicalGamePace: "average"
         },
         customMonitor: {
             name: "1920x1080",
@@ -49,13 +53,12 @@ const initialState = {
         ready: false,
         gamesOverriden: [],
         overrides: {},
-        options: {},
-        modified: false
+        options: {}
     },
     wizard: {
         wizardCompleted: false,
-        activePage: 1,
-        pagesReady: [true, false, true, false, true],
+        activePage: 0,
+        pagesReady: [true, false, true, false, true, true, true],
         monitorConcern: false,
         monitorSelected: false,
         gamePagesRevealed: 1,
@@ -81,19 +84,10 @@ const initialState = {
             password: "",
             passwordConfirmation: "",
             ready: false,
-            login: {
-                username: "",
-                password: "",
-                ready: false
-            },
-            register: {
-                username: "",
-                password: "",
-                passwordConfirmation: "",
-                ready: false,
-                passwordsMatch: false,
-                passwordComplex: true
-            }
+            verificationToken: "",
+            verificationTokenReady: false,
+            verificationFailure: null,
+            aliasBeingChanged: false
         },
         editingProfile: false,
         drawerOpenOnMobile: false,
@@ -107,13 +101,42 @@ const initialState = {
         verified: false,
         loggedIn: false,
         jwt: "",
-        lastSaveAttempt: null
+        lastModified: 0,
+        lastSaveAttempt: 0,
+        lastSaveSuccess: 0
     }
 }
 
 // Reducers
 function profileReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.SELECT_MOUSEPAD_SIZE: {
+            return update(state, {
+                profile: {
+                    settings: {
+                        mousePadSize: { $set: action.value }
+                    },
+                }
+            })
+        }
+        case Symbols.SELECT_TRYHARD_FACTOR: {
+            return update(state, {
+                profile: {
+                    settings: {
+                        tryhardFactor: { $set: action.value }
+                    },
+                }
+            })
+        }
+        case Symbols.SELECT_GAME_PACE: {
+            return update(state, {
+                profile: {
+                    settings: {
+                        typicalGamePace: { $set: action.value }
+                    },
+                }
+            })
+        }
         case Symbols.SELECT_MONITOR:
             if(action.value != null)
             {
@@ -132,7 +155,6 @@ function profileReducer (state = initialState, action) {
                             },
                             usingCustomMonitor: {$set: action.value === state.profile.customMonitor }
                         },
-                        modified: { $set: new Date().getTime() }
                     }
                 })
             }
@@ -144,7 +166,7 @@ function profileReducer (state = initialState, action) {
                 return update(state, {
                     profile: {
                         refreshRate: { $set: action.value },
-                        modified: { $set: new Date().getTime() }
+                        
                     }
                 })
             else return state
@@ -157,7 +179,7 @@ function profileReducer (state = initialState, action) {
                     return update(state, {
                         profile: {
                             ownedGames: { $splice: [[index, 1]] },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                     })
                 }
@@ -169,21 +191,21 @@ function profileReducer (state = initialState, action) {
                             options: { 
                                 [action.value.alias]: { $set: action.value.getDefaultOptions() }
                             },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                     })
                 }
             }
             else return state
         case Symbols.WIZARD_NEXT:
-            if(state.wizard.activePage == 3)
+            if(state.wizard.activePage == 4)
             {
-                let recommendedSensitivity = getRecommendedDpi(state.profile.ownedGames)
+                let recommendedSensitivity = recommendSensitivity(state.profile)
                 return update(state, {
                     profile: {
                         settings: {
                             sensitivity: {
-                                actual: { $set: recommendedSensitivity},
+                                actual: { $set: recommendedSensitivity },
                                 recommended: { $set: recommendedSensitivity }
                             }
                         },
@@ -209,7 +231,7 @@ function profileReducer (state = initialState, action) {
                             usingCustomMonitor: { $set: action.value.monitor == action.value.customMonitor }
                         },
                         customMonitor: { $set: action.value.customMonitor },
-                        modified: { $set: new Date().getTime() }
+                        
                     }
                 })
             }
@@ -229,7 +251,7 @@ function profileReducer (state = initialState, action) {
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         },
-                        modified: { $set: new Date().getTime() }
+                        
                     }
                 })
             }
@@ -250,7 +272,7 @@ function profileReducer (state = initialState, action) {
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         },
-                        modified: { $set: new Date().getTime() }
+                        
                     }
                 })
             }
@@ -275,7 +297,7 @@ function profileReducer (state = initialState, action) {
                                 overrides: {
                                     [action.value.gameName]: {$set: overrides}
                                 },
-                                modified: { $set: new Date().getTime() }
+                                
                             }
                         })
                     }
@@ -283,7 +305,7 @@ function profileReducer (state = initialState, action) {
                         return update(state, {
                             profile: {
                                 gamesOverriden: { $push: [action.value.gameName] },
-                                modified: { $set: new Date().getTime() }
+                                
                             }
                         })
                 }
@@ -293,7 +315,7 @@ function profileReducer (state = initialState, action) {
                     return update(state, {
                         profile: {
                             gamesOverriden: { $set: state.profile.gamesOverriden.filter( (item) => item !== action.value.gameName) },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                     })
                 }
@@ -312,7 +334,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                     })
                 else if(action.value.override == 'dpi')
@@ -325,7 +347,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                     })
                 else if(action.value.override == 'resolutionx')
@@ -338,7 +360,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                 })
                 else if(action.value.override == 'resolutiony')
@@ -351,7 +373,7 @@ function profileReducer (state = initialState, action) {
                                     }
                                 }
                             },
-                            modified: { $set: new Date().getTime() }
+                            
                         }
                     })
                 else
@@ -370,25 +392,17 @@ function profileReducer (state = initialState, action) {
                             [action.value.optionName]: { $set: action.value.value }
                         }
                     },
-                    modified: { $set: new Date().getTime() }
+                    
                 }
             })
         case Symbols.LOGIN_SUCCESS:
             // TODO make sure profile is good
-            console.log(action.value.profile)
             if(action.value.profile != null)
                 return update(state, {
                     profile: { $set: loadProfileTransform(action.value.profile) }
                 })
             else
                 return state
-        case Symbols.SAVE_SUCCESS:
-          return update(state, {
-                profile: {
-                    // Only set modified to false if the user hasn't updated something since we last saved the profile
-                    modified: { $set: state.identity.lastSaveAttempt < state.profile.modified ? true : false }
-                }
-            })
         default:
             return state
     }
@@ -427,7 +441,7 @@ function wizardReducer (state = initialState, action) {
                 })
             return state
         case Symbols.WIZARD_NEXT:
-            if(state.wizard.activePage < 4 && state.wizard.pagesReady[state.wizard.activePage]) {
+            if(state.wizard.activePage < 6 && state.wizard.pagesReady[state.wizard.activePage]) {
                 // Set the next page
                 return update(state, {
                     wizard: {
@@ -436,7 +450,7 @@ function wizardReducer (state = initialState, action) {
                     }
                 })
             }
-            else if(state.wizard.activePage == 4 && state.wizard.pagesReady[state.wizard.activePage])
+            else if(state.wizard.activePage == 6 && state.wizard.pagesReady[state.wizard.activePage])
             {
                 // Finish the wizard
                 return update(state, {
@@ -607,17 +621,9 @@ function uiReducer (state = initialState, action) {
                 ui: {
                     identity: {
                         dialogOpen: { $set: false },
-                        login: { 
-                            email: { $set: "" },
-                            password: { $set: "" },
-                            ready: { $set: false }
-                        },
-                        register: { 
-                            email: { $set: "" },
-                            password: { $set: "" },
-                            passwordConfirmation: { $set: "" },
-                            ready: { $set: false }
-                        },
+                        email: { $set: "" },
+                        password: { $set: "" },
+                        passwordConfirmation: { $set: "" },
                         error: { $set: "" }
                     }
                 }
@@ -646,6 +652,14 @@ function uiReducer (state = initialState, action) {
                     }
                 }
             })
+        case Symbols.SAVE_FAIL:
+            return update(state, {
+                ui: {
+                    identity: {
+                        actionPending: { $set: false }
+                    }
+                }
+            })
         case Symbols.SET_ID_FUNCTION:
             if(action.value != "undefined")
                 return update(state, {
@@ -657,6 +671,23 @@ function uiReducer (state = initialState, action) {
                 })
             else
                 return state
+        case Symbols.VERIFY_SUCCESS:
+            return update(state, {
+                ui: {
+                    identity: {
+                        actionPending: { $set: false }
+                    }
+                }
+            })
+        case Symbols.SET_VERIFICATION_FAILURE:
+            return update(state, {
+                ui: {
+                    identity: {
+                        verificationFailure: { $set: "Verification failed."  },
+                        actionPending: { $set: false }
+                    }
+                }
+            })
         case Symbols.SET_ID_FAILURE:
             return update(state, {
                 ui: {
@@ -675,39 +706,47 @@ function uiReducer (state = initialState, action) {
                     }
                 }
             })
-        case Symbols.SET_ID_FIELD:
-        if(isValid(action.value.field))
-        {
-            console.log(action.value)
-            // Check for issues in input
-            let j = { 
-                email: state.ui.identity.email,
-                password: state.ui.identity.password,
-                passwordConfirmation: state.ui.identity.passwordConfirmation,
-                ready: false,
-                passwordsMatch: false,
-                passwordComplex: false,
-                error: state.ui.identity.error
-            }
-            j[action.value.field] = action.value.value
-            switch(state.ui.identity.dialogFunction) {
-                case "LOGIN":
-                    j.ready = (j.email && j.password)
-                    j.passwordsMatch = false
-                    break
-                case "REGISTER":
-                    j.passwordsMatch = j.password === j.passwordConfirmation
-                    j.passwordComplex = true // TODO actually check on client side
-                    j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex)  // TODO check for valid email and password complexity
-                    if(j.password && j.passwordConfirmation)
-                        if(!j.passwordsMatch)
-                            j.error = "Passwords do not match."
-                        else
-                            j.error = ""
-                    break
-            }
-            // Return state
+        case Symbols.SET_VERIFICATION_TOKEN:
             return update(state, {
+                ui: {
+                    identity: {
+                        verificationToken: { $set: action.value },
+                        verificationTokenReady: { $set: action.value.length >= 6 }
+                    }
+                }
+            })
+        case Symbols.SET_ID_FIELD:
+            if(isValid(action.value.field))
+            {
+                // Check for issues in input
+                let j = { 
+                    email: state.ui.identity.email,
+                    password: state.ui.identity.password,
+                    passwordConfirmation: state.ui.identity.passwordConfirmation,
+                    ready: false,
+                    passwordsMatch: false,
+                    passwordComplex: false,
+                    error: state.ui.identity.error
+                }
+                j[action.value.field] = action.value.value
+                switch(state.ui.identity.dialogFunction) {
+                    case "LOGIN":
+                        j.ready = (j.email && j.password)
+                        j.passwordsMatch = false
+                        break
+                    case "REGISTER":
+                        j.passwordsMatch = j.password === j.passwordConfirmation
+                        j.passwordComplex = true // TODO actually check on client side
+                        j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex)  // TODO check for valid email and password complexity
+                        if(j.password && j.passwordConfirmation)
+                            if(!j.passwordsMatch)
+                                j.error = "Passwords do not match."
+                            else
+                                j.error = ""
+                        break
+                }
+                // Return state
+                return update(state, {
                     ui: {
                         identity: {
                             email: { $set: j.email },
@@ -716,7 +755,7 @@ function uiReducer (state = initialState, action) {
                             passwordsMatch: { $set: j.passwordsMatch },
                             passwordComplex: { $set: j.passwordComplex },
                             ready: { $set: j.ready },
-                            error: { $set: j.error }
+                            error: { $set: j.error },
                         }
                     }
                 })
@@ -725,6 +764,30 @@ function uiReducer (state = initialState, action) {
             {
                 return state
             }
+        case Symbols.CHANGE_ALIAS_START:
+            return update(state, {
+                ui: {
+                    identity: {
+                        aliasBeingChanged: { $set: true }
+                    }
+                }
+            })
+        case Symbols.CHANGE_ALIAS_SUCCESS:
+            return update(state, {
+                ui: {
+                    identity: {
+                        aliasBeingChanged: { $set: false }
+                    }
+                }
+            })
+        case Symbols.CHANGE_ALIAS_FAILURE:
+            return update(state, {
+                ui: {
+                    identity: {
+                        aliasBeingChanged: { $set: false }
+                    }
+                }
+            })
         default:
             return state
     }
@@ -732,6 +795,23 @@ function uiReducer (state = initialState, action) {
 
 function identityReducer (state = initialState, action)  {
     switch(action.type) {
+        // Update modified state based on profile changes
+        case Symbols.SELECT_SENSITIVITY: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SELECT_DPI: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SELECT_MONITOR: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SELECT_MOUSE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SELECT_REFRESH_RATE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SAVE_PROFILE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SET_CUSTOM_MONITOR_WIDTH: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SET_CUSTOM_MONITOR_HEIGHT: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.ADD_GAME: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.REMOVE_GAME: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.TOGGLE_GAME: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SET_GAMEPAGE_SORT: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SET_GAMEPAGE_FILTER: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.UPDATE_GAME_OPTION: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SET_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.UPDATE_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
         case Symbols.LOGIN_SUCCESS:
             return update(state, {
                 identity: {
@@ -739,16 +819,43 @@ function identityReducer (state = initialState, action)  {
                     verified: { $set: action.value.verified },
                     alias: { $set: action.value.alias },
                     jwt: { $set: action.value.jwt },
-                    loggedIn: { $set: true }
+                    loggedIn: { $set: true },
+                    lastSaveSuccess: { $set: Date.now() }
+                }
+            })
+        case Symbols.SAVE_SUCCESS: 
+            return update(state, {
+                identity: {
+                    lastSaveSuccess: { $set: Date.now() }
+                }
+            })
+        case Symbols.SAVE_FAIL: 
+            return update(state, {
+                identity: {
+                    lastSaveAttempt: { $set: 0 },
                 }
             })
         case Symbols.ID_ACTION_STARTED:
             if(action.value && action.value.type == "SAVE")
                 return update(state, {
                     identity: {
-                        lastSaveAttempt: { $set: new Date().getTime() }
+                        lastSaveAttempt: { $set: Date.now() }
                     }
                 })
+            else
+                return state
+        case Symbols.VERIFY_SUCCESS:
+            return update(state, {
+                identity: {
+                    verified: { $set: true }
+                }
+            })
+        case Symbols.CHANGE_ALIAS_SUCCESS:
+            return update(state, {
+                identity: {
+                    alias: { $set: action.value }
+                }
+            })
         case Symbols.LOGOUT: 
             return initialState
         default:
@@ -824,7 +931,8 @@ const HCTransform = createTransform(
                 return outboundState
         }
     },
-    { whitelist: ['profile', 'identity'] });
+    { whitelist: ['profile', 'identity'] }
+);
 
 // Config
 const persistConfig = {
