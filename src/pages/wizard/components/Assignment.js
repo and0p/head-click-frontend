@@ -40,35 +40,80 @@ const styles = theme => ({
     hook: {
         marginBottom: theme.spacing.unit * 2
     },
-    image: {
-        marginTop: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit * 2,
-        maxWidth: '80%'
+    imageContainerDPI: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        [theme.breakpoints.up('sm')]: {
+            marginTop: theme.spacing.unit * 3,
+            marginBottom: theme.spacing.unit * 3,
+        },
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing.unit,
+            marginBottom: theme.spacing.unit,
+        },
+        background: "url('https://s3.amazonaws.com/head-click/public/wizard/dpi_assignment%401x.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center", 
+        width: "100%",
+        maxWidth: "600px",
+        //backgroundSize: "100% auto",
+        position: "relative",
+        display: "table",
+        // MAKE THIS VARIABLE
+        height: "300px",
+    },
+    imageContainerSensitivity: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        [theme.breakpoints.up('sm')]: {
+            marginTop: theme.spacing.unit * 3,
+            marginBottom: theme.spacing.unit * 3,
+        },
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing.unit,
+            marginBottom: theme.spacing.unit,
+        },
+        background: "url('https://s3.amazonaws.com/head-click/public/wizard/sensitivity_assignment%401x.png')",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center", 
+        width: "100%",
+        maxWidth: "600px",
+        //backgroundSize: "100% auto",
+        position: "relative",
+        display: "table",
+        // MAKE THIS VARIABLE
+        height: "300px",
+    },
+    assignmentValue: {
+        zIndex: 100,
+        display: "table-cell",
+        verticalAlign: "middle"
     }
 });
 
 const Assignment = props => {
-    const { classes, theme } = props;
-    const image = {
-        width: '90%',
-        maxWidth: '600px',
-        margin: 'auto',
-    }
-    let thisCopy = props.version == "dpi" ? copy["en"].assignment.dpi : copy["en"].assignment.sensitivity
+    const { classes, theme } = props
+    let thisCopy = props.version == "dpi" ? copy["en"].wizard.assignment.dpi : copy["en"].wizard.assignment.sensitivity
     let assignment = props.version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
     return (
     <div className={classes.root}>
-        <ReactFitText minFontSize={24} maxFontSize={36}>
-            <Typography variant="display2" className={classes.headline}>
-                {thisCopy.headline + assignment}
+        <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
+            <Typography variant="display2" className={classes.headline} gutterBottom>
+                {thisCopy.headline}
             </Typography>
         </ReactFitText>
+        <div className={props.version == "dpi" ? classes.imageContainerDPI : classes.imageContainerSensitivity}>
+                <span className={classes.assignmentValue}>
+                <ReactFitText minFontSize={64} maxFontSize={64} compressor={1}>
+                    <Typography variant="display2" className={classes.headline}>
+                        {assignment}
+                    </Typography>
+                </ReactFitText>
+                </span>
+        </div>
         <Typography variant="body1" className={classes.subtle} gutterBottom>
             (You can change this at any time from the dashboard.)
         </Typography>
-        <div className={classes.imageContainer}>
-                <img style={image} src="http://placehold.it/600x400&text=assignment_notification" />
-        </div>
         <div className={classes.hookSection}>
             {thisCopy.points.map(point => 
             <div className={classes.hook}>

@@ -315,7 +315,7 @@ class Dashboard extends React.Component {
                                             <div className={classes.profileInfo}>
                                                 <Typography variant="caption" gutterBottom>
                                                     {this.props.identity.loggedIn ? <Icon className={classes.smallIcon}>link</Icon> : <Icon className={classes.smallIcon} style={{color:"#DA3345"}}>warning</Icon>}
-                                                    {this.props.identity.loggedIn ? "https://head.click/user/" + this.props.identity.alias : "Save your profile to generate a URL"}
+                                                    {this.props.identity.loggedIn ? "https://head.click/user/" + this.props.identity.alias.toLowerCase() : "Save your profile to generate a URL"}
                                                 </Typography>
                                                 {!this.props.identity.verified &&
                                                 <Typography variant="caption" gutterBottom>

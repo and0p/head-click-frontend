@@ -68,12 +68,13 @@ const styles = theme => ({
     }
 
     isBackEnabled = () => {
-      if(this.props.activePage > 0) {
-        return true
-      }
-      else {
-        return false
-      }
+      return true
+      // if(this.props.activePage > 0) {
+      //   return true
+      // }
+      // else {
+      //   return false
+      // }
     }
 
     handleNext = () => {
@@ -137,7 +138,7 @@ const styles = theme => ({
                 </Button>
               }
               backButton={
-                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
+                <Button size="small" component={this.props.activePage == 0 ? Link : Button} to="/" style={this.props.activePage == 0 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>
@@ -168,7 +169,7 @@ const styles = theme => ({
                     <StepLabel>Finish!</StepLabel>
                   </Step>
                 </Stepper>
-                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
+                <Button size="small" component={this.props.activePage == 0 ? Link : Button} to="/" style={this.props.activePage == 0 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>

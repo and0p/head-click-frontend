@@ -27,27 +27,30 @@ const copy = {
             }
         },
         wizard: {
-
-        },
-        assignment: {
-            dpi: {
-                headline: "We've assigned you a DPI of ",
-                points: [
-                    {
-                        primary: "We recommend DPI based on desktop resolution.",
-                        secondary: "Contrary to popular belief, modern games and mice don't perform better with a lower DPI. And given the growing adoption of extremely high-resolution monitors, along with shooters that require complex menu interaction, your best bet is to stick with whatever is comfortable for everyday desktop usage."
-                    }
-                ]
+            intro: {
+                headline: "Let's figure out your setup.",
+                subheader: "This wizard will help you determine your ideal DPI and mouse sensitivity based on your monitor size, most-played games, and gaming style."
             },
-            sensitivity: {
-                headline: "We've assigned you a sensitivity of ",
-                points: [
-                    {
-                        primary: "This is how many centimeters you'll move your mouse to rotate 360 degrees in a game.",
-                        secondary: 'Also known as ' + cm360 + '. More accurately, it\'s the number of centimeters to rotate 360 degrees using a popular "vertical field of view" as a baseline, regardless of aspect ratio. When zoomed in, or playing a game with a more narrow field of view, your ' + cm360 + ' should decrease linearly whenever possible.'
-                    },
-                ]
-            }
+            assignment: {
+                dpi: {
+                    headline: "We've assigned you a DPI of ",
+                    points: [
+                        {
+                            primary: "We recommend DPI based on desktop resolution.",
+                            secondary: "Contrary to popular belief, modern games and mice don't perform better with a lower DPI. And given the growing adoption of extremely high-resolution monitors, along with shooters that require complex menu interaction, your best bet is to stick with whatever is comfortable for everyday desktop usage."
+                        }
+                    ]
+                },
+                sensitivity: {
+                    headline: "We've assigned you a sensitivity of ",
+                    points: [
+                        {
+                            primary: "This is roughly how many centimeters you'll move your mouse to rotate 360 degrees in a game.",
+                            secondary: 'Also known as ' + cm360 + '. When zoomed in, or playing a game with a more narrow field of view, your actual ' + cm360 + ' should adjust correspondingly.'
+                        },
+                    ]
+                }
+            },
         },
         misc: {
             versionWarning: <span>Welcome to the Head Click alpha! This site is currently in its earliest stages of development, so there are still bugs and missing features. Read more about ongoing development <a href="https://blog.head.click/alpha" target="_blank">here</a>.</span>

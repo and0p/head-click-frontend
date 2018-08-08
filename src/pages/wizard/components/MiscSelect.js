@@ -7,7 +7,8 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import ReactFitText from 'react-fittext'
 import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
+import Hidden from '@material-ui/core/Hidden'
+import ResponsiveAsset from '../../../assets'
 import classNames from 'classnames'
 import * as Symbols from '../../../redux/HcSymbols'
 
@@ -18,7 +19,17 @@ const styles = theme => ({
         marginRight: 'auto'
     },
     container: {
-        marginBottom: theme.spacing.unit * 2
+        marginTop: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit * 2,
+        // [theme.breakpoints.down('md')]: {
+        //     marginLeft: theme.spacing.unit,
+        //     marginRight: theme.spacing.unit,
+        // },
+    },
+    section: {
+        [theme.breakpoints.down('md')]: {
+            textAlign: "center"
+        },
     },
     descriptionArea: {
         minHeight: "85px",
@@ -42,6 +53,13 @@ const styles = theme => ({
     },
     rightButton: {
         borderRadius: "0 4px 4px 0",
+    },
+    illustrationDiv: {
+        textAlign: "center"
+    },
+    illustration: {
+        width: '360px',
+        height: '180px'
     }
 })
 
@@ -51,17 +69,22 @@ class MiscSelect extends React.Component {
         console.log(this.props.profile.settings)
         return (
             <div className={classes.root}>
-                <ReactFitText minFontSize={24} maxFontSize={36}>
+                <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
                     <Typography variant="display2" gutterBottom>And a few more things...</Typography>
                 </ReactFitText>
                 <Grid container spacing={8} className={classes.container}>
-                    <Grid item xs={12} lg={6}>
+                    <Grid item xs={12} lg={6} className={classes.section}>
                         {/* GAME SPEED */}
                         <Typography variant="title" gutterBottom>Typical game style</Typography>
                         <div className={classes.descriptionArea}>
                             <Typography gutterBottom style={{color:"#bbb"}}>
                                 You need to consider the style of games you play when determining your ideal mouse sensitivity.
                             </Typography>
+                            <Hidden lgUp>
+                                {this.props.profile.settings.typicalGamePace == "tactical" && <ResponsiveAsset category="wizard" asset="game_pace_tactical" className={classes.illustration} />}
+                                {this.props.profile.settings.typicalGamePace == "average" && <ResponsiveAsset category="wizard" asset="game_pace_average" className={classes.illustration} />}
+                                {this.props.profile.settings.typicalGamePace == "twitchy" && <ResponsiveAsset category="wizard" asset="game_pace_twitchy" className={classes.illustration} />}
+                            </Hidden>
                             <Typography style={{color:"#bbb"}}>
                                 {this.props.profile.settings.typicalGamePace == "tactical" && 'Long-distance, narrow engagements. Tactical games include Counter-Strike and PUBG.'}
                                 {this.props.profile.settings.typicalGamePace == "average" && 'Mix of distance and close-quarters. Average paced games include Fortnite, Team Fortress 2, and Overwatch.'}
@@ -86,16 +109,25 @@ class MiscSelect extends React.Component {
                             >Twitchy</Button>
                         </div>
                     </Grid>
-                    <Grid item xs={12} lg={6}>
-                        aaaa
-                    </Grid>
+                    <Hidden mdDown>
+                        <Grid item xs={12} lg={6} className={classes.illustrationDiv}>
+                            {this.props.profile.settings.typicalGamePace == "tactical" && <ResponsiveAsset category="wizard" asset="game_pace_tactical" className={classes.illustration} />}
+                            {this.props.profile.settings.typicalGamePace == "average" && <ResponsiveAsset category="wizard" asset="game_pace_average" className={classes.illustration} />}
+                            {this.props.profile.settings.typicalGamePace == "twitchy" && <ResponsiveAsset category="wizard" asset="game_pace_twitchy" className={classes.illustration} />}
+                        </Grid>
+                    </Hidden>
                     {/* MOUSEPAD SIZE */}
-                    <Grid item xs={12} lg={6}>
+                    <Grid item xs={12} lg={6} className={classes.section}>
                         <Typography variant="title" gutterBottom>Mousepad size</Typography>
                         <div className={classes.descriptionArea}>
                             <Typography gutterBottom style={{color:"#bbb"}}>
                                 The size of your mousepad is a limiting factor in how <i>insensitive</i> your mouse can be while staying competitive.
                             </Typography>
+                            <Hidden lgUp>
+                                {this.props.profile.settings.mousePadSize == "small" && <ResponsiveAsset category="wizard" asset="mousepad_small" className={classes.illustration} />}
+                                {this.props.profile.settings.mousePadSize == "medium" && <ResponsiveAsset category="wizard" asset="mousepad_medium" className={classes.illustration} />}
+                                {this.props.profile.settings.mousePadSize == "wide" && <ResponsiveAsset category="wizard" asset="mousepad_wide" className={classes.illustration} />}
+                            </Hidden>
                             <Typography style={{color:"#bbb"}}>
                                 {this.props.profile.settings.mousePadSize == "small" && 'Small assumes less than 12" wide, which is smaller than ideal.'}
                                 {this.props.profile.settings.mousePadSize == "medium" && 'Medium assumes 12-16" wide, and is adequate enough for most play styles.'}
@@ -120,11 +152,15 @@ class MiscSelect extends React.Component {
                             >Wide</Button>
                         </div>
                     </Grid>
-                    <Grid item xs={12} lg={6}>
-                        aaaa
-                    </Grid>
+                    <Hidden mdDown>
+                        <Grid item xs={12} lg={6} className={classes.illustrationDiv}>
+                            {this.props.profile.settings.mousePadSize == "small" && <ResponsiveAsset category="wizard" asset="mousepad_small" className={classes.illustration} />}
+                            {this.props.profile.settings.mousePadSize == "medium" && <ResponsiveAsset category="wizard" asset="mousepad_medium" className={classes.illustration} />}
+                            {this.props.profile.settings.mousePadSize == "wide" && <ResponsiveAsset category="wizard" asset="mousepad_wide" className={classes.illustration} />}
+                        </Grid>
+                    </Hidden>
                     {/* TRYHARD FACTOR */}
-                    <Grid item xs={12} lg={6}>
+                    <Grid item xs={12} lg={6} className={classes.section}>
                         <Typography variant="title" gutterBottom>Tryhard Factor</Typography>
                         <div className={classes.descriptionArea}>
                             <Typography gutterBottom style={{color:"#bbb"}}>

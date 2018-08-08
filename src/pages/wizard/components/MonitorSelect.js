@@ -106,7 +106,7 @@ class MonitorSelect extends React.Component {
         return(
             <div className={classes.root}>
                 <div className={classes.section}>
-                    <ReactFitText minFontSize={24} maxFontSize={36}>
+                    <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
                         <Typography variant="display2" gutterBottom>Select your monitor resolution:</Typography>
                     </ReactFitText>
                     {Object.keys(monitors).map((key) => (

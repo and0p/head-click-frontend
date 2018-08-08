@@ -10,7 +10,7 @@ import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
 import { validateProfile } from './Validation'
-import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity } from '../util'
+import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle } from '../util'
 import { clamp } from '../math'
 
 // Profile when it was last saved, for reverting
@@ -211,6 +211,17 @@ function profileReducer (state = initialState, action) {
                         },
                         overrides: { $set: {} },
                         gamesOverriden: { $set: [] }
+                    }
+                })
+            }
+            else if (state.wizard.activePage == 3)
+            {
+                let recommendedGamePace = getTypicalGameStyle(state.profile)
+                return update(state, {
+                    profile: {
+                        settings: {
+                            typicalGamePace: { $set: recommendedGamePace }
+                        },
                     }
                 })
             }
@@ -465,7 +476,7 @@ function wizardReducer (state = initialState, action) {
             else
                 return state
         case Symbols.WIZARD_BACK:
-            if(state.wizard.activePage > 1) {
+            if(state.wizard.activePage > 0) {
                 return update(state, {
                     wizard: {
                         activePage: { $set: state.wizard.activePage - 1 },
