@@ -154,7 +154,7 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     overflow: 'hidden',
-    padding: theme.spacing.unit
+    // padding: theme.spacing.unit
     //width: '100%'
   },
   contentWrap: {

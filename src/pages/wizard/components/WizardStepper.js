@@ -127,7 +127,7 @@ const styles = theme => ({
           <Hidden mdUp>
             <MobileStepper
               variant="dots"
-              steps={5}
+              steps={7}
               position="bottom"
               activeStep={this.props.activePage}
               className={classes.mobileRoot}

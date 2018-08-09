@@ -21,14 +21,13 @@ import Icon from '@material-ui/core/Icon'
 import copy from '../../copy'
 import { verify } from '../../identity'
 import axios from 'axios'
+import { defaultPageCSS } from '../../theme'
 import * as Symbols from '../../redux/HcSymbols'
 
 const spacing = 8
 
 const styles = theme => ({
-    root: {
-        flexGrow: 1
-    },
+    ...defaultPageCSS,
     rootGridContainer: {
         [theme.breakpoints.between('md', 'lg')]: {
             maxWidth: '784px',

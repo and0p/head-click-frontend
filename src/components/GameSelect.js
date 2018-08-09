@@ -18,17 +18,14 @@ import Button from '@material-ui/core/Button'
 import ButtonBase from '@material-ui/core/ButtonBase';
 import ResponsiveAsset from '../assets'
 import ReactFitText from 'react-fittext'
+import { defaultPageCSS } from '../theme'
+import classNames from 'classnames'
 import * as Symbols from '../redux/HcSymbols'
 
 const gamesPerPage = 12
 
 const styles = theme => ({
-    pageRoot: {
-        marginBottom: theme.spacing.unit * 6,
-        maxWidth: '784px',
-        marginLeft: 'auto',
-        marginRight: 'auto'
-    },
+    ...defaultPageCSS,
     gridRoot: {
         flexGrow: 1,
         //maxWidth: 800
@@ -131,9 +128,11 @@ class GameSelect extends React.Component {
         if(this.props.sort == "popularity")
             gameArray = gamesByPopularity
         return (
-            <div className={classes.pageRoot}>
-                <ReactFitText minFontSize={24} maxFontSize={36}>
-                    <Typography variant="display2" gutterBottom>Select games you play:</Typography>
+            <div className={classes.wizardPageRoot}><div className={classes.innerRoot}>
+                <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
+                    <Typography variant="display2" className={classNames(classes.headline, classes.center)} gutterBottom>
+                        Select games you play:
+                    </Typography>
                 </ReactFitText>
                 <Grid container spacing={16} className={classes.gridRoot}>
                     <Grid item xs={8} sm={9} >
@@ -175,7 +174,7 @@ class GameSelect extends React.Component {
                     ))}
                     <LoadMoreButton classes={classes} click={this.props.showMoreGames} gamePagesRevealed={this.props.gamePagesRevealed}/>
                 </Grid>
-            </div>
+            </div></div>
         )
     }
 }

@@ -20,6 +20,23 @@ const img = {
             "2x": asset_root + '/logo/logo_dark@2x.png',
         }
     },
+    "splash": {
+        "splash": {
+            "1x": asset_root + '/splash/splash@1x.png',
+            "1.5x": asset_root + '/splash/splash@1_5x.png',
+            "2x": asset_root + '/splash/splash@2x.png',
+        },
+        "splash_dark": {
+            "1x": asset_root + '/splash/splash_dark@1x.png',
+            "1.5x": asset_root + '/splash/splash_dark@1_5x.png',
+            "2x": asset_root + '/splash/splash_dark@2x.png',
+        },
+        "splash_mono": {
+            "1x": asset_root + '/splash/splash_mono@1x.png',
+            "1.5x": asset_root + '/splash/splash_mono@1_5x.png',
+            "2x": asset_root + '/splash/splash_mono@2x.png',
+        }
+    },
     "wizard": {
         "mousepad_small": {
             "1x": asset_root + '/wizard/mousepad_small@1x.png',

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
+import { defaultPageCSS } from '../../../theme'
+import classNames from 'classnames'
 import ReactFitText from 'react-fittext'
 import Typography from '@material-ui/core/Typography';
 import copy from '../../../copy'
@@ -10,25 +12,12 @@ import constants from '../../../constants'
 import Grid from '@material-ui/core/Grid'
 
 const styles = theme => ({
-    root: {
-        flex: 1,
-        textAlign: 'center',
-        marginTop: theme.spacing.unit * 2,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        maxWidth: '800px'
-    },
-    headline: {
-        color: '#FFFFFF'
-    },
+    ...defaultPageCSS,
     subheader: {
         color: '#CCCCCC',
         fontSize: '1.25rem',
-        lineHeight: '1.25rem',
+        lineHeight: '1.25em',
         marginBottom: theme.spacing.unit
-    },
-    subtle: {
-        color: '#999999'
     },
     hookSection: {
         marginTop: theme.spacing.unit,
@@ -96,35 +85,37 @@ const Assignment = props => {
     let thisCopy = props.version == "dpi" ? copy["en"].wizard.assignment.dpi : copy["en"].wizard.assignment.sensitivity
     let assignment = props.version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
     return (
-    <div className={classes.root}>
-        <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
-            <Typography variant="display2" className={classes.headline} gutterBottom>
-                {thisCopy.headline}
-            </Typography>
-        </ReactFitText>
-        <div className={props.version == "dpi" ? classes.imageContainerDPI : classes.imageContainerSensitivity}>
-                <span className={classes.assignmentValue}>
-                <ReactFitText minFontSize={64} maxFontSize={64} compressor={1}>
-                    <Typography variant="display2" className={classes.headline}>
-                        {assignment}
-                    </Typography>
-                </ReactFitText>
-                </span>
-        </div>
-        <Typography variant="body1" className={classes.subtle} gutterBottom>
-            (You can change this at any time from the dashboard.)
-        </Typography>
-        <div className={classes.hookSection}>
-            {thisCopy.points.map(point => 
-            <div className={classes.hook}>
-                <Typography variant="subheading" className={classes.subheader} gutterBottom>
-                    {point.primary}
+    <div className={classes.wizardPageRoot}>
+        <div className={classes.innerRoot}>
+            <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
+                <Typography variant="display2" className={classNames(classes.headline, classes.center)} gutterBottom>
+                    {thisCopy.headline}
                 </Typography>
-                <Typography variant="body1" className={classes.subtle}>
-                    {point.secondary}
-                </Typography>
+            </ReactFitText>
+            <div className={props.version == "dpi" ? classes.imageContainerDPI : classes.imageContainerSensitivity}>
+                    <span className={classes.assignmentValue}>
+                    <ReactFitText minFontSize={64} maxFontSize={64} compressor={1}>
+                        <Typography variant="display2" className={classes.wizardHeadline}>
+                            {assignment}
+                        </Typography>
+                    </ReactFitText>
+                    </span>
             </div>
-            )}
+            <Typography variant="body1" className={classNames(classes.subtle, classes.center)} gutterBottom>
+                (You can change this at any time from the dashboard.)
+            </Typography>
+            <div className={classes.hookSection}>
+                {thisCopy.points.map(point => 
+                <div className={classes.hook}>
+                    <Typography variant="subheading" className={classes.subheader} gutterBottom>
+                        {point.primary}
+                    </Typography>
+                    <Typography variant="body1" className={classes.subtle}>
+                        {point.secondary}
+                    </Typography>
+                </div>
+                )}
+            </div>
         </div>
     </div>
     )

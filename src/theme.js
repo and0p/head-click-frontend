@@ -16,7 +16,8 @@ const theme = createMuiTheme({
         yellow: '#DEBA24',
         purple: '#8B41B0',
         teal: '#3EA3AD',
-        subtle: '#999999'
+        subtle: '#999999',
+        headline: "#FFFFFF"
       },
       background: {
         default: "#1e1d23",
@@ -90,6 +91,40 @@ export const gradients = {
   }
 }
 
+export const defaultPageCSS = {
+  root: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit,
+      marginRight: theme.spacing.unit,
+    },
+    marginTop: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 2
+  },
+  wizardPageRoot: {
+    flex: 1,
+    marginTop: theme.spacing.unit * 2,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: '800px'
+  },
+  innerRoot: {
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit
+  },
+  wizardHeadline: {
+    textAlign: "center",
+    color: theme.palette.custom.headline
+  },
+  informationSection: {
+    marginBottom: theme.spacing.unit * 4
+  },
+  subtle: {
+    color: '#999999'
+  },
+  center: {
+    textAlign: "center"
+  }
+}
 // {
 //   "breakpoints": {
 //     "keys": [

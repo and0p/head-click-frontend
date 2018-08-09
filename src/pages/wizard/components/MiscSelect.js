@@ -11,13 +11,10 @@ import Hidden from '@material-ui/core/Hidden'
 import ResponsiveAsset from '../../../assets'
 import classNames from 'classnames'
 import * as Symbols from '../../../redux/HcSymbols'
+import { defaultPageCSS } from '../../../theme'
 
 const styles = theme => ({
-    root: {
-        maxWidth: '784px',
-        marginLeft: 'auto',
-        marginRight: 'auto'
-    },
+    ...defaultPageCSS,
     container: {
         marginTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
@@ -68,9 +65,9 @@ class MiscSelect extends React.Component {
         const { classes, theme } = this.props;
         console.log(this.props.profile.settings)
         return (
-            <div className={classes.root}>
+            <div className={classes.wizardPageRoot}><div className={classes.innerRoot}>
                 <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
-                    <Typography variant="display2" gutterBottom>And a few more things...</Typography>
+                    <Typography variant="display2" className={classNames(classes.headline, classes.center)} gutterBottom>And a few more things...</Typography>
                 </ReactFitText>
                 <Grid container spacing={8} className={classes.container}>
                     <Grid item xs={12} lg={6} className={classes.section}>
@@ -195,7 +192,7 @@ class MiscSelect extends React.Component {
                     </Grid>
                 </Grid>
 
-            </div>
+            </div></div>
         )
     }
 }

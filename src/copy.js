@@ -1,4 +1,5 @@
 import React from 'react'
+import Icon from '@material-ui/core/Icon'
 
 export const dots = ".................................................................................................................................................................."
 export const cm360 = "cm/360°"
@@ -28,8 +29,12 @@ const copy = {
         },
         wizard: {
             intro: {
-                headline: "Let's figure out your setup.",
-                subheader: "This wizard will help you determine your ideal DPI and mouse sensitivity based on your monitor size, most-played games, and gaming style."
+                headline: "Let's get you set up.",
+                subheader: "Head Click helps you find a mouse sensitivity that works for you, and then helps you keep it consistent between games.",
+                questionOpening: "In order to use this site effectively, you'll need to know two things:",
+                question1: "What your ideal monitor resolution is for normal desktop usage.",
+                question2: "How to configure your mouse's DPI setting (or if that's not possible, what the stock DPI is.)",
+                questionLink: <span>If you're not certain about either of these things, please refer to <a href="https://blog.head.click/configuration" target="_blank">this post<Icon style={{fontSize:"1em"}}>open_in_new</Icon></a> for assistance.</span>
             },
             assignment: {
                 dpi: {

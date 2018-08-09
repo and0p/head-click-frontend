@@ -28,6 +28,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Icon from '@material-ui/core/Icon'
+import { defaultPageCSS } from '../../theme'
 // Recharts import
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, Label, XAxis, YAxis, Tooltip, Legend } from 'recharts'
 // Other libs
@@ -47,9 +48,7 @@ import MessageBox from '../../components/MessageBox'
 import * as Copy from '../../copy'
 
 const styles = theme => ({
-    root: {
-      flexGrow: 1,
-    },
+    ...defaultPageCSS,
     rootGridContainer: {
         [theme.breakpoints.between('md', 'lg')]: {
             maxWidth: '784px',
