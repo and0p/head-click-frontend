@@ -68,6 +68,11 @@ const img = {
             "1.5x": asset_root + '/wizard/twitchy_game_pace@1_5x.png',
             "2x": asset_root + '/wizard/twitchy_game_pace@2x.png',
         },
+        "monitor_select:": {
+            "1x": asset_root + '/wizard/monitor_select@1x.png',
+            "1.5x": asset_root + '/wizard/monitor_selecte@1_5x.png',
+            "2x": asset_root + 'monitor_selecte@2x.png',
+        }, 
     },
     "overwatch": {
         "logo": {
