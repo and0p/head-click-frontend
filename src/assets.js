@@ -38,6 +38,11 @@ const img = {
         }
     },
     "wizard": {
+        "monitor_select:": {
+            "1x": asset_root + '/wizard/monitor_select@1x.png',
+            "1.5x": asset_root + '/wizard/monitor_selecte@1_5x.png',
+            "2x": asset_root + '/wizard/monitor_selecte@2x.png',
+        }, 
         "mousepad_small": {
             "1x": asset_root + '/wizard/mousepad_small@1x.png',
             "1.5x": asset_root + '/wizard/mousepad_smallk@1_5x.png',
@@ -68,11 +73,6 @@ const img = {
             "1.5x": asset_root + '/wizard/twitchy_game_pace@1_5x.png',
             "2x": asset_root + '/wizard/twitchy_game_pace@2x.png',
         },
-        "monitor_select:": {
-            "1x": asset_root + '/wizard/monitor_select@1x.png',
-            "1.5x": asset_root + '/wizard/monitor_selecte@1_5x.png',
-            "2x": asset_root + 'monitor_selecte@2x.png',
-        }, 
     },
     "overwatch": {
         "logo": {
@@ -171,6 +171,8 @@ class ResponsiveAsset extends React.Component {
         }
         else
         {
+            console.log(this.props)
+            console.log(img["wizard"]["monitor_select:"]["1x"])
             return <div/>
         }
     }

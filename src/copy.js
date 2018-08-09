@@ -59,18 +59,6 @@ const copy = {
                     ]
                 }
             },
-<<<<<<< HEAD
-            sensitivity: {
-                headline: "We've assigned you a sensitivity of ",
-                points: [
-                    {
-                        primary: "This is how many centimeters you'll move your mouse to rotate 360 degrees in a game.",
-                        secondary: 'Also known as ' + cm360 + '. More accurately, it\'s the number of centimeters to rotate 360 degrees using a popular "vertical field of view" as a baseline, regardless of aspect ratio. When zoomed in, or playing a game with a more narrow field of view, your ' + cm360 + ' will change to accomodate.'
-                    },
-                ]
-            }
-=======
->>>>>>> identity
         },
         misc: {
             versionWarning: <span>Welcome to the Head Click alpha! This site is currently in its earliest stages of development, so there are still bugs and missing features. Read more about ongoing development <a href="https://blog.head.click/alpha" target="_blank">here</a>.</span>

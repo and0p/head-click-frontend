@@ -85,34 +85,11 @@ const Assignment = props => {
     let thisCopy = props.version == "dpi" ? copy["en"].wizard.assignment.dpi : copy["en"].wizard.assignment.sensitivity
     let assignment = props.version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
     return (
-<<<<<<< HEAD
-    <div className={classes.root}>
-        <ReactFitText minFontSize={24} maxFontSize={36}>
-            <Typography variant="display2" className={classes.headline}>
-                {thisCopy.headline + assignment}
-            </Typography>
-        </ReactFitText>
-        <Typography variant="body1" className={classes.subtle} gutterBottom>
-            (You can change this at any time from the dashboard.)
-        </Typography>
-        <div className={classes.imageContainer}>
-                <img style={image} src="https://s3.amazonaws.com/head-click/public/placeholder_image.png" />
-        </div>
-        <div className={classes.hookSection}>
-            {thisCopy.points.map(point => 
-            <div className={classes.hook}>
-                <Typography variant="subheading" className={classes.subheader} gutterBottom>
-                    {point.primary}
-                </Typography>
-                <Typography variant="body1" className={classes.subtle}>
-                    {point.secondary}
-=======
     <div className={classes.wizardPageRoot}>
         <div className={classes.innerRoot}>
             <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
                 <Typography variant="display2" className={classNames(classes.headline, classes.center)} gutterBottom>
                     {thisCopy.headline}
->>>>>>> identity
                 </Typography>
             </ReactFitText>
             <div className={props.version == "dpi" ? classes.imageContainerDPI : classes.imageContainerSensitivity}>

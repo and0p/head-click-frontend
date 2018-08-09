@@ -41,14 +41,8 @@ const styles = theme => ({
       [theme.breakpoints.down('xs')]: {
         height: 'calc(100vh - ' + mobileAppBarHeight + ')'
       },
-<<<<<<< HEAD
-      maxWidth: '75%',
-      margin: 'auto',
-      textAlign: 'center'
-=======
       marginTop: 0,
       marginBottom: 0
->>>>>>> identity
     },
     innerRoot: {
       height: "calc(100%)",
@@ -92,18 +86,6 @@ class Splash extends React.Component {
               <ReactFitText minFontSize={36} maxFontSize={42}>
                 <Typography variant="display2" className={classes.header}>{copy.en.splash.tagline}</Typography>
               </ReactFitText>
-<<<<<<< HEAD
-              <div className={classes.imageContainer}>
-                <img style={splashImage} src="https://s3.amazonaws.com/head-click/public/placeholder_image.png" />
-              </div>
-            </Grid>
-            <Hidden xsDown>
-              <Grid item sm={12} md={4} className={classes.feature}>
-                <Typography variant="subheading" className={classes.featureText}><Hidden mdUp>• </Hidden>{copy.en.splash.feature1.verbose}</Typography>
-              </Grid>
-              <Grid item sm={12} md={4} className={classes.feature}>
-                <Typography variant="subheading" className={classes.featureText}><Hidden mdUp>• </Hidden>{copy.en.splash.feature2.verbose}</Typography>
-=======
               <Grid container spacing={16}>
                 <Grid item xs={12} md={6}>
                   <Button
@@ -127,7 +109,6 @@ class Splash extends React.Component {
                     Log In
                   </Button>
                 </Grid>
->>>>>>> identity
               </Grid>
               </div>
             </Grid>

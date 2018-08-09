@@ -10,13 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import Radio, { RadioGroup } from '@material-ui/core/Radio';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import ResponsiveAsset from '../../../assets'
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider'
 import * as Symbols from '../../../redux/HcSymbols'
 import { isValid } from '../../../util' 
 import ReactFitText from 'react-fittext'
@@ -33,24 +28,6 @@ const styles = theme => ({
     section: {
         //marginTop: theme.spacing.unit * 3,
         marginBottom: theme.spacing.unit * 2
-    },
-    monitorButton: {
-        width: '100%',
-        height: '50px',
-        padding: theme.spacing.unit,
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-        verticalAlign: 'middle',
-        backgroundColor: theme.palette.background.paper
-    },
-    monitorButtonSelected: {
-        width: '100%',
-        height: '50px',
-        padding: theme.spacing.unit * 1,
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-        verticalAlign: 'middle',
-        backgroundColor: theme.palette.primary.main
     },
     resolutionAxisInput: {
         marginTop: '-2px',
@@ -109,23 +86,7 @@ class MonitorSelect extends React.Component {
                             Select your monitor resolution:
                         </Typography>
                     </ReactFitText>
-                    {Object.keys(monitors).map((key) => (
-                        <div key={key}>
-                            <Typography variant="body2" className={classes.ratioText}>{key}</Typography>
-                            <Grid container spacing={16} className={classes.gridRoot}>
-                                {Object.values(monitors[key]).map((monitor) => (
-                                        <MonitorButton
-                                            key= {monitor.name}
-                                            selectMonitor={() => this.props.selectMonitor(monitor)}
-                                            classes={classes}
-                                            monitor={monitor}
-                                            selected={this.props.selectedMonitor === monitor}
-                                        />
-                                ))}
-                                {/*this.props.expanded[key] ? null : <ShowMoreButton classes={classes} func={() => this.props.expandCategory(key)} /> */}
-                            </Grid>
-                        </div>
-                    ))}
+                    <ResponsiveAsset category="wizard" asset="monitor_select" />
                     <Typography variant="body2" className={classes.ratioText}>Custom</Typography>
                     <Grid container spacing={16} className={classes.gridRoot}>
                         <MonitorButton

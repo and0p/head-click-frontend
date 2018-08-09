@@ -93,9 +93,6 @@ const styles = theme => ({
         },
     },
     featuredExcerpt: {
-<<<<<<< HEAD
-        marginTop: theme.spacing.unit * 2,
-=======
         marginTop: theme.spacing.unit * 2
     },
     profileInfo: {
@@ -120,7 +117,6 @@ const styles = theme => ({
     },
     subtle: {
         color: theme.palette.custom.subtle
->>>>>>> identity
     }
 });
 
