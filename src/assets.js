@@ -20,6 +20,60 @@ const img = {
             "2x": asset_root + '/logo/logo_dark@2x.png',
         }
     },
+    "splash": {
+        "splash": {
+            "1x": asset_root + '/splash/splash@1x.png',
+            "1.5x": asset_root + '/splash/splash@1_5x.png',
+            "2x": asset_root + '/splash/splash@2x.png',
+        },
+        "splash_dark": {
+            "1x": asset_root + '/splash/splash_dark@1x.png',
+            "1.5x": asset_root + '/splash/splash_dark@1_5x.png',
+            "2x": asset_root + '/splash/splash_dark@2x.png',
+        },
+        "splash_mono": {
+            "1x": asset_root + '/splash/splash_mono@1x.png',
+            "1.5x": asset_root + '/splash/splash_mono@1_5x.png',
+            "2x": asset_root + '/splash/splash_mono@2x.png',
+        }
+    },
+    "wizard": {
+        "mousepad_small": {
+            "1x": asset_root + '/wizard/mousepad_small@1x.png',
+            "1.5x": asset_root + '/wizard/mousepad_smallk@1_5x.png',
+            "2x": asset_root + '/wizard/mousepad_small@2x.png',
+        },
+        "mousepad_medium": {
+            "1x": asset_root + '/wizard/mousepad_medium@1x.png',
+            "1.5x": asset_root + '/wizard/mousepad_mediumk@1_5x.png',
+            "2x": asset_root + '/wizard/mousepad_medium@2x.png',
+        },
+        "mousepad_wide": {
+            "1x": asset_root + '/wizard/mousepad_wide@1x.png',
+            "1.5x": asset_root + '/wizard/mousepad_widek@1_5x.png',
+            "2x": asset_root + '/wizard/mousepad_wide@2x.png',
+        },
+        "game_pace_tactical": {
+            "1x": asset_root + '/wizard/tactical_game_pace@1x.png',
+            "1.5x": asset_root + '/wizard/tactical_game_pace@1_5x.png',
+            "2x": asset_root + '/wizard/tactical_game_pace@2x.png',
+        },
+        "game_pace_average": {
+            "1x": asset_root + '/wizard/average_game_pace@1x.png',
+            "1.5x": asset_root + '/wizard/average_game_pace@1_5x.png',
+            "2x": asset_root + '/wizard/average_game_pace@2x.png',
+        },
+        "game_pace_twitchy": {
+            "1x": asset_root + '/wizard/twitchy_game_pace@1x.png',
+            "1.5x": asset_root + '/wizard/twitchy_game_pace@1_5x.png',
+            "2x": asset_root + '/wizard/twitchy_game_pace@2x.png',
+        },
+        "monitor_select:": {
+            "1x": asset_root + '/wizard/monitor_select@1x.png',
+            "1.5x": asset_root + '/wizard/monitor_selecte@1_5x.png',
+            "2x": asset_root + 'monitor_selecte@2x.png',
+        }, 
+    },
     "overwatch": {
         "logo": {
             "1x": asset_root + '/games/overwatch/logo/logo@1x.png',

@@ -87,6 +87,7 @@ const Overwatch = {
         shortName: "Overwatch",
         alias: "overwatch",
         hasLogo: true,
+        type: "average",
         math: {
             fov: {
                 min: 50,

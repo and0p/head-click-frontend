@@ -9,74 +9,66 @@ import Grid from '@material-ui/core/Grid'
 import Hidden from '@material-ui/core/Hidden'
 import Typography from '@material-ui/core/Typography'
 import ReactFitText from 'react-fittext'
+import ResponsiveAsset from '../../assets'
 import Button from '@material-ui/core/Button'
+import * as Symbols from '../../redux/HcSymbols'
+
+const drawerWidth = 240;
+const mobileAppBarHeight = '56px'
+const desktopAppBarHeight = '64px'
 
 const styles = theme => ({
     root: {
       flexGrow: 1,
-      [theme.breakpoints.up('sm')]: {
-        marginTop: theme.spacing.unit * 4
+      [theme.breakpoints.up('lg')]: {
+        background: 'url("https://s3.amazonaws.com/head-click/public/splash/splash@2x.png")',
       },
-      [theme.breakpoints.down('sm')]: {
-        marginTop: theme.spacing.unit * 2
+      [theme.breakpoints.down('lg')]: {
+        backgroundSize: "auto 130%",
+        background: 'url("https://s3.amazonaws.com/head-click/public/splash/splash_mono@2x.png")',
       },
-    },
-    centered: {
-      textAlign: 'center'
-    },
-    imageContainer: {
-      marginTop: theme.spacing.unit * 4
-    },
-    feature: {
-      [theme.breakpoints.up('sm')]: {
-        marginTop: theme.spacing.unit * 4,
-        padding: theme.spacing.unit * 4,
-        borderRight: "1px solid #444444"
-      },
-      [theme.breakpoints.down('sm')]: {
-        marginTop: theme.spacing.unit * 2,
-        padding: theme.spacing.unit * 2,
-      }
-    },
-    featureLast: {
-      [theme.breakpoints.up('sm')]: {
-        marginTop: theme.spacing.unit * 4,
-        padding: theme.spacing.unit * 4,
-      },
-      [theme.breakpoints.down('sm')]: {
-        marginTop: theme.spacing.unit * 2,
-        padding: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit
-      }
-    },
-    featureText: {
       [theme.breakpoints.up('md')]: {
-        width: '250px',
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "100% 50%",
       },
+      [theme.breakpoints.down('md')]: {
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "50% 50%",
+      },
+      [theme.breakpoints.up('sm')]: {
+        height: 'calc(100vh - ' + desktopAppBarHeight + ')'
+      },
+      [theme.breakpoints.down('xs')]: {
+        height: 'calc(100vh - ' + mobileAppBarHeight + ')'
+      },
+<<<<<<< HEAD
       maxWidth: '75%',
       margin: 'auto',
       textAlign: 'center'
+=======
+      marginTop: 0,
+      marginBottom: 0
+>>>>>>> identity
     },
-    padGrid: {
-      [theme.breakpoints.down('sm')]: {
-        display: 'none'
-      },
+    innerRoot: {
+      height: "calc(100%)",
+      textAlign: "center"
     },
-    buttonSection: {
+    header: {
+      marginBottom: theme.spacing.unit * 4
+    },
+    textSide: {
+      position: "relative",
+      top: "45%",
+      left: "0",
       [theme.breakpoints.up('sm')]: {
-        marginTop: theme.spacing.unit * 4
-      },
-      [theme.breakpoints.down('sm')]: {
-        marginTop: theme.spacing.unit * 2
-      },
-      textAlign: 'center'
+        //left: theme.spacing.unit * 3 + drawerWidth
+      }
     },
     button: {
       width: '250px',
       maxWidth: '100%',
-    },
-    buttonCaption: {
-      color: theme.palette.custom.subtle
+      marginTop: theme.spacing.unit * 2
     }
 })
 
@@ -94,11 +86,13 @@ class Splash extends React.Component {
       }
       return (
         <div className={classes.root}>
-          <Grid container spacing={16}>
-            <Grid item xs={12} className={classes.centered}>
+          <Grid container spacing={16} className={classes.innerRoot}>
+            <Grid item xs={12} xl={6}>
+              <div className={classes.textSide}>
               <ReactFitText minFontSize={36} maxFontSize={42}>
-                <Typography variant="display2">{copy.en.splash.tagline}</Typography>
+                <Typography variant="display2" className={classes.header}>{copy.en.splash.tagline}</Typography>
               </ReactFitText>
+<<<<<<< HEAD
               <div className={classes.imageContainer}>
                 <img style={splashImage} src="https://s3.amazonaws.com/head-click/public/placeholder_image.png" />
               </div>
@@ -109,36 +103,34 @@ class Splash extends React.Component {
               </Grid>
               <Grid item sm={12} md={4} className={classes.feature}>
                 <Typography variant="subheading" className={classes.featureText}><Hidden mdUp>• </Hidden>{copy.en.splash.feature2.verbose}</Typography>
+=======
+              <Grid container spacing={16}>
+                <Grid item xs={12} md={6}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    component={Link}
+                    to="/wizard"
+                    style={linkStyle}
+                  >
+                    Try it
+                  </Button>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={this.props.openIdentityDialog}
+                  >
+                    Log In
+                  </Button>
+                </Grid>
+>>>>>>> identity
               </Grid>
-              <Grid item sm={12} md={4} className={classes.featureLast}>
-                <Typography variant="subheading" className={classes.featureText}><Hidden mdUp>• </Hidden>{copy.en.splash.feature3.verbose}</Typography>
-              </Grid>
-            </Hidden>
-            <Grid item xs={0} sm={0} md={3} className={classes.padGrid}/>
-            <Grid item xs={12} sm={6} md={3} className={classes.buttonSection}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                component={Link}
-                to="/wizard"
-                style={linkStyle}
-              >
-                Make a Profile
-              </Button>
+              </div>
             </Grid>
-            <Grid item xs={12} sm={6} md={3} className={classes.buttonSection}>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                disabled
-              >
-                Log In
-              </Button>
-              <Typography className={classes.buttonCaption} variant="caption">Feature not available in alpha.</Typography>
-            </Grid>
-            <Grid item xs={0} sm={0} md={3} className={classes.padGrid}/>
           </Grid>
         </div>
       )
@@ -153,6 +145,9 @@ const mapStateToProps = (state) => {
   
   const mapDispatchToProps = dispatch => {
     return {
+      openIdentityDialog : () => dispatch({
+        type: Symbols.OPEN_ID_DIALOG
+      })
     }
   }
   

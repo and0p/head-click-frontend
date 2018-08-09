@@ -103,6 +103,7 @@ const Fortnite = {
     shortName: "Fortnite",
     alias: "fortnite",
     hasLogo: false,
+    type: "average",
     math: {
         fov: {
             min: 60,

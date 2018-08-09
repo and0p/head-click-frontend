@@ -59,7 +59,7 @@ const styles = theme => ({
   class WizardStepper extends React.Component {
 
     isNextEnabled = () => {
-      if(this.props.activePage < 5 && this.props.pagesReady[this.props.activePage]) {
+      if(this.props.pagesReady[this.props.activePage]) {
         return true
       }
       else {
@@ -68,12 +68,13 @@ const styles = theme => ({
     }
 
     isBackEnabled = () => {
-      if(this.props.activePage > 0) {
-        return true
-      }
-      else {
-        return false
-      }
+      return true
+      // if(this.props.activePage > 0) {
+      //   return true
+      // }
+      // else {
+      //   return false
+      // }
     }
 
     handleNext = () => {
@@ -88,7 +89,7 @@ const styles = theme => ({
     }
 
     getNextText = () => {
-      if(this.props.activePage === 4)
+      if(this.props.activePage == 6)
         return "FINISH"
       else
         return "NEXT"
@@ -99,22 +100,20 @@ const styles = theme => ({
       {
         case 0:
           return 0
-          break
         case 1:
           return 1
-          break
         case 2:
           return 1
-          break
         case 3:
           return 2
-          break
         case 4:
-          return 2
-          break
+          return 3
+        case 5:
+          return 4
+        case 6:
+          return 4
         default:
           return 0
-          break
       }
     }
     
@@ -128,18 +127,18 @@ const styles = theme => ({
           <Hidden mdUp>
             <MobileStepper
               variant="dots"
-              steps={5}
+              steps={7}
               position="bottom"
               activeStep={this.props.activePage}
               className={classes.mobileRoot}
               nextButton={
-                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={this.props.activePage == 4 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
+                <Button size="small" component={this.props.activePage == 6 ? Link : Button} to="/" style={this.props.activePage == 6 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>
               }
               backButton={
-                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
+                <Button size="small" component={this.props.activePage == 0 ? Link : Button} to="/" style={this.props.activePage == 0 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>
@@ -163,12 +162,18 @@ const styles = theme => ({
                   <Step>
                     <StepLabel>Select games</StepLabel>
                   </Step>
+                  <Step>
+                    <StepLabel>Misc Info</StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>Finish!</StepLabel>
+                  </Step>
                 </Stepper>
-                <Button size="small" component={this.props.activePage == 1 ? Link : Button} to="/" style={this.props.activePage == 1 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
+                <Button size="small" component={this.props.activePage == 0 ? Link : Button} to="/" style={this.props.activePage == 0 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
                   <KeyboardArrowLeft />
                   BACK
                 </Button>
-                <Button size="small" component={this.props.activePage == 4 ? Link : Button} to="/" style={this.props.activePage == 4 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
+                <Button size="small" component={this.props.activePage == 6 ? Link : Button} to="/" style={this.props.activePage == 6 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>

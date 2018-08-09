@@ -1,5 +1,59 @@
 import * as stats from 'stats-lite'
 import gaussian from 'gaussian'
+import { games } from './model/HcModel'
+
+const recommendationVars = {
+    'mousePad': {
+        'small': 20,
+        'medium': 28,
+        'wide': 36
+    },
+    'gamePace': {
+        'twitchy': 0.8,
+        'average': 1,
+        'tactical': 1.2
+    },
+    'tryhard': {
+        'casual': 1,
+        'pro': 1.1,
+        'tryhard': 1.2
+    },
+}
+
+export const getTypicalGameStyle = profile => {
+    // Return average if no games are owned
+    if(profile.ownedGames.length < 1)
+        return "average"
+    // Otherwise count tactical as 0 ... twitchy as 1
+    let a = 0
+    profile.ownedGames.forEach(gameAlias => {
+        let game = games[gameAlias]
+        if(game != undefined && game != null)
+        {
+            if(game.type == "average")
+                a += 0.5
+            else if (game.type == "twitchy")
+                a += 1
+        }
+    })
+    // Divide by number of owned games
+    a = (a * 1.0000) / profile.ownedGames.length
+    console.log(a)
+    // See which third it falls into
+    if(a < (1/3))
+        return "tactical"
+    else if (a >= (1/3) && a < (2/3))
+        return "average"
+    else
+        return "twitchy"
+}
+
+export const recommendSensitivity = profile => {
+    let rec = recommendationVars["mousePad"][profile.settings.mousePadSize]
+    let gamePaceMultiplier = recommendationVars["gamePace"][profile.settings.typicalGamePace]
+    let tryhardMultiplier = recommendationVars["tryhard"][profile.settings.tryhardFactor]
+    return Math.round(rec * gamePaceMultiplier * tryhardMultiplier)
+}
 
 // ideal FOV W:H is 106:74 at 16:9 
 export const baseFOV = 106.26

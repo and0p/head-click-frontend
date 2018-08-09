@@ -16,7 +16,8 @@ const theme = createMuiTheme({
         yellow: '#DEBA24',
         purple: '#8B41B0',
         teal: '#3EA3AD',
-        subtle: '#999999'
+        subtle: '#999999',
+        headline: "#FFFFFF"
       },
       background: {
         default: "#1e1d23",
@@ -72,6 +73,58 @@ const theme = createMuiTheme({
 
 export default theme;
 
+export const gradients = {
+  purple: {
+    background: theme.palette.custom.purple,  // fallback for old browsers
+    background: "-webkit-linear-gradient(to right, " + theme.palette.custom.purple + ", #664ebf)",  // Chrome 10-25, Safari 5.1-6
+    background: "linear-gradient(300deg, " + theme.palette.custom.purple + ", #664ebf)", //* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+  },
+  blue: {
+    background: theme.palette.custom.blue,
+    background: "-webkit-radial-gradient(at 60% bottom, " + theme.palette.custom.blue + ", #50aac2)",
+    background: "radial-gradient(at 80% bottom, " + theme.palette.custom.blue + ", #50aac2)",
+  },
+  teal: {
+    background: theme.palette.custom.teal,
+    background: "-webkit-linear-gradient(to right, " + theme.palette.custom.teal + ", #46bd99)",
+    background: "linear-gradient(45deg, " + theme.palette.custom.teal + ", #46bd99)",
+  }
+}
+
+export const defaultPageCSS = {
+  root: {
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing.unit,
+      marginRight: theme.spacing.unit,
+    },
+    marginTop: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 2
+  },
+  wizardPageRoot: {
+    flex: 1,
+    marginTop: theme.spacing.unit * 2,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    maxWidth: '800px'
+  },
+  innerRoot: {
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit
+  },
+  wizardHeadline: {
+    textAlign: "center",
+    color: theme.palette.custom.headline
+  },
+  informationSection: {
+    marginBottom: theme.spacing.unit * 4
+  },
+  subtle: {
+    color: '#999999'
+  },
+  center: {
+    textAlign: "center"
+  }
+}
 // {
 //   "breakpoints": {
 //     "keys": [

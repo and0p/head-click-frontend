@@ -11,17 +11,19 @@ import Icon from '@material-ui/core/Icon'
 import Hidden from '@material-ui/core/Hidden'
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
-import { withRouter } from "react-router-dom"
-// Component imports
-import SidebarButton from './components/SidebarButton'
+import CircularProgress from '@material-ui/core/CircularProgress';
 // Redux imports
 import { connect } from 'react-redux'
 import * as Symbols from '../../redux/HcSymbols'
 // Utility imports
+import { withRouter } from "react-router-dom"
 import theme from '../../theme.js'
 // HC Imports
 import { games } from '../../model/HcModel'
 import MessageBox from '../../components/MessageBox'
+import SidebarButton from './components/SidebarButton'
+import AccountMenu from './components/AccountMenu'
+import { save } from '../../identity'
 // Assets
 import ResponsiveAsset from '../../assets'
 
@@ -62,9 +64,9 @@ const styles = theme => ({
     borderRight: '0px',
   },
   drawerHeader: {
-    color: '#333333',
+    color: '#FFFFFF',
     alignItems: 'center',
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
     fontSize: '1.5em',
     lineHeight: '1.5em',
     [theme.breakpoints.up('sm')]: {
@@ -134,6 +136,10 @@ const styles = theme => ({
   barButton: {
     marginRight: theme.spacing.unit
   },
+  saveButton: {
+    marginTop: '6px',
+    marginRight: theme.spacing.unit
+  },
   content: {
     [theme.breakpoints.up('md')]: {
       marginLeft: drawerWidth,
@@ -148,7 +154,7 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     overflow: 'hidden',
-    padding: theme.spacing.unit
+    // padding: theme.spacing.unit
     //width: '100%'
   },
   contentWrap: {
@@ -170,7 +176,14 @@ const styles = theme => ({
   },
   messageBox: {
     marginTop: theme.spacing.unit * 2
-  }
+  },
+  saveProgress: {
+    color: theme.palette.custom.purple,
+    position: 'absolute',
+    //top: -6,
+    //left: -6,
+    zIndex: 1,
+  },
 });
 
 class MaterialRoot extends React.Component {
@@ -180,7 +193,9 @@ class MaterialRoot extends React.Component {
 
   render() {
     const { classes, theme } = this.props;
-
+    let canSave = false
+    if(!this.props.ui.actionPending && this.props.identity.lastModified > this.props.identity.lastSaveAttempt)
+      canSave = true
     // Games list HTML
     const sidebarGamesList = () => (
       <div>
@@ -209,8 +224,8 @@ class MaterialRoot extends React.Component {
     const drawer = (
       <div>
           <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
-            <ResponsiveAsset category="headclick" asset="logo_dark" className={classes.logo} />
-            <Typography variant="body1" className={classes.versionDark}>alpha</Typography>
+            <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo} />
+            <Typography variant="body1" className={classes.versionLight}>alpha</Typography>
           </Paper>
           <div className={classes.drawerContent}>
             <SidebarButton 
@@ -224,7 +239,7 @@ class MaterialRoot extends React.Component {
               link="/stats"
               icon="insert_chart"
               text="Stats"
-              enabled={this.props.profile.ready}
+              enabled
               innerClick={() => { this.props.selectSidebarItem(0) }}
             />
             <SidebarButton 
@@ -239,8 +254,6 @@ class MaterialRoot extends React.Component {
           </div>
       </div>
     )
-
-    console.log("rendering material root!")
     return (
       <div className={classes.root}>
         <AppBar className={classes.appBar} color="default">
@@ -259,7 +272,22 @@ class MaterialRoot extends React.Component {
                 <Typography variant="body2" className={classes.versionLight}>alpha</Typography>
             </Hidden>
             </div>
-            <Button disabled className={classes.barButton} variant="outlined" color="primary">Log in</Button>
+            {(!this.props.identity.loggedIn && !this.props.profile.ready) && 
+              <Button className={classes.barButton} variant="contained" color="secondary" onClick={this.props.openLoginDialog}>Log in</Button>
+            }
+            {this.props.profile.ready &&
+              <div>
+                <Button 
+                disabled={!canSave}
+                className={classes.saveButton}
+                variant="contained"
+                color="secondary"
+                onClick={save}>
+                  { this.props.ui.identity.actionPending ? <CircularProgress size={24} className={classes.saveProgress} /> : "Save" }
+                </Button>
+                <AccountMenu />
+              </div>
+            }
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
@@ -308,8 +336,10 @@ MaterialRoot.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    open: state.sidebar.mobileMenuOpen,
-    profile: state.profile
+    open: state.ui.mobileMenuOpen,
+    profile: state.profile,
+    identity: state.identity,
+    ui: state.ui
   }
 }
 
@@ -324,6 +354,10 @@ const mapDispatchToProps = dispatch => {
     }),
     closeSidebar : () => dispatch({
       type: Symbols.CLOSE_SIDEBAR
+    }),
+    openLoginDialog : () => dispatch({
+      type: Symbols.OPEN_ID_DIALOG,
+      value: "LOGIN"
     })
   }
 }

@@ -6,29 +6,28 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
-import InfoCard from '../../components/InfoCard'
+import SettingCard from './components/SettingCard'
+import VerificationBox from './components/VerificationBox'
 import EditIcon from '../../components/EditIcon'
 import ProfileEditDialog from '../../components/ProfileEditDialog'
 import ComingSoon from '../../components/ComingSoon'
-import constants from '../../constants'
 import MessageBox from '../../components/MessageBox'
+import Input from '@material-ui/core/Input'
+import Button from '@material-ui/core/Button'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import Icon from '@material-ui/core/Icon'
 import copy from '../../copy'
+import { verify } from '../../identity'
 import axios from 'axios'
+import { defaultPageCSS } from '../../theme'
 import * as Symbols from '../../redux/HcSymbols'
 
 const spacing = 8
 
 const styles = theme => ({
-    root: {
-        flexGrow: 1
-    },
+    ...defaultPageCSS,
     rootGridContainer: {
         [theme.breakpoints.between('md', 'lg')]: {
             maxWidth: '784px',
@@ -55,7 +54,7 @@ const styles = theme => ({
         color: theme.palette.text.secondary,
     },
     sectionHeaderOpen: {
-        marginLeft: theme.spacing.unit * 2,
+        //marginLeft: theme.spacing.unit * 2,
         float: 'left'
     },
     profileCard: {
@@ -94,7 +93,34 @@ const styles = theme => ({
         },
     },
     featuredExcerpt: {
+<<<<<<< HEAD
         marginTop: theme.spacing.unit * 2,
+=======
+        marginTop: theme.spacing.unit * 2
+    },
+    profileInfo: {
+        clear: "both"
+    },
+    userIcon: {
+        color: "#FFFFFF"
+    },
+    smallIcon: {
+        fontSize: '1.5em',
+        marginLeft: "2px",
+        marginRight: theme.spacing.unit,
+        marginTop: "-1px",
+        float: "left"
+    },
+    settingsSection: {
+        marginTop: theme.spacing.unit * 2
+    },
+    button: {
+        margin: theme.spacing.unit,
+        //color: theme.palette.custom.yellow
+    },
+    subtle: {
+        color: theme.palette.custom.subtle
+>>>>>>> identity
     }
 });
 
@@ -269,29 +295,70 @@ class Dashboard extends React.Component {
         return(
             <div className={classes.root}>
                 <Typography variant="display1" className={classes.pageHeader}>
-                     Dashboard
+                    Dashboard
                 </Typography>
                 <Grid container spacing={spacing} className={classes.rootGridContainer}>
                     {/* LEFT COLUMN  */}
                     <Grid item xs={12} xl={6}>
                         <Grid container spacing={spacing}>
                             {/* Profile card */}
-                            <Grid item xs={12} className={classes.profileCard}>
-                                <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
-                                    Profile
-                                </Typography>
-                                <EditIcon onClick={this.props.editProfile}/>
-                                <Grid container spacing={spacing}>
-                                    <Grid item xs={12}>
-                                        <InfoCard name={constants.cm360Text} value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple"/>
+                            <Grid item xs={12}>
+                                <Paper className={classes.paper}>
+                                    <Typography variant="subheading" component="h3" className={classes.sectionHeaderOpen} gutterBottom>
+                                        Profile
+                                    </Typography>
+                                    <EditIcon onClick={this.props.editProfile}/>
+                                    <Grid container className= {classes.settingsSection} spacing={spacing}>
+                                        <Grid item xs={12} sm={6}>
+                                            <div className={classes.profileInfo}>
+                                                <Typography variant="display1" style={{color:"#FFFFFF"}} gutterBottom>
+                                                    <Icon className={classes.userIcon}>person</Icon> {this.props.identity.loggedIn ? this.props.identity.alias : "Unsaved"}
+                                                </Typography>
+                                            </div>
+                                            <div className={classes.profileInfo}>
+                                                <Typography variant="caption" gutterBottom>
+                                                    {this.props.identity.loggedIn ? <Icon className={classes.smallIcon}>link</Icon> : <Icon className={classes.smallIcon} style={{color:"#DA3345"}}>warning</Icon>}
+                                                    {this.props.identity.loggedIn ? "https://head.click/user/" + this.props.identity.alias.toLowerCase() : "Save your profile to generate a URL"}
+                                                </Typography>
+                                                {!this.props.identity.verified &&
+                                                <Typography variant="caption" gutterBottom>
+                                                    <Icon className={classes.smallIcon} style={{color:"#DEBA24"}}>warning</Icon>
+                                                    Verify your account to change name / URL
+                                                </Typography>
+                                                }
+                                            </div>
+                                        </Grid>
+                                        {this.props.identity.loggedIn && !this.props.identity.verified &&
+                                        <Grid item xs={12} sm={6}>
+                                                
+                                            <Input value={this.props.ui.identity.verificationToken} onChange={event => {this.props.updateVerificationToken(event.target.value)}} />
+                                            <Button 
+                                                variant="outlined" 
+                                                color="primary"
+                                                className={classes.button}
+                                                disabled={!this.props.ui.identity.verificationTokenReady}
+                                                onClick={verify}
+                                            >
+                                                Verify
+                                            </Button>
+                                            <Typography variant="caption">
+                                                {this.props.ui.identity.verificationFailure ? "Verification failed! " : "" }Check your email for code. <a href="#">Resend</a>
+                                            </Typography>
+                                        </Grid>
+                                        }
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <InfoCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue"/>
+                                    <Grid container className= {classes.settingsSection} spacing={spacing}>
+                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                            <SettingCard name="Sensitivity" value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple" />
+                                        </Grid>
+                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                            <SettingCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue" />
+                                        </Grid>
+                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                            <SettingCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal" />
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <InfoCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal"/>
-                                    </Grid>
-                                </Grid>
+                                </Paper>
                             </Grid>
                             {/* Gear card */}
                             <Grid item xs={12}>
@@ -341,7 +408,9 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-      profile: state.profile
+      profile: state.profile,
+      identity: state.identity,
+      ui: state.ui
     }
 }
   
@@ -349,6 +418,10 @@ const mapDispatchToProps = dispatch => {
     return {
         editProfile: () => dispatch({
             type: Symbols.START_EDIT_PROFILE
+        }),
+        updateVerificationToken: (value) => dispatch({
+            type: Symbols.SET_VERIFICATION_TOKEN,
+            value: value 
         })
     }
 }

@@ -4,6 +4,8 @@ import { render } from 'react-dom';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { monitors } from '../../../model/HcModel'
+import { defaultPageCSS } from '../../../theme'
+import classNames from 'classnames'
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
@@ -20,11 +22,7 @@ import { isValid } from '../../../util'
 import ReactFitText from 'react-fittext'
 
 const styles = theme => ({
-    root: {
-        maxWidth: '784px',
-        marginLeft: 'auto',
-        marginRight: 'auto'
-    },
+    ...defaultPageCSS,
     gridRoot : {
         flexGrow: 1,
     },
@@ -103,14 +101,13 @@ class MonitorSelect extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
-        console.log(this.props.selectedMonitor)
-        console.log(this.props.customMonitor)
-        console.log(this.props.customMonitor == this.props.selectedMonitor)
         return(
-            <div className={classes.root}>
+            <div className={classes.wizardPageRoot}><div className={classes.innerRoot}>
                 <div className={classes.section}>
-                    <ReactFitText minFontSize={24} maxFontSize={36}>
-                        <Typography variant="display2" gutterBottom>Select your monitor resolution:</Typography>
+                    <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
+                        <Typography variant="display2" className={classNames(classes.headline, classes.center)} gutterBottom>
+                            Select your monitor resolution:
+                        </Typography>
                     </ReactFitText>
                     {Object.keys(monitors).map((key) => (
                         <div key={key}>
@@ -179,7 +176,7 @@ class MonitorSelect extends React.Component {
                         </Grid> 
                     </Grid>
                 </div>
-            </div>
+            </div></div>
         )
     }
 }

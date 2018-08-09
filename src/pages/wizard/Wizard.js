@@ -12,6 +12,7 @@ import WizardSplash from './components/WizardSplash'
 import MonitorSelect from './components/MonitorSelect'
 import Assignment from './components/Assignment'
 import GameSelect from '../../components/GameSelect'
+import MiscSelect from './components/MiscSelect'
 import copy from '../../copy'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -50,6 +51,9 @@ class Wizard extends React.Component {
                 page = <div><GameSelect /></div>
                 break
             case 4:
+                page = <MiscSelect />
+                break
+            case 5:
                 page = <Assignment version="sensitivity" />
                 break
             default:

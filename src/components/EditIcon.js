@@ -6,7 +6,7 @@ import Icon from '@material-ui/core/Icon'
 const styles = theme => ({
     root: {
         float: 'right',
-        marginRight: theme.spacing.unit * 2
+        //marginRight: theme.spacing.unit * 2
     },
     icon: {
         "&:hover": {
