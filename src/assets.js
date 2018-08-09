@@ -38,7 +38,7 @@ const img = {
         }
     },
     "wizard": {
-        "monitor_select:": {
+        "monitor_select": {
             "1x": asset_root + '/wizard/monitor_select@1x.png',
             "1.5x": asset_root + '/wizard/monitor_selecte@1_5x.png',
             "2x": asset_root + '/wizard/monitor_selecte@2x.png',
@@ -171,8 +171,6 @@ class ResponsiveAsset extends React.Component {
         }
         else
         {
-            console.log(this.props)
-            console.log(img["wizard"]["monitor_select:"]["1x"])
             return <div/>
         }
     }

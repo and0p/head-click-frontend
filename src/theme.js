@@ -122,7 +122,12 @@ export const defaultPageCSS = {
     color: '#999999'
   },
   center: {
-    textAlign: "center"
+    textAlign: "center",
+  },
+  centerImage: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    display: "block"
   }
 }
 // {

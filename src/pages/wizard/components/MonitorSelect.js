@@ -1,17 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { render } from 'react-dom';
-import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { render } from 'react-dom'
+import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
 import { monitors } from '../../../model/HcModel'
 import { defaultPageCSS } from '../../../theme'
 import classNames from 'classnames'
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import ResponsiveAsset from '../../../assets'
-import TextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField'
 import * as Symbols from '../../../redux/HcSymbols'
 import { isValid } from '../../../util' 
 import ReactFitText from 'react-fittext'
@@ -21,13 +26,14 @@ const styles = theme => ({
     gridRoot : {
         flexGrow: 1,
     },
-    ratioText: {
-        marginTop: theme.spacing.unit * 1,
-        marginBottom: theme.spacing.unit * 1
-    },
-    section: {
-        //marginTop: theme.spacing.unit * 3,
+    image: {
+        marginTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2
+    },
+    dropdown: {
+        width: "200px",
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit
     },
     resolutionAxisInput: {
         marginTop: '-2px',
@@ -57,9 +63,19 @@ const MonitorButton = (props) => (
 )
 
 class MonitorSelect extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = { 
+            aspectRatio: "16:9"
+        }
+    }
 
-    handleRefreshRatePick = event => {
-        this.props.selectRefreshRate(parseInt(event.target.value))
+    updateMonitor = event => {
+        this.props.selectMonitor(monitors[this.state.aspectRatio][event.target.value])
+    }
+
+    updateAspectRatio = event => {
+        this.setState({ aspectRatio: event.target.value })
     }
 
     updateCustomSize = axis => event => {
@@ -72,10 +88,6 @@ class MonitorSelect extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("update")
-    }
-
     render() {
         const { classes, theme } = this.props;
         return(
@@ -86,7 +98,42 @@ class MonitorSelect extends React.Component {
                             Select your monitor resolution:
                         </Typography>
                     </ReactFitText>
-                    <ResponsiveAsset category="wizard" asset="monitor_select" />
+                    <ResponsiveAsset category='wizard' asset='monitor_select' className={classNames(classes.centerImage, classes.image)} />
+                    <FormControl className={classes.dropdown}>
+                        <InputLabel htmlFor="aspect-ratio">Aspect Ratio</InputLabel>
+                        <Select
+                            value={this.state.aspectRatio}
+                            onChange={this.updateAspectRatio}
+                            inputProps={{
+                            name: 'aspect-ratio',
+                            id: 'aspect-ratio',
+                            }}
+                        >
+                            {Object.keys(monitors).map((ratio) => (
+                                <MenuItem value={ratio}>{ratio}</MenuItem>
+                            ))}
+                            <MenuItem value="custom">Custom...</MenuItem>
+                        </Select>
+                    </FormControl>
+                    {this.state.aspectRatio != "custom" && monitors.hasOwnProperty(this.state.aspectRatio) &&
+                    <FormControl className={classes.dropdown}>
+                        <InputLabel htmlFor="resolution">Resolution</InputLabel>
+                        <Select
+                            value={this.props.selectedMonitor ? this.state.profile.monitor.name : ""}
+                            onChange={this.props.selectMonitor}
+                            inputProps={{
+                            name: 'resolution',
+                            id: 'resolution',
+                            }}
+                        >
+                            {Object.keys(monitors[this.state.aspectRatio]).map((monitor) => (
+                                <MenuItem value={monitor.name}>{monitor.name}</MenuItem>
+                            ))}
+                            <MenuItem value="custom">Custom...</MenuItem>
+                        </Select>
+                    </FormControl>
+                    }
+
                     <Typography variant="body2" className={classes.ratioText}>Custom</Typography>
                     <Grid container spacing={16} className={classes.gridRoot}>
                         <MonitorButton
