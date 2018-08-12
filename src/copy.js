@@ -61,6 +61,10 @@ const copy = {
                     ]
                 }
             },
+            outro: {
+                headline: "You're all set.",
+                subheader: "Placeholder: brief site tutorial."
+            }
         },
         misc: {
             versionWarning: <span>Welcome to the Head Click beta! This site is a work-in-progress, so please excuse any bugs or missing features. You can read more about ongoing development <a href="https://blog.head.click/beta" target="_blank">here{linkIcon}</a>. Please consider taking a few moments to fill out our <a href="https://goo.gl/forms/3RLy7AaEZrsYAozz2" target="_blank">user experience survery{linkIcon}</a></span>

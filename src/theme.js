@@ -100,8 +100,8 @@ export const defaultPageCSS = {
     marginTop: theme.spacing.unit * 2,
     marginBottom: theme.spacing.unit * 2,
     maxWidth: '1639px',
-    // marginLeft: 'auto',
-    // marginRight: 'auto'
+    marginLeft: 'auto',
+    marginRight: 'auto'
   },
   wizardPageRoot: {
     flex: 1,

@@ -18,28 +18,20 @@ const styles = theme => ({
     },
 });
 
-class WizardSplash extends React.Component {
+class Finish extends React.Component {
     render() {
         const { classes, theme } = this.props
         return(
             <div className={classes.wizardPageRoot}>
                 <div className={classes.innerRoot}>
                     <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
-                        <Typography variant="display2" className={classes.headline}>{copy["en"].wizard.intro.headline}</Typography>
+                        <Typography variant="display2" className={classes.headline}>{copy["en"].wizard.outro.headline}</Typography>
                     </ReactFitText>
-                    <Typography variant="subheading" className={classes.informationSection}>{copy["en"].wizard.intro.subheader}</Typography>
-                    <Typography>
-                        <span className={classes.informationSection}>{copy["en"].wizard.intro.questionOpening}</span>
-                        <ul>
-                            <li>{copy["en"].wizard.intro.question1}</li>
-                            <li>{copy["en"].wizard.intro.question2}</li>
-                        </ul>
-                        {copy["en"].wizard.intro.questionLink}
-                    </Typography>
+                    <Typography variant="subheading" className={classes.informationSection}>{copy["en"].wizard.outro.subheader}</Typography>
                 </div>
             </div>
         )
     }
 }
 
-export default withStyles(styles)(WizardSplash)
+export default withStyles(styles)(Finish)

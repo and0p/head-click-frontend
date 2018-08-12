@@ -72,13 +72,13 @@ const MonitorButton = (props) => (
 class MonitorSelect extends React.Component {
     constructor(props) {
         super(props)
-        if(this.props.selectedMonitor == this.props.customMonitor)
+        if(this.props.selectedMonitor == this.props.customMonitor && this.props.customMonitor != null)
             this.state = {
                 aspectRatio: "custom"
             }
         else
             this.state = { 
-                aspectRatio: this.props.selectedMonitor ? this.props.selectedMonitor.aspectRatio : "All"
+                aspectRatio: this.props.selectedMonitor != null ? this.props.selectedMonitor.aspectRatio : "all"
             }
     }
 

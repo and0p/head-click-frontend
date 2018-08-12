@@ -159,8 +159,6 @@ const styles = theme => ({
   },
   contentWrap: {
     // maxWidth: '1639px',
-    // marginLeft: 'auto',
-    // marginRight: 'auto'
   },
   title: {
     paddingLeft: theme.spacing.unit * 3

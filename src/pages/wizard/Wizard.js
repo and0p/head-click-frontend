@@ -13,6 +13,7 @@ import MonitorSelect from './components/MonitorSelect'
 import Assignment from './components/Assignment'
 import GameSelect from '../../components/GameSelect'
 import MiscSelect from './components/MiscSelect'
+import Finish from './components/Finish'
 import copy from '../../copy'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -57,7 +58,7 @@ class Wizard extends React.Component {
                 page = <Assignment version="sensitivity" />
                 break
             default:
-                page = <div />
+                page = <Finish />
                 break
         }
         return (

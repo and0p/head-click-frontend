@@ -40,8 +40,8 @@ const img = {
     "wizard": {
         "monitor_select": {
             "1x": asset_root + '/wizard/monitor_select@1x.png',
-            "1.5x": asset_root + '/wizard/monitor_selecte@1_5x.png',
-            "2x": asset_root + '/wizard/monitor_selecte@2x.png',
+            "1.5x": asset_root + '/wizard/monitor_select@1_5x.png',
+            "2x": asset_root + '/wizard/monitor_select@2x.png',
         }, 
         "mousepad_small": {
             "1x": asset_root + '/wizard/mousepad_small@1x.png',
@@ -174,7 +174,23 @@ const img = {
             "2x": asset_root + '/games/csgo/logo/logo_mini@1_5x.png',
         },
     },
-    
+    "blackops4": {
+        "logo": {
+            "1x": asset_root + '/games/blackops4/logo/logo@1x.png',
+            "1.5x": asset_root + '/games/blackops4/logo/logo@1_5x.png',
+            "2x": asset_root + '/games/blackops4/logo/logo@2x.png',
+        },
+        "logo_big": {
+            "1x": asset_root + '/games/blackops4/logo/logo_big@1x.png',
+            "1.5x": asset_root + '/games/blackops4/logo/logo_big@1_5x.png',
+            "2x": asset_root + '/games/blackops4/logo/logo_big@2x.png',
+        },
+        "logo_mini": {
+            "1x": asset_root + '/games/blackops4/logo/logo_mini@1x.png',
+            "1.5x": asset_root + '/games/blackops4/logo/logo_mini@1_5x.png',
+            "2x": asset_root + '/games/blackops4/logo/logo_mini@2x.png',
+        },
+    },
 }
 
 class ResponsiveAsset extends React.Component {
