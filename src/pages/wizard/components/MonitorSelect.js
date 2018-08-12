@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
-import { monitors } from '../../../model/HcModel'
+import { monitors, monitorsFlat } from '../../../model/HcModel'
 import { defaultPageCSS } from '../../../theme'
 import classNames from 'classnames'
 import Typography from '@material-ui/core/Typography'
@@ -28,18 +28,25 @@ const styles = theme => ({
     },
     image: {
         marginTop: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit * 2
+        marginBottom: theme.spacing.unit * 2,
+        maxWidth: "100%"
+    },
+    selectionArea: {
+        marginTop: theme.spacing.unit * 4,
+    },
+    selectionSide: {
+      
     },
     dropdown: {
-        width: "200px",
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit
+        width: "350px",
+        width: "100%",
+        marginLeft: "auto",
+        marginRight: "auto"
     },
     resolutionAxisInput: {
         marginTop: '-2px',
-        maxWidth: '117px',
-        width: '100%'
-      },
+        width: "calc(100% - 8px)"
+    },
     resolutionAxisInputBox: {
         border: '1px solid #888888',
         paddingLeft: theme.spacing.unit,
@@ -65,16 +72,29 @@ const MonitorButton = (props) => (
 class MonitorSelect extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { 
-            aspectRatio: "16:9"
-        }
+        if(this.props.selectedMonitor == this.props.customMonitor)
+            this.state = {
+                aspectRatio: "custom"
+            }
+        else
+            this.state = { 
+                aspectRatio: this.props.selectedMonitor ? this.props.selectedMonitor.aspectRatio : "All"
+            }
     }
 
     updateMonitor = event => {
-        this.props.selectMonitor(monitors[this.state.aspectRatio][event.target.value])
+        this.props.selectMonitor(monitorsFlat[event.target.value])
     }
 
     updateAspectRatio = event => {
+        // Check if we're switching to custom, and select the custom monitor,
+        // otherwise set the selected monitor to the first in that range, because why not?
+        if(event.target.value == "custom")
+            this.props.selectMonitor(this.props.customMonitor)
+        else if (monitors.hasOwnProperty(event.target.value))
+            this.props.selectMonitor(monitors[event.target.value][Object.keys(monitors[event.target.value])[0]])
+        // else
+        //     this.props.selectMonitor(monitorsFlat["1080p"])
         this.setState({ aspectRatio: event.target.value })
     }
 
@@ -93,95 +113,108 @@ class MonitorSelect extends React.Component {
         return(
             <div className={classes.wizardPageRoot}><div className={classes.innerRoot}>
                 <div className={classes.section}>
+                    {/* HEADLINE */}
                     <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
                         <Typography variant="display2" className={classNames(classes.headline, classes.center)} gutterBottom>
                             Select your monitor resolution:
                         </Typography>
                     </ReactFitText>
+                    {/* IMAGE */}
                     <ResponsiveAsset category='wizard' asset='monitor_select' className={classNames(classes.centerImage, classes.image)} />
-                    <FormControl className={classes.dropdown}>
-                        <InputLabel htmlFor="aspect-ratio">Aspect Ratio</InputLabel>
-                        <Select
-                            value={this.state.aspectRatio}
-                            onChange={this.updateAspectRatio}
-                            inputProps={{
-                            name: 'aspect-ratio',
-                            id: 'aspect-ratio',
-                            }}
-                        >
-                            {Object.keys(monitors).map((ratio) => (
-                                <MenuItem value={ratio}>{ratio}</MenuItem>
-                            ))}
-                            <MenuItem value="custom">Custom...</MenuItem>
-                        </Select>
-                    </FormControl>
-                    {this.state.aspectRatio != "custom" && monitors.hasOwnProperty(this.state.aspectRatio) &&
-                    <FormControl className={classes.dropdown}>
-                        <InputLabel htmlFor="resolution">Resolution</InputLabel>
-                        <Select
-                            value={this.props.selectedMonitor ? this.state.profile.monitor.name : ""}
-                            onChange={this.props.selectMonitor}
-                            inputProps={{
-                            name: 'resolution',
-                            id: 'resolution',
-                            }}
-                        >
-                            {Object.keys(monitors[this.state.aspectRatio]).map((monitor) => (
-                                <MenuItem value={monitor.name}>{monitor.name}</MenuItem>
-                            ))}
-                            <MenuItem value="custom">Custom...</MenuItem>
-                        </Select>
-                    </FormControl>
-                    }
-
-                    <Typography variant="body2" className={classes.ratioText}>Custom</Typography>
-                    <Grid container spacing={16} className={classes.gridRoot}>
-                        <MonitorButton
-                            selectMonitor={() => this.props.selectMonitor(this.props.customMonitor)}
-                            classes={classes}
-                            monitor={this.props.customMonitor}
-                            selected={this.props.selectedMonitor == this.props.customMonitor}
-                            nameOverride="Custom"
-                        />
-                        <Grid item xs={3}>
-                            <TextField
-                            value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.width : "-"}
-                            label="Width"
-                            InputProps={{
-                                disableUnderline: true,
-                                classes: {
-                                root: classes.resolutionAxisInputBox
-                                }
-                            }}
-                            className={classes.resolutionAxisInput}
-                            InputLabelProps={{
-                                shrink: true,
-                                className: classes.textFieldFormLabel,
-                            }}
-                            disabled={this.props.selectedMonitor !== this.props.customMonitor}
-                            onChange={this.updateCustomSize("width")}
-                            />
+                    {/* DROPDOWNS */}
+                    <Grid container spacing={16} className={classes.selectionArea}>
+                        {/* ASPECT RATIO SIDE */}
+                        <Grid item xs={12} sm={6}>
+                            <FormControl className={classes.dropdown}>
+                                <InputLabel htmlFor="aspect-ratio">Aspect Ratio</InputLabel>
+                                <Select
+                                    value={this.state.aspectRatio}
+                                    onChange={this.updateAspectRatio}
+                                    inputProps={{
+                                    name: 'aspect-ratio',
+                                    id: 'aspect-ratio',
+                                    }}
+                                >
+                                    <MenuItem value="all">All</MenuItem>
+                                    {Object.keys(monitors).map((ratio) => (
+                                        <MenuItem value={ratio}>{ratio}</MenuItem>
+                                    ))}
+                                    <MenuItem value="custom">Custom</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
-                        <Grid item xs={3}>
-                            <TextField
-                            value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.height : "-"}
-                            label="Height"
-                            InputProps={{
-                                disableUnderline: true,
-                                classes: {
-                                    root: classes.resolutionAxisInputBox
-                                }
-                            }}
-                            className={classes.resolutionAxisInput}
-                            InputLabelProps={{
-                                shrink: true,
-                                className: classes.textFieldFormLabel,
-                            }}
-                            disabled={this.props.selectedMonitor !== this.props.customMonitor}
-                            fullWidth
-                            onChange={this.updateCustomSize("height")}
-                            />
-                        </Grid> 
+                        {/* RESOLUTION / CUSTOM SIDE */}
+                        {this.state.aspectRatio != "custom" && (this.state.aspectRatio == "all" || monitors.hasOwnProperty(this.state.aspectRatio)) &&
+                            <Grid item xs={12} sm={6}>
+                                <FormControl className={classes.dropdown}>
+                                    <InputLabel htmlFor="resolution">Resolution</InputLabel>
+                                    <Select
+                                        value={this.props.selectedMonitor ? this.props.selectedMonitor.name : ""}
+                                        onChange={this.updateMonitor}
+                                        inputProps={{
+                                        name: 'resolution',
+                                        id: 'resolution',
+                                        }}
+                                    >   
+                                        {/* "ALL" selected */}
+                                        {this.state.aspectRatio == "all" &&
+                                        Object.keys(monitors).map((ratio) => (
+                                            Object.keys(monitors[ratio]).map((monitor) => (
+                                                <MenuItem value={monitor}>{monitor}</MenuItem>
+                                            ))
+                                        ))}
+                                        {/* SPECIFIC ASPECT RATIO */}
+                                        {monitors.hasOwnProperty(this.state.aspectRatio) && 
+                                        Object.keys(monitors[this.state.aspectRatio]).map(monitor => (
+                                            <MenuItem value={monitor}>{monitor}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        }
+                        {/* CUSTOM RESOLUTION */}
+                        {this.state.aspectRatio == "custom" && [
+                                <Grid item xs={6} sm={3}>
+                                    <TextField
+                                    value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.width : "-"}
+                                    label="Width"
+                                    InputProps={{
+                                        disableUnderline: true,
+                                        classes: {
+                                        root: classes.resolutionAxisInputBox
+                                        }
+                                    }}
+                                    fullWidth
+                                    className={classes.resolutionAxisInput}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                        className: classes.textFieldFormLabel,
+                                    }}
+                                    disabled={this.props.selectedMonitor !== this.props.customMonitor}
+                                    onChange={this.updateCustomSize("width")}
+                                    />
+                                </Grid>,
+                                <Grid item xs={6} sm={3}>
+                                    <TextField
+                                    value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.height : "-"}
+                                    label="Height"
+                                    InputProps={{
+                                        disableUnderline: true,
+                                        classes: {
+                                            root: classes.resolutionAxisInputBox
+                                        }
+                                    }}
+                                    className={classes.resolutionAxisInput}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                        className: classes.textFieldFormLabel,
+                                    }}
+                                    disabled={this.props.selectedMonitor !== this.props.customMonitor}
+                                    fullWidth
+                                    onChange={this.updateCustomSize("height")}
+                                    />
+                                </Grid>]
+                        }
                     </Grid>
                 </div>
             </div></div>

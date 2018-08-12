@@ -422,31 +422,28 @@ function profileReducer (state = initialState, action) {
 function wizardReducer (state = initialState, action) {
     switch(action.type) {
         case Symbols.SELECT_MONITOR:
-            if(state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
-                            1: { $set: true }
+                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
                         }
                     }
                 })
             return state
         case Symbols.SET_CUSTOM_MONITOR_WIDTH:
-            if(state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
-                            1: { $set: true }
+                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
                         }
                     }
                 })
             return state
         case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
-            if(state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable)
                 return update(state, {
                     wizard: {
                         pagesReady: {
-                            1: { $set: true }
+                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
                         }
                     }
                 })
@@ -457,7 +454,11 @@ function wizardReducer (state = initialState, action) {
                 return update(state, {
                     wizard: {
                         activePage: { $set: state.wizard.activePage + 1 },
-                        gamePagesRevealed: { $set: 1}
+                        gamePagesRevealed: { $set: 1},
+                        pagesReady: {
+                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable },
+                            3: { $set: state.profile.ownedGames.length > 0 }
+                        }
                     }
                 })
             }
@@ -505,19 +506,10 @@ function wizardReducer (state = initialState, action) {
                 }
             })
         case Symbols.TOGGLE_GAME:
-            if(state.profile.ownedGames.length < 1)
                 return update(state, {
                     wizard: {
                         pagesReady: {
-                            3: { $set: false }
-                        }
-                    }
-                })
-            else
-                return update(state, {
-                    wizard: {
-                        pagesReady: {
-                            3: { $set: true }
+                            3: { $set: state.profile.ownedGames.length < 1 }
                         }
                     }
                 })

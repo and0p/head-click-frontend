@@ -37,9 +37,6 @@ const styles = theme => ({
             paddingRight: theme.spacing.unit
         }
     },
-    pageHeader: {
-        marginBottom: theme.spacing.unit * 2
-    },
     paper: {
         [theme.breakpoints.up('sm')]: {
             padding: theme.spacing.unit * 2
@@ -290,7 +287,7 @@ class Dashboard extends React.Component {
         if(this.props.profile.ready)
         return(
             <div className={classes.root}>
-                <Typography variant="display1" className={classes.pageHeader}>
+                <Typography variant="display1" className={classes.headline}>
                     Dashboard
                 </Typography>
                 <Grid container spacing={spacing} className={classes.rootGridContainer}>
@@ -344,13 +341,13 @@ class Dashboard extends React.Component {
                                         }
                                     </Grid>
                                     <Grid container className= {classes.settingsSection} spacing={spacing}>
-                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                        <Grid item lg={4} sm={6} xs={12}>
                                             <SettingCard name="Sensitivity" value={this.props.profile.settings.sensitivity.actual} icon='settings_ethernet' color="purple" />
                                         </Grid>
-                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                        <Grid item lg={4} sm={6} xs={12}>
                                             <SettingCard name="DPI" value={this.props.profile.settings.dpi.actual} icon='mouse' color="blue" />
                                         </Grid>
-                                        <Grid item className={classes.root} lg={4} sm={6} xs={12}>
+                                        <Grid item lg={4} sm={6} xs={12}>
                                             <SettingCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal" />
                                         </Grid>
                                     </Grid>

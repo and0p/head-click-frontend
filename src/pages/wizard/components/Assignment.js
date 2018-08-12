@@ -27,7 +27,8 @@ const styles = theme => ({
         marginRight: 'auto',
     },
     hook: {
-        marginBottom: theme.spacing.unit * 2
+        marginBottom: theme.spacing.unit * 2,
+        textAlign: "center"
     },
     imageContainerDPI: {
         marginLeft: 'auto',

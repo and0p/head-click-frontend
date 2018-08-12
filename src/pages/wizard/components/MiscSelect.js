@@ -9,6 +9,7 @@ import ReactFitText from 'react-fittext'
 import Typography from '@material-ui/core/Typography'
 import Hidden from '@material-ui/core/Hidden'
 import ResponsiveAsset from '../../../assets'
+import Divider from '@material-ui/core/Divider'
 import classNames from 'classnames'
 import * as Symbols from '../../../redux/HcSymbols'
 import { defaultPageCSS } from '../../../theme'
@@ -105,6 +106,7 @@ class MiscSelect extends React.Component {
                             onClick={() => this.props.selectGamePace("twitchy")}
                             >Twitchy</Button>
                         </div>
+                        <Hidden mdUp><Divider/></Hidden>
                     </Grid>
                     <Hidden mdDown>
                         <Grid item xs={12} lg={6} className={classes.illustrationDiv}>
@@ -114,6 +116,13 @@ class MiscSelect extends React.Component {
                         </Grid>
                     </Hidden>
                     {/* MOUSEPAD SIZE */}
+                    <Hidden mdDown>
+                        <Grid item xs={12} lg={6} className={classes.illustrationDiv}>
+                            {this.props.profile.settings.mousePadSize == "small" && <ResponsiveAsset category="wizard" asset="mousepad_small" className={classes.illustration} />}
+                            {this.props.profile.settings.mousePadSize == "medium" && <ResponsiveAsset category="wizard" asset="mousepad_medium" className={classes.illustration} />}
+                            {this.props.profile.settings.mousePadSize == "wide" && <ResponsiveAsset category="wizard" asset="mousepad_wide" className={classes.illustration} />}
+                        </Grid>
+                    </Hidden>
                     <Grid item xs={12} lg={6} className={classes.section}>
                         <Typography variant="title" gutterBottom>Mousepad size</Typography>
                         <div className={classes.descriptionArea}>
@@ -148,25 +157,24 @@ class MiscSelect extends React.Component {
                             onClick={() => this.props.selectMousePad("wide")}
                             >Wide</Button>
                         </div>
+                        <Hidden mdUp><Divider/></Hidden>
                     </Grid>
-                    <Hidden mdDown>
-                        <Grid item xs={12} lg={6} className={classes.illustrationDiv}>
-                            {this.props.profile.settings.mousePadSize == "small" && <ResponsiveAsset category="wizard" asset="mousepad_small" className={classes.illustration} />}
-                            {this.props.profile.settings.mousePadSize == "medium" && <ResponsiveAsset category="wizard" asset="mousepad_medium" className={classes.illustration} />}
-                            {this.props.profile.settings.mousePadSize == "wide" && <ResponsiveAsset category="wizard" asset="mousepad_wide" className={classes.illustration} />}
-                        </Grid>
-                    </Hidden>
                     {/* TRYHARD FACTOR */}
                     <Grid item xs={12} lg={6} className={classes.section}>
-                        <Typography variant="title" gutterBottom>Tryhard Factor</Typography>
+                        <Typography variant="title" gutterBottom>Comfort Level</Typography>
                         <div className={classes.descriptionArea}>
                             <Typography gutterBottom style={{color:"#bbb"}}>
-                                Can't think of any other way to phrase this right now. How much do you feel like moving your arm?
+                                You're more accurate with a less sensitive mouse, but it doesn't feel right for everyone.
                             </Typography>
+                            <Hidden lgUp>
+                                {this.props.profile.settings.tryhardFactor == "casual" && <ResponsiveAsset category="wizard" asset="mouse_movement_casual" className={classes.illustration} />}
+                                {this.props.profile.settings.tryhardFactor == "pro" && <ResponsiveAsset category="wizard" asset="mouse_movement_pro" className={classes.illustration} />}
+                                {this.props.profile.settings.tryhardFactor == "tryhard" && <ResponsiveAsset category="wizard" asset="mouse_movement_tryhard" className={classes.illustration} />}
+                            </Hidden>
                             <Typography style={{color:"#bbb"}}>
                                 {this.props.profile.settings.tryhardFactor == "casual" && 'Limited range of motion. More comfortable but loss of accuracy.'}
                                 {this.props.profile.settings.tryhardFactor == "pro" && 'Average range of motion. Good balance of comfort and accuracy.'}
-                                {this.props.profile.settings.tryhardFactor == "tryhard" && 'Extreme range of motion. Precise but exhausting.'}
+                                {this.props.profile.settings.tryhardFactor == "tryhard" && 'Extreme range of motion. Precise but exhausting after extended gameplay.'}
                             </Typography>
                         </div>
                         <div className={classes.buttonGroup}>
@@ -187,9 +195,13 @@ class MiscSelect extends React.Component {
                             >Tryhard</Button>
                         </div>
                     </Grid>
-                    <Grid item xs={12} lg={6}>
-                        aaaa
-                    </Grid>
+                    <Hidden mdDown>
+                        <Grid item xs={12} lg={6} className={classes.illustrationDiv}>
+                            {this.props.profile.settings.tryhardFactor == "casual" && <ResponsiveAsset category="wizard" asset="mouse_movement_casual" className={classes.illustration} />}
+                            {this.props.profile.settings.tryhardFactor == "pro" && <ResponsiveAsset category="wizard" asset="mouse_movement_pro" className={classes.illustration} />}
+                            {this.props.profile.settings.tryhardFactor == "tryhard" && <ResponsiveAsset category="wizard" asset="mouse_movement_tryhard" className={classes.illustration} />}
+                        </Grid>
+                    </Hidden>
                 </Grid>
 
             </div></div>

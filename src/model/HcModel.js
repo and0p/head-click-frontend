@@ -25,8 +25,14 @@ for(var i in mouseData) {
     mice[mouseData[i].name] = new Mouse(mouseData[i])
 }
 
-// Export monitor list
+// Export monitor list, including a flattened version
 export const monitors = monitorData
 export const customMonitor = custmon
+export const monitorsFlat = {}
+Object.keys(monitors).map((ratioKey) => (
+    Object.keys(monitors[ratioKey]).map((monitorKey) => (
+        monitorsFlat[monitorKey] = monitors[ratioKey][monitorKey]
+    ))
+))
 
 export const refreshRates = [ 60, 75, 100, 120, 144 ]

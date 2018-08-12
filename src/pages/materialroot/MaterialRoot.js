@@ -158,9 +158,9 @@ const styles = theme => ({
     //width: '100%'
   },
   contentWrap: {
-    maxWidth: '1639px',
-    marginLeft: 'auto',
-    marginRight: 'auto'
+    // maxWidth: '1639px',
+    // marginLeft: 'auto',
+    // marginRight: 'auto'
   },
   title: {
     paddingLeft: theme.spacing.unit * 3
@@ -225,7 +225,7 @@ class MaterialRoot extends React.Component {
       <div>
           <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
             <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo} />
-            <Typography variant="body1" className={classes.versionLight}>alpha</Typography>
+            <Typography variant="body1" className={classes.versionLight}>beta</Typography>
           </Paper>
           <div className={classes.drawerContent}>
             <SidebarButton 
@@ -269,7 +269,7 @@ class MaterialRoot extends React.Component {
             <div className={classes.barLogoContainer}>
             <Hidden mdUp>
                 <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logoMobile} />
-                <Typography variant="body2" className={classes.versionLight}>alpha</Typography>
+                <Typography variant="body2" className={classes.versionLight}>beta</Typography>
             </Hidden>
             </div>
             {(!this.props.identity.loggedIn && !this.props.profile.ready) && 

@@ -73,6 +73,21 @@ const img = {
             "1.5x": asset_root + '/wizard/twitchy_game_pace@1_5x.png',
             "2x": asset_root + '/wizard/twitchy_game_pace@2x.png',
         },
+        "mouse_movement_casual": {
+            "1x": asset_root + '/wizard/casual_mouse_movement@1x.png',
+            "1.5x": asset_root + '/wizard/casual_mouse_movement@1_5x.png',
+            "2x": asset_root + '/wizard/casual_mouse_movement@2x.png',
+        },
+        "mouse_movement_pro": {
+            "1x": asset_root + '/wizard/pro_mouse_movement@1x.png',
+            "1.5x": asset_root + '/wizard/pro_mouse_movement@1_5x.png',
+            "2x": asset_root + '/wizard/pro_mouse_movement@2x.png',
+        },
+        "mouse_movement_tryhard": {
+            "1x": asset_root + '/wizard/tryhard_mouse_movement@1x.png',
+            "1.5x": asset_root + '/wizard/tryhard_mouse_movement@1_5x.png',
+            "2x": asset_root + '/wizard/tryhard_mouse_movement@2x.png',
+        },
     },
     "overwatch": {
         "logo": {

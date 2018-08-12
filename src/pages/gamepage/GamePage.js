@@ -385,7 +385,7 @@ class GamePage extends React.Component {
             // MAIN RETURN ///////////////////////////////////////////////////////////////////////////////////////////////
             return (
                 <div className={classes.root}>
-                    <Typography variant="display1" gutterBottom>
+                    <Typography variant="display1" className={classes.headline} gutterBottom>
                         {this.state.game.name}
                     </Typography>
                     <Grid container spacing={spacing} className={classes.rootGridContainer}>

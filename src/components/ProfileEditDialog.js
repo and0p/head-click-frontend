@@ -58,7 +58,7 @@ class ProfileEditDialog extends React.Component {
     super(props)
     let cmonitor = Object.assign({}, this.props.profile.customMonitor)
     this.state = {
-      alias: this.props.identity.alias,
+      alias: this.props.identity.loggedIn ? this.props.identity.alias : "Not logged in",
       aliasError: false,
       lastAliasChange: Date.now(),
       aliasResponseText: "",
@@ -209,8 +209,9 @@ class ProfileEditDialog extends React.Component {
                 inputProps={{
                   'aria-label': 'Sensitivity',
                 }}
+                disabled={!this.props.identity.loggedIn || !this.props.identity.verified}
               />
-              <FormHelperText id="profile-name-helper" className={responseClass}>{this.state.aliasResponseText}</FormHelperText>
+              <FormHelperText id="profile-name-helper" className={responseClass}>{(this.props.identity.verified ? this.state.aliasResponseText : (this.props.identity.loggedIn ? "Verify to change name." : ""))}</FormHelperText>
             </FormControl><br/>
           {/* SENSITIVITY */}
             <FormControl className={classes.input}>

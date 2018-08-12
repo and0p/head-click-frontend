@@ -94,29 +94,44 @@ export const gradients = {
 export const defaultPageCSS = {
   root: {
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit,
-      marginRight: theme.spacing.unit,
+      paddingLeft: theme.spacing.unit,
+      paddingRight: theme.spacing.unit,
     },
     marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
+    maxWidth: '1639px',
+    // marginLeft: 'auto',
+    // marginRight: 'auto'
   },
   wizardPageRoot: {
     flex: 1,
     marginTop: theme.spacing.unit * 2,
     marginLeft: 'auto',
     marginRight: 'auto',
-    maxWidth: '800px'
+    maxWidth: '800px',
+    [theme.breakpoints.up('md')]: {
+      paddingBottom: "96px"
+    },
+    // [theme.breakpoints.down('sm')]: {
+    //   paddingBottom: theme.spacing.unit
+    // },
   },
   innerRoot: {
     paddingLeft: theme.spacing.unit,
     paddingRight: theme.spacing.unit
+  },
+  headline: {
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: theme.spacing.unit
+    },
+    marginBottom: theme.spacing.unit * 2
   },
   wizardHeadline: {
     textAlign: "center",
     color: theme.palette.custom.headline
   },
   informationSection: {
-    marginBottom: theme.spacing.unit * 4
+    //marginBottom: theme.spacing.unit * 4
   },
   subtle: {
     color: '#999999'

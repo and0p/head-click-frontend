@@ -4,6 +4,8 @@ import Icon from '@material-ui/core/Icon'
 export const dots = ".................................................................................................................................................................."
 export const cm360 = "cm/360°"
 
+const linkIcon = <Icon style={{fontSize:"1em"}}>open_in_new</Icon>
+
 const copy = {
     en: {
         technical: {
@@ -37,7 +39,7 @@ const copy = {
                 questionOpening: "In order to use this site effectively, you'll need to know two things:",
                 question1: "What your ideal monitor resolution is for normal desktop usage.",
                 question2: "How to configure your mouse's DPI setting (or if that's not possible, what the stock DPI is.)",
-                questionLink: <span>If you're not certain about either of these things, please refer to <a href="https://blog.head.click/configuration" target="_blank">this post<Icon style={{fontSize:"1em"}}>open_in_new</Icon></a> for assistance.</span>
+                questionLink: <span>If you're not certain about either of these things, please refer to <a href="https://blog.head.click/configuration" target="_blank">this post{linkIcon}</a> for assistance.</span>
             },
             assignment: {
                 dpi: {
@@ -61,7 +63,7 @@ const copy = {
             },
         },
         misc: {
-            versionWarning: <span>Welcome to the Head Click alpha! This site is currently in its earliest stages of development, so there are still bugs and missing features. Read more about ongoing development <a href="https://blog.head.click/alpha" target="_blank">here</a>.</span>
+            versionWarning: <span>Welcome to the Head Click beta! This site is a work-in-progress, so please excuse any bugs or missing features. You can read more about ongoing development <a href="https://blog.head.click/beta" target="_blank">here{linkIcon}</a>. Please consider taking a few moments to fill out our <a href="https://goo.gl/forms/3RLy7AaEZrsYAozz2" target="_blank">user experience survery{linkIcon}</a></span>
         }
     }
 }

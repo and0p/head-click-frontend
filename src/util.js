@@ -40,9 +40,9 @@ export const getTypicalGameStyle = profile => {
     a = (a * 1.0000) / profile.ownedGames.length
     console.log(a)
     // See which third it falls into
-    if(a < (1/3))
+    if(a < 0.25)
         return "tactical"
-    else if (a >= (1/3) && a < (2/3))
+    else if (a >= 0.25 && a <= 0.75)
         return "average"
     else
         return "twitchy"
@@ -52,7 +52,12 @@ export const recommendSensitivity = profile => {
     let rec = recommendationVars["mousePad"][profile.settings.mousePadSize]
     let gamePaceMultiplier = recommendationVars["gamePace"][profile.settings.typicalGamePace]
     let tryhardMultiplier = recommendationVars["tryhard"][profile.settings.tryhardFactor]
-    return Math.round(rec * gamePaceMultiplier * tryhardMultiplier)
+    rec = Math.round(rec * gamePaceMultiplier * tryhardMultiplier)
+    if(profile.settings.tryhardFactor == "casual" && rec > 34)
+        rec = 34
+    else if (rec < 20)
+        rec = 20
+    return rec 
 }
 
 // ideal FOV W:H is 106:74 at 16:9 

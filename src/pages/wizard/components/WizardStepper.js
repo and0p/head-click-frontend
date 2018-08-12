@@ -118,7 +118,6 @@ const styles = theme => ({
     }
     
     render() {
-      console.log(this.props)
       const { classes, theme } = this.props
       const nextText = "Next" // Will eventually calculate as "finish"
       return(
