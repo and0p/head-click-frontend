@@ -15,7 +15,7 @@ import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography'
 // Misc imports
-import { login, register } from '../../identity'
+import { login, register, requestResetToken, resetPassword } from '../../identity'
 import * as Symbols from '../../redux/HcSymbols'
 
 const styles = theme => ({
@@ -28,6 +28,10 @@ const styles = theme => ({
     errorText: {
       height: '20px',
       color: theme.palette.custom.red
+    },
+    successText: {
+      height: '20px',
+      color: theme.palette.custom.teal
     }
 })
 
@@ -36,6 +40,7 @@ class IdentityDialog extends React.Component {
   render() {
     const { classes, theme, fullScreen } = this.props
     
+    // LOGIN
     if(this.props.ui.identity.dialogFunction == "LOGIN") {
       return (
         <Dialog
@@ -68,9 +73,10 @@ class IdentityDialog extends React.Component {
                 }}
                 type="password"
                 disabled={this.props.ui.identity.actionPending}
+                helperText={<a href="#" onClick={this.props.openForgottenPasswordReset}>Forgot password?</a>}
               />
             </div>
-            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
+            <Typography variant="body1" className={this.props.ui.identity.error == "Password reset successfully." ? classes.successText : classes.errorText}>{this.props.ui.identity.error}</Typography>
           </DialogContent>
           {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
           <DialogActions>
@@ -85,6 +91,7 @@ class IdentityDialog extends React.Component {
         </Dialog>
       )
     }
+    // REGISTER
     else if(this.props.ui.identity.dialogFunction == "REGISTER") {
       return (
         <Dialog
@@ -145,6 +152,176 @@ class IdentityDialog extends React.Component {
         </Dialog>
       )
     }
+    // CHANGE KNOWN PASSWORD
+    else if(this.props.ui.identity.dialogFunction == "CHANGE_KNOWN_PASSWORD") {
+      return (
+        <Dialog
+          fullScreen={fullScreen}
+          open={this.props.ui.identity.dialogOpen}
+          aria-labelledby="change-password"
+          onBackdropClick={this.props.closeDialog}
+          //onEnter={}
+        >
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogContent className={classes.root}>
+            <div>
+              <TextField
+                value={this.props.ui.identity.oldPassword}
+                label="Old Password"
+                fullWidth
+                onChange={event => {this.props.updateField("oldPassword", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.oldPassword
+                }}
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.password}
+                label="New Password"
+                fullWidth
+                onChange={event => {this.props.updateField("password", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.password
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.passwordConfirmation}
+                label="Confirm New Password"
+                fullWidth
+                onChange={event => {this.props.updateField("passwordConfirmation", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.passwordConfirmation
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+            </div>
+            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
+          </DialogContent>
+          {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
+          <DialogActions>
+            <Button onClick={this.props.closeDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => register()} variant="contained" color="primary" autoFocus disabled={!this.props.ui.identity.ready}>
+              Sign Up
+            </Button>
+          </DialogActions>
+          <LinearProgress value={0} variant={this.props.ui.identity.actionPending ? "indeterminate" : "determinate" } classes={{ colorPrimary: classes.customBarBackground }} />
+        </Dialog>
+      )
+    }
+    // SEND RESET_TOKEN
+    else if(this.props.ui.identity.dialogFunction == "RESET_PASSWORD_1") {
+      return (
+        <Dialog
+          fullScreen={fullScreen}
+          open={this.props.ui.identity.dialogOpen}
+          aria-labelledby="reset-password"
+          onBackdropClick={this.props.closeDialog}
+          //onEnter={}
+        >
+          <DialogTitle>Reset Password</DialogTitle>
+          <DialogContent className={classes.root}>
+            <div>
+              <TextField
+                value={this.props.ui.identity.email}
+                label="Email"
+                fullWidth
+                onChange={event => {this.props.updateField("email", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.email
+                }}
+                disabled={this.props.ui.identity.actionPending}
+              />
+            </div>
+            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
+          </DialogContent>
+          {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
+          <DialogActions>
+            <Button onClick={this.props.closeDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => requestResetToken()} variant="contained" color="primary" autoFocus disabled={!this.props.ui.identity.ready}>
+              Next
+            </Button>
+          </DialogActions>
+          <LinearProgress value={0} variant={this.props.ui.identity.actionPending ? "indeterminate" : "determinate" } classes={{ colorPrimary: classes.customBarBackground }} />
+        </Dialog>
+      )
+    }
+    // RESET PASSWORD
+    else if(this.props.ui.identity.dialogFunction == "RESET_PASSWORD_2") {
+      return (
+        <Dialog
+          fullScreen={fullScreen}
+          open={this.props.ui.identity.dialogOpen}
+          aria-labelledby="reset-password"
+          onBackdropClick={this.props.closeDialog}
+          //onEnter={}
+        >
+          <DialogTitle>Reset Password</DialogTitle>
+          <DialogContent className={classes.root}>
+            <div>
+            <TextField
+                value={this.props.ui.identity.email}
+                label="Email"
+                fullWidth
+                onChange={event => {this.props.updateField("email", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.email
+                }}
+                disabled
+              />
+              <TextField
+                value={this.props.ui.identity.resetToken}
+                label="Reset Token"
+                fullWidth
+                onChange={event => {this.props.updateField("resetToken", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.resetToken
+                }}
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.password}
+                label="New Password"
+                fullWidth
+                onChange={event => {this.props.updateField("password", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.password
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+              <TextField
+                value={this.props.ui.identity.passwordConfirmation}
+                label="Confirm Password"
+                fullWidth
+                onChange={event => {this.props.updateField("passwordConfirmation", event.target.value)}}
+                InputLabelProps={{
+                  shrink: this.props.ui.identity.passwordConfirmation
+                }}
+                type="password"
+                disabled={this.props.ui.identity.actionPending}
+              />
+            </div>
+            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.props.closeDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => resetPassword()} variant="contained" color="primary" autoFocus disabled={!this.props.ui.identity.ready}>
+              Reset
+            </Button>
+          </DialogActions>
+          <LinearProgress value={0} variant={this.props.ui.identity.actionPending ? "indeterminate" : "determinate" } classes={{ colorPrimary: classes.customBarBackground }} />
+        </Dialog>
+      )
+    }
     else {
       return <div/>
     }
@@ -166,6 +343,14 @@ const mapDispatchToProps = dispatch => {
     updateField: (field, value) => dispatch({
       type: Symbols.SET_ID_FIELD,
       value: { field: field, value: value }
+    }),
+    openKnownPasswordReset: () => dispatch({
+      type: Symbols.SET_ID_FUNCTION,
+      value: "CHANGE_PASSWORD"
+    }),
+    openForgottenPasswordReset: () => dispatch({
+        type: Symbols.SET_ID_FUNCTION,
+        value: "RESET_PASSWORD_1"
     })
   }
 }

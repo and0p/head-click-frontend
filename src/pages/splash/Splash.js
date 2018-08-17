@@ -127,7 +127,8 @@ const mapStateToProps = (state) => {
   const mapDispatchToProps = dispatch => {
     return {
       openIdentityDialog : () => dispatch({
-        type: Symbols.OPEN_ID_DIALOG
+        type: Symbols.OPEN_ID_DIALOG,
+        value: "LOGIN"
       })
     }
   }

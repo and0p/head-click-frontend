@@ -194,7 +194,8 @@ class MaterialRoot extends React.Component {
   render() {
     const { classes, theme } = this.props;
     let canSave = false
-    if(!this.props.ui.actionPending && this.props.identity.lastModified > this.props.identity.lastSaveAttempt)
+    if((!this.props.ui.actionPending && this.props.identity.lastModified > this.props.identity.lastSaveAttempt) ||
+        this.props.profile.ready && !this.props.identity.loggedIn)
       canSave = true
     // Games list HTML
     const sidebarGamesList = () => (

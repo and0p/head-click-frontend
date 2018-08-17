@@ -83,10 +83,14 @@ const initialState = {
             email: "",
             password: "",
             passwordConfirmation: "",
+            oldPassword: "",
+            resetToken: "",
             ready: false,
+            resetResponse: "",
             verificationToken: "",
             verificationTokenReady: false,
             verificationFailure: null,
+            resent: null,
             aliasBeingChanged: false
         },
         editingProfile: false,
@@ -532,6 +536,49 @@ function uiReducer (state = initialState, action) {
                     mobileMenuOpen: { $set: false }
                 }
             })
+        case Symbols.RESEND_VERIFY_RESPONSE:
+            return update(state, {
+                ui: {
+                    identity: {
+                        resent: { $set: action.value }
+                    }
+                }
+            })
+        case Symbols.RESET_TOKEN_RESPONSE:
+            if(action.value.code == 200)
+                return update(state, {
+                    ui: {
+                        identity: {
+                            dialogFunction: { $set: "RESET_PASSWORD_2" }
+                        }
+                    }
+                })
+            else
+                return update(state, {
+                    ui: {
+                        identity: {
+                            error: { $set: action.value.text }
+                        }
+                    }
+            })
+        case Symbols.RESET_RESPONSE:
+            if(action.value.code == 200)
+                return update(state, {
+                    ui: {
+                        identity: {
+                            dialogFunction: { $set: "LOGIN" },
+                            error: { $set: "Password reset successfully."}
+                        }
+                    }
+                })
+            else
+                return update(state, {
+                    ui: {
+                        identity: {
+                            error: { $set: action.value.text }
+                        }
+                    }
+            })
         case Symbols.SELECT_SIDEBAR_ITEM:
             //if(!state.profile.ready)
                 return update(state, {
@@ -669,6 +716,10 @@ function uiReducer (state = initialState, action) {
                     ui: {
                         identity: {
                             dialogFunction: { $set: action.value },
+                            error: { $set: "" },
+                            password: { $set: "" },
+                            passwordConfirmation: { $set: "" },
+                            ready: { $set: action.value = "RESET_PASSWORD_1" && state.ui.identity.email != "" }
                         }
                     }
                 })
@@ -726,6 +777,8 @@ function uiReducer (state = initialState, action) {
                     email: state.ui.identity.email,
                     password: state.ui.identity.password,
                     passwordConfirmation: state.ui.identity.passwordConfirmation,
+                    oldPassword: state.ui.identity.oldPassword,
+                    resetToken: state.ui.identity.resetToken,
                     ready: false,
                     passwordsMatch: false,
                     passwordComplex: false,
@@ -747,6 +800,19 @@ function uiReducer (state = initialState, action) {
                             else
                                 j.error = ""
                         break
+                    case "RESET_PASSWORD_1":
+                        j.ready = j.email != ""
+                        break
+                    case "RESET_PASSWORD_2":
+                        j.passwordsMatch = j.password === j.passwordConfirmation
+                        j.passwordComplex = true // TODO actually check on client side
+                        j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex && j.resetToken)  // TODO check for valid email and password complexity
+                        if(j.password && j.passwordConfirmation)
+                            if(!j.passwordsMatch)
+                                j.error = "Passwords do not match."
+                            else
+                                j.error = ""
+                        break
                 }
                 // Return state
                 return update(state, {
@@ -759,6 +825,8 @@ function uiReducer (state = initialState, action) {
                             passwordComplex: { $set: j.passwordComplex },
                             ready: { $set: j.ready },
                             error: { $set: j.error },
+                            oldPassword: { $set: j.oldPassword },
+                            resetToken: { $set: j.resetToken },
                         }
                     }
                 })

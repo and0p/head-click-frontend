@@ -19,7 +19,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Icon from '@material-ui/core/Icon'
 import copy from '../../copy'
-import { verify } from '../../identity'
+import { verify, resendVerification } from '../../identity'
 import axios from 'axios'
 import { defaultPageCSS } from '../../theme'
 import * as Symbols from '../../redux/HcSymbols'
@@ -335,7 +335,7 @@ class Dashboard extends React.Component {
                                                 Verify
                                             </Button>
                                             <Typography variant="caption">
-                                                {this.props.ui.identity.verificationFailure ? "Verification failed! " : "" }Check your email for code. <a href="#">Resend</a>
+                                                {this.props.ui.identity.verificationFailure ? "Verification failed! " : "" }Check your email for code. {this.props.ui.identity.resent != null ? this.props.ui.identity.resent : <a href="#" onClick={()=>resendVerification()}>Resend</a> }
                                             </Typography>
                                         </Grid>
                                         }

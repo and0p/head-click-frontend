@@ -149,6 +149,41 @@ export const changeAlias = (alias) => {
         })
 }
 
+export const resendVerification = () => {
+    let state = store.getState()
+    let jwt = state.identity.jwt
+    axios.post(apiHost + '/resend_verification', {},
+    { headers: {'Authorization': "bearer " + jwt, 'Content-Type': 'application/json'} })
+        .then(response => {
+            store.dispatch({type: Symbols.RESEND_VERIFY_RESPONSE, value: response.data })
+        })
+        .catch(error => {
+            store.dispatch({type: Symbols.RESEND_VERIFY_RESPONSE, value: "Error." })
+        })
+}
+
+export const requestResetToken = () => {
+    let state = store.getState()
+    axios.post(apiHost + '/reset_token', {email: state.ui.identity.email})
+        .then(response => {
+            store.dispatch({type: Symbols.RESET_TOKEN_RESPONSE, value: { text: response.data, code: response.status }})
+        })
+        .catch(error => {
+            store.dispatch({type: Symbols.RESET_TOKEN_RESPONSE, value: "Failed." })
+        })
+}
+
+export const resetPassword = () => {
+    let state = store.getState()
+    axios.post(apiHost + '/reset_password', {email: state.ui.identity.email, password: state.ui.identity.password, token: state.ui.identity.resetToken })
+        .then(response => {
+            store.dispatch({type: Symbols.RESET_RESPONSE, value: { text: response.data, code: response.status }})
+        })
+        .catch(error => {
+            store.dispatch({type: Symbols.RESET_RESPONSE, value: "Failed." })
+        })
+}
+
 export const logout = () => {
     store.dispatch({ type: Symbols.LOGOUT })
     store.dispatch(push('/'))
