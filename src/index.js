@@ -11,6 +11,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import { store, history, persistor } from './redux/HcRedux'
 import theme from './theme.js'
 import { PersistGate } from 'redux-persist/integration/react'
+import BeforeUnload from 'before-unload'
 // Pages & styles
 import Splash from './pages/splash/Splash'
 import Dashboard from './pages/dashboard/Dashboard'
@@ -39,6 +40,11 @@ const homeComponent = state => {
 let loader = document.getElementById("loader")
 loader.parentElement.removeChild(loader)
 
+new BeforeUnload('Are you sure you want to leave without saving?', function () {
+  let state = store.getState();
+  return state.profile.ready && state.identity.lastModified > state.identity.lastSaveAttempt;
+});
+
 class App extends React.Component {
 
   render() {
@@ -62,7 +68,6 @@ class App extends React.Component {
     </Provider>
     );
   }
-
 }
 
 render(<App/>, document.querySelector('#app'));

@@ -284,7 +284,6 @@ class IdentityDialog extends React.Component {
                   shrink: this.props.ui.identity.resetToken
                 }}
                 disabled={this.props.ui.identity.actionPending}
-                helperText={this.props.ui.identity.password != "" ? this.props.ui.identity.passwordComplex : null}
               />
               <TextField
                 value={this.props.ui.identity.password}
@@ -296,6 +295,7 @@ class IdentityDialog extends React.Component {
                 }}
                 type="password"
                 disabled={this.props.ui.identity.actionPending}
+                helperText={this.props.ui.identity.password != "" ? this.props.ui.identity.passwordComplex : null}
               />
               <TextField
                 value={this.props.ui.identity.passwordConfirmation}

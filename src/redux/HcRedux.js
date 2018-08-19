@@ -243,7 +243,7 @@ function profileReducer (state = initialState, action) {
                     profile: {
                         settings: {
                             sensitivity: {
-                                actual: { $set: action.value.sensitivity }
+                                actual: { $set: parseInt(action.value.sensitivity) }
                             },
                             dpi: {
                                 actual: { $set: action.value.dpi }
@@ -272,7 +272,6 @@ function profileReducer (state = initialState, action) {
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         },
-                        
                     }
                 })
             }
@@ -562,6 +561,7 @@ function uiReducer (state = initialState, action) {
                     ui: {
                         identity: {
                             dialogFunction: { $set: "LOGIN" },
+                            password: { $set: "" },
                             error: { $set: "Password reset successfully."}
                         }
                     }
