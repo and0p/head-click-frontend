@@ -54,8 +54,8 @@ class AccountMenu extends React.Component {
             open={this.props.userMenuOpen}
             onClose={this.deanchorAndClose}
             >
-                <MenuItem onClick={this.props.deanchorAndClose}>Revert</MenuItem>
-                <MenuItem onClick={logout}>Log Out</MenuItem>
+                {this.props.identity.lastModified > this.props.identity.lastSaveAttempt && <MenuItem onClick={this.props.deanchorAndClose}>Revert</MenuItem>}
+                <MenuItem onClick={logout}>{this.props.identity.loggedIn ? "Log Out" : "Reset"}</MenuItem>
             </Menu>
         </div>
         )
@@ -63,9 +63,9 @@ class AccountMenu extends React.Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return { 
-        userMenuOpen: state.ui.userMenuOpen
+        userMenuOpen: state.ui.userMenuOpen,
+        identity: state.identity
     }
 }
 

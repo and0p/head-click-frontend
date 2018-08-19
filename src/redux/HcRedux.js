@@ -229,6 +229,12 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             }
+            else if (state.wizard.activePage == 5 && state.wizard.pagesReady[5])
+            return update(state, {
+                profile: {
+                    ready: { $set: true }
+                }
+            })
             return state
         case Symbols.SAVE_PROFILE:
             if(action.value != "undefined")
@@ -453,7 +459,7 @@ function wizardReducer (state = initialState, action) {
                 })
             return state
         case Symbols.WIZARD_NEXT:
-            if(state.wizard.activePage < 6 && state.wizard.pagesReady[state.wizard.activePage]) {
+            if(state.wizard.pagesReady[state.wizard.activePage]) {
                 // Set the next page
                 return update(state, {
                     wizard: {
@@ -462,19 +468,8 @@ function wizardReducer (state = initialState, action) {
                         pagesReady: {
                             1: { $set: isValid(state.profile.settings.monitor) && state.profile.settings.monitor.usable },
                             3: { $set: state.profile.ownedGames.length > 0 }
-                        }
-                    }
-                })
-            }
-            else if(state.wizard.activePage == 6 && state.wizard.pagesReady[state.wizard.activePage])
-            {
-                // Finish the wizard
-                return update(state, {
-                    wizard: {
-                        wizardCompleted: { $set: true }
-                    },
-                    profile: {
-                        ready: {$set: true }
+                        },
+                        wizardCompleted: { $set: state.wizard.activePage == 5 }
                     }
                 })
             }
@@ -891,7 +886,8 @@ function identityReducer (state = initialState, action)  {
                     alias: { $set: action.value.alias },
                     jwt: { $set: action.value.jwt },
                     loggedIn: { $set: true },
-                    lastSaveSuccess: { $set: Date.now() }
+                    lastSaveSuccess: { $set: Date.now() },
+                    lastModified: { $set: 0 }
                 }
             })
         case Symbols.SAVE_SUCCESS: 

@@ -62,6 +62,7 @@ const copy = {
                 }
             },
             outro: {
+<<<<<<< HEAD
                 headline: "Good to go.",
                 subheader: <span>Your profile is all set up!<br/><br/>Here's a brief overview of how to use Head Click:</span>,
                 tips: [
@@ -71,6 +72,10 @@ const copy = {
                     "Set the in-game settings to the ones we calculate for you.",
                     "See how it feels! Try to practice against bots if possible. If you think it's not the right sensitivity, change your sensitivity from the dashboard and try again."
                 ]
+=======
+                headline: "You're all set.",
+                subheader: "Placeholder: brief site tutorial."
+>>>>>>> 311d7723c9d0105a1e9ce799055c246f44c834cc
             }
         },
         misc: {
