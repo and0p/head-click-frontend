@@ -21,6 +21,7 @@ import Icon from '@material-ui/core/Icon'
 import copy from '../../copy'
 import { verify, resendVerification } from '../../identity'
 import axios from 'axios'
+import { NavLink } from "react-router-dom";
 import { defaultPageCSS } from '../../theme'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -114,6 +115,9 @@ const styles = theme => ({
     },
     subtle: {
         color: theme.palette.custom.subtle
+    },
+    profileCaption: {
+        marginTop: theme.spacing.unit
     }
 });
 
@@ -351,6 +355,7 @@ class Dashboard extends React.Component {
                                             <SettingCard name="Resolution" value={this.props.profile.settings.monitor.name} icon='settings_overscan' color="teal" />
                                         </Grid>
                                     </Grid>
+                                    <Typography variant="caption" className={classes.profileCaption}>Not sure about your settings? Try running the <NavLink exact to="/wizard">profiler</NavLink> again.</Typography>
                                 </Paper>
                             </Grid>
                             {/* Gear card */}

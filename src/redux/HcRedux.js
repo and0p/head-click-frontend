@@ -10,7 +10,7 @@ import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper';
 import { validateProfile } from './Validation'
-import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle } from '../util'
+import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle, checkPassword } from '../util'
 import { clamp } from '../math'
 
 // Profile when it was last saved, for reverting
@@ -35,7 +35,7 @@ const initialState = {
                 recommended: 0
             },
             usingCustomMonitor: false,
-            tryhardFactor: "casual",
+            tryhardFactor: "pro",
             mousePadSize: "medium",
             typicalGamePace: "average"
         },
@@ -460,7 +460,7 @@ function wizardReducer (state = initialState, action) {
                         activePage: { $set: state.wizard.activePage + 1 },
                         gamePagesRevealed: { $set: 1},
                         pagesReady: {
-                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable },
+                            1: { $set: isValid(state.profile.settings.monitor) && state.profile.settings.monitor.usable },
                             3: { $set: state.profile.ownedGames.length > 0 }
                         }
                     }
@@ -513,7 +513,7 @@ function wizardReducer (state = initialState, action) {
                 return update(state, {
                     wizard: {
                         pagesReady: {
-                            3: { $set: state.profile.ownedGames.length < 1 }
+                            3: { $set: state.profile.ownedGames.length > 0 }
                         }
                     }
                 })
@@ -792,8 +792,8 @@ function uiReducer (state = initialState, action) {
                         break
                     case "REGISTER":
                         j.passwordsMatch = j.password === j.passwordConfirmation
-                        j.passwordComplex = true // TODO actually check on client side
-                        j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex)  // TODO check for valid email and password complexity
+                        j.passwordComplex =  checkPassword(j.password)
+                        j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex == "")
                         if(j.password && j.passwordConfirmation)
                             if(!j.passwordsMatch)
                                 j.error = "Passwords do not match."
@@ -805,9 +805,9 @@ function uiReducer (state = initialState, action) {
                         break
                     case "RESET_PASSWORD_2":
                         j.passwordsMatch = j.password === j.passwordConfirmation
-                        j.passwordComplex = true // TODO actually check on client side
-                        j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex && j.resetToken)  // TODO check for valid email and password complexity
-                        if(j.password && j.passwordConfirmation)
+                        j.passwordComplex = checkPassword(j.password)
+                        j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex == "" && j.resetToken)
+                        if(j.passwordConfirmation)
                             if(!j.passwordsMatch)
                                 j.error = "Passwords do not match."
                             else

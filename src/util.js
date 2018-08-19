@@ -1,6 +1,7 @@
 import * as stats from 'stats-lite'
 import gaussian from 'gaussian'
 import { games } from './model/HcModel'
+import passwordValidator from 'password-validator'
 
 const recommendationVars = {
     'mousePad': {
@@ -131,3 +132,28 @@ for(let i = 0; i < 200; i++)
 }
 
 export const getRounded = (input, decimalPlaces) => parseFloat(input).toFixed(decimalPlaces)
+
+var schema = new passwordValidator();
+schema
+.is().min(8)                                    // Minimum length 8
+.is().max(64)                                   // Maximum length 100
+.has().uppercase()                              // Must have uppercase letters
+.has().lowercase()                              // Must have lowercase letters
+.has().digits()                                 // Must have digits
+.has().symbols()                                // Must have symbols
+.has().not().spaces()                           // Should not have spaces
+//.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
+
+export const checkPassword = password => { 
+    password = '' + password
+    if(password.length < 8)
+        return "Too short"
+    let issues = schema.validate(password, { list: true })
+    // Check for critical errors, or more than one non-critical
+    if(issues.includes("min") || issues.includes("max") || issues.includes("spaces"))
+        return "Invalid"
+    else if(issues.length > 1)
+        return "Too weak"
+    else
+        return ""
+ }

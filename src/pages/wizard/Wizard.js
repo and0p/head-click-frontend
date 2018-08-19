@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
+import WizardOutro from './components/WizardOutro'
 import MonitorSelect from './components/MonitorSelect'
 import Assignment from './components/Assignment'
 import GameSelect from '../../components/GameSelect'
@@ -55,6 +56,9 @@ class Wizard extends React.Component {
                 break
             case 5:
                 page = <Assignment version="sensitivity" />
+                break
+            case 6:
+                page = <WizardOutro />
                 break
             default:
                 page = <div />

@@ -15,6 +15,7 @@
     "immutability-helper": "^2.7.0",
     "jsonschema": "^1.2.4",
     "jsonwebtoken": "^8.3.0",
+    "password-validator": "^4.1.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-fittext": "^1.0.0",

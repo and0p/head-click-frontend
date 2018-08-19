@@ -17,7 +17,7 @@ const theme = createMuiTheme({
         purple: '#8B41B0',
         teal: '#3EA3AD',
         subtle: '#999999',
-        headline: "#FFFFFF"
+        headline: '#FFFFFF'
       },
       background: {
         default: "#1e1d23",

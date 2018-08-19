@@ -123,6 +123,7 @@ class IdentityDialog extends React.Component {
                   shrink: this.props.ui.identity.password
                 }}
                 type="password"
+                helperText={this.props.ui.identity.password != "" ? this.props.ui.identity.passwordComplex : null}
                 disabled={this.props.ui.identity.actionPending}
               />
               <TextField
@@ -139,7 +140,6 @@ class IdentityDialog extends React.Component {
             </div>
             <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
           </DialogContent>
-          {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
           <DialogActions>
             <Button onClick={this.props.closeDialog} color="primary">
               Cancel
@@ -284,6 +284,7 @@ class IdentityDialog extends React.Component {
                   shrink: this.props.ui.identity.resetToken
                 }}
                 disabled={this.props.ui.identity.actionPending}
+                helperText={this.props.ui.identity.password != "" ? this.props.ui.identity.passwordComplex : null}
               />
               <TextField
                 value={this.props.ui.identity.password}

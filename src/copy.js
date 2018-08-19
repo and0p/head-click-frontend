@@ -30,16 +30,16 @@ const copy = {
             }
         },
         dashboard: {
-            tutorial: "Welcome to your dashboard! "
+            tutorial: "Welcome to your dashboard!",
         },
         wizard: {
             intro: {
-                headline: "Let's get you set up.",
+                headline: "Let's get started.",
                 subheader: "Head Click helps you find a mouse sensitivity that works for you, and then helps you keep it consistent between games.",
-                questionOpening: "In order to use this site effectively, you'll need to know two things:",
-                question1: "What your ideal monitor resolution is for normal desktop usage.",
-                question2: "How to configure your mouse's DPI setting (or if that's not possible, what the stock DPI is.)",
-                questionLink: <span>If you're not certain about either of these things, please refer to <a href="https://blog.head.click/configuration" target="_blank">this post{linkIcon}</a> for assistance.</span>
+                questionOpening: "In order to use this site effectively, you'll need to know a couple things:",
+                question1: <span>What your ideal monitor resolution is for normal desktop usage. <a href="https://blog.head.click/monitor_resolution/" target="_blank">More info {linkIcon}</a></span>,
+                question2: <span>How to configure your mouse's DPI setting, if possible. <a href="https://blog.head.click/dpi_for_gaming/" target="_blank">More info {linkIcon}</a></span>,
+                questionLink: <span>Once you have that figured out, click "NEXT" below to continue.</span>
             },
             assignment: {
                 dpi: {
@@ -47,7 +47,7 @@ const copy = {
                     points: [
                         {
                             primary: "We recommend DPI based on desktop resolution.",
-                            secondary: "Contrary to popular belief, modern games and mice don't perform better with a lower DPI. And given the growing adoption of extremely high-resolution monitors, along with shooters that require complex menu interaction, your best bet is to stick with whatever is comfortable for everyday desktop usage."
+                            secondary: <span>Contrary to popular belief, modern games and mice don't perform better with a lower DPI. And given the growing adoption of extremely high-resolution monitors, along with shooters that require complex menu interaction, your best bet is to stick with whatever is comfortable for everyday desktop usage. <a href="https://blog.head.click/dpi_for_gaming/" target="_blank">Read more {linkIcon}</a></span>
                         }
                     ]
                 },
@@ -61,6 +61,17 @@ const copy = {
                     ]
                 }
             },
+            outro: {
+                headline: "Good to go.",
+                subheader: <span>Your profile is all set up!<br/><br/>Here's a brief overview of how to use Head Click:</span>,
+                tips: [
+                    <span>Make sure your DPI and resolution match your profile. <ul><li>Edit your profile from the dashboard if needed with the <Icon style={{fontSize:"1em"}}>create</Icon> icon.</li><li>Your profile is how we generate your in-game settings, so it needs to be accurate.</li></ul></span>,
+                    "Select a game from the sidebar.",
+                    "If the game has any options, set them according to your needs.",
+                    "Set the in-game settings to the ones we calculate for you.",
+                    "See how it feels! Try to practice against bots if possible. If you think it's not the right sensitivity, change your sensitivity from the dashboard and try again."
+                ]
+            }
         },
         misc: {
             versionWarning: <span>Welcome to the Head Click beta! This site is a work-in-progress, so please excuse any bugs or missing features. You can read more about ongoing development <a href="https://blog.head.click/beta" target="_blank">here{linkIcon}</a>. Please consider taking a few moments to fill out our <a href="https://goo.gl/forms/3RLy7AaEZrsYAozz2" target="_blank">user experience survery{linkIcon}</a></span>

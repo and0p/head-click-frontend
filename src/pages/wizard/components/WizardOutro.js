@@ -19,23 +19,21 @@ const styles = theme => ({
     },
 });
 
-class WizardSplash extends React.Component {
+class WizardOutro extends React.Component {
     render() {
         const { classes, theme } = this.props
         return(
             <div className={classes.wizardPageRoot}>
                 <div className={classes.innerRoot}>
                     <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
-                        <Typography variant="display2" className={classes.headline}>{copy["en"].wizard.intro.headline}</Typography>
+                        <Typography variant="display2" className={classes.headline}>{copy["en"].wizard.outro.headline}</Typography>
                     </ReactFitText>
-                    <p><Typography variant = "subheading" className={classes.informationSection}>{copy["en"].wizard.intro.subheader}</Typography></p>
-                    <Typography variant = "subheading">
-                        <span className={classes.informationSection}>{copy["en"].wizard.intro.questionOpening}</span>
+                    <p><Typography variant="subheading" className={classes.informationSection}>{copy["en"].wizard.outro.subheader}</Typography></p>
+                    <Typography variant="subheading">
+                        <span className={classes.informationSection}>{copy["en"].wizard.outro.questionOpening}</span>
                         <ul>
-                            <li>{copy["en"].wizard.intro.question1}</li>
-                            <li>{copy["en"].wizard.intro.question2}</li>
+                            {copy["en"].wizard.outro.tips.map(tip => <li>{tip}</li> )}
                         </ul>
-                        {copy["en"].wizard.intro.questionLink}
                     </Typography>
                 </div>
             </div>
@@ -43,4 +41,4 @@ class WizardSplash extends React.Component {
     }
 }
 
-export default withStyles(styles)(WizardSplash)
+export default withStyles(styles)(WizardOutro)
