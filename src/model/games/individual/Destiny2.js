@@ -1,8 +1,8 @@
 import React from 'react'
 import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV, getVFOVFromHorizontalFOV } from '../../../math'
 
-let baseHipDots = 54496
-let minSensitivity = 0.01
+let baseHipDots = 54545
+let minSensitivity = 1
 let maxSensitivity = 100
 let idealFOV = 106
 let widowFOV = 38
@@ -21,55 +21,40 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 
 const getInfo = (settings, options) => {
     let ideal = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
-    let sensitivity = clamp(getSensitivity(ideal, settings), minSensitivity, maxSensitivity)
+    let sensitivity = getRounded(clamp(getSensitivity(ideal, settings), minSensitivity, maxSensitivity), 0)
     let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
     return {
         settings: [
             {
-                name: 'Mouse Sensitivity',
-                subtext: 'Settings ~ Gameplay ~ Mouse',
+                name: 'Look Sensitivity',
+                subtext: 'Settings ~ Controls ~ Mouse',
                 icon: 'settings_ethernet',
                 value: getRounded(sensitivity, 2),
                 color: 'purple'
             },
             {
-                name: 'ADS Mouse Sensitivity',
-                subtext: 'Settings ~ Gameplay ~ Mouse',
+                name: 'ADS Sensitivity Modifier',
+                subtext: 'Settings ~ Controls ~ Mouse',
                 icon: 'settings_ethernet',
-                value: "Relative",
+                value: "1.0",
                 color: 'purple'
             },
             {
-                name: 'Mouse Accleration',
-                subtext: 'Settings ~ Gameplay ~ Mouse',
+                name: 'Aim Smoothing',
+                subtext: 'Settings ~ Controls ~ Mouse',
                 icon: 'settings_ethernet',
-                value: "0.00",
+                value: "Off",
                 color: 'purple'
             },
             {
-                name: "Mouse Filtering",
-                subtext: 'Settings ~ Gameplay ~ General',
-                icon: 'videocam',
-                value: 0,
-                color: 'blue'
-            },
-            {
-                name: "Field of View",
-                subtext: 'Settings ~ Gameplay ~ General',
-                icon: 'videocam',
+                name: 'Field of View',
+                subtext: 'Settings ~ Video',
+                icon: 'settings_ethernet',
                 value: options["FOV"],
-                color: 'blue'
-            },
-            {
-                name: "ADS Field of View",
-                subtext: 'Settings ~ Gameplay ~ General ~ Field of View ~ Show More',
-                icon: 'videocam',
-                value: "Affected",
-                color: 'blue'
-            },
-
+                color: 'purple'
+            }
         ],
-        settingsHelp: <span>Settings taken from the beta. Subject to change before the game goes live. I also didn't thoroughly test how mouse sensitivity was changed by aspect ratios other than 16:9.</span>,
+        settingsHelp: <span>Destiny 2 uses Overwatch's exact math for calculating aim, but only lets you use whole numbers for the sensitivity setting. If the output cm/360 is way off, try using the override feature (at the top of this card) and setting a lower DPI for this game. That should increase the odds of it matching your desired sensitivity.</span>,
         output: [
             {
                 name: "Hip Fire",
@@ -79,26 +64,26 @@ const getInfo = (settings, options) => {
                 zoom: 1,
                 cm360: outputHipFire,
                 ideal: ideal,
-                variance: normalizeLowPercentage(ideal / outputHipFire) - 1,
+                variance: normalizeLowPercentage(ideal / outputHipFire - 1) * 100,
             },
             {
                 name: "Iron Sights",
                 alias: "Iron Sights",
-                fov: options["FOV"] / 1.10,
-                vfov: getVFOVFromHorizontalFOV(16, 9, options["FOV"] * 1.10),
-                zoom: 1.10,
-                cm360: outputHipFire * 1.10,
-                ideal: ideal * 1.10,
-                variance: normalizeLowPercentage(ideal * 1.10 / outputHipFire * 1.10) - 1
+                fov: options["FOV"] / 1.4,
+                vfov: getVFOVFromHorizontalFOV(16, 9, options["FOV"] * 1.4),
+                zoom: 1.40,
+                cm360: outputHipFire * 1.40,
+                ideal: ideal * 1.40,
+                variance: normalizeLowPercentage(ideal / outputHipFire - 1) * 100,
             }
         ]
     }
 }
 
-const BlackOps4 = {
-        name: "Call of Duty: Black Ops 4",
-        shortName: "Black Ops 4",
-        alias: "blackops4",
+const Destiny2 = {
+        name: "Destiny 2",
+        shortName: "Destiny 2",
+        alias: "destiny2",
         hasLogo: true,
         type: "average",
         math: {
@@ -131,33 +116,26 @@ const BlackOps4 = {
         },
         infoFunction: getInfo,
         settings: {
-            "Graphics": [
+            "Video": [
                 {
-                    text: "Render Resolution",
-                    value: "100",
-                    note: false,
-                    info: "Improved target clarity. Lower this as a last resort.",
-                    critical: true
-                },
-                {
-                    text: "Vertical Sync",
+                    text: "Vsync",
                     value: "OFF",
                     note: false,
                     info: "Unless your PC is powerful enough. Improves response time.",
                     critical: true
                 },
                 {
-                    text: "Motion Blur",
+                    text: "Framerate Cap Enabled",
+                    value: "OFF",
+                    note: true,
+                    info: "Disable this, or set the cap reasonably higher than your monitor refresh rate.",
+                    critical: false
+                },
+                {
+                    text: "Advanced - Motion Blur",
                     value: "OFF",
                     note: true,
                     info: "Improved target clarity while aiming.",
-                    critical: true
-                },
-                {
-                    text: "Gameplay Framerate Limit",
-                    value: "UNLIMITED",
-                    note: true,
-                    info: "Set this to UNLIMITED, or at least reasonably higher than your monitor's refresh rate.",
                     critical: false
                 },
             ],
@@ -171,13 +149,13 @@ const BlackOps4 = {
             {
                 name: "FOV",
                 type: "slider",
-                min: 60,
-                max: 120,
+                min: 55,
+                max: 105,
                 step: 1,
-                recommended: 106,
-                default: 106,
+                recommended: 105,
+                default: 105,
             }
         ]
 }
 
-export default BlackOps4
+export default Destiny2

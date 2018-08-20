@@ -3,6 +3,8 @@ import Fortnite from './individual/Fortnite'
 import R6Siege from './individual/R6Siege'
 import PUBG from './individual/PUBG'
 import CSGO from './individual/CSGO'
+import BlackOps4 from './individual/BlackOps4';
+import Destiny2 from './individual/Destiny2';
 
 const gameData = [
     CSGO,
@@ -10,14 +12,18 @@ const gameData = [
     Overwatch,
     PUBG,
     R6Siege,
+    BlackOps4,
+    Destiny2
 ]
 
 export const gameNamesByPopularity = [
     "fortnite",
     "pubg",
     "overwatch",
+    "blackops4",
     "csgo",
-    "r6siege"
+    "r6siege",
+    "destiny2"
 ]
 
 // Add test games

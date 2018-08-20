@@ -54,7 +54,7 @@ class AccountMenu extends React.Component {
             open={this.props.userMenuOpen}
             onClose={this.deanchorAndClose}
             >
-                {this.props.identity.lastModified > this.props.identity.lastSaveAttempt && <MenuItem onClick={this.props.deanchorAndClose}>Revert</MenuItem>}
+                {/*this.props.identity.lastModified > this.props.identity.lastSaveAttempt && <MenuItem onClick={this.props.deanchorAndClose}>Revert</MenuItem>*/}
                 <MenuItem onClick={logout}>{this.props.identity.loggedIn ? "Log Out" : "Reset"}</MenuItem>
             </Menu>
         </div>

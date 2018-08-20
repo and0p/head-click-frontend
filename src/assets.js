@@ -191,6 +191,23 @@ const img = {
             "2x": asset_root + '/games/blackops4/logo/logo_mini@2x.png',
         },
     },
+    "destiny2": {
+        "logo": {
+            "1x": asset_root + '/games/destiny2/logo/logo@1x.png',
+            "1.5x": asset_root + '/games/destiny2/logo/logo@1_5x.png',
+            "2x": asset_root + '/games/destiny2/logo/logo@2x.png',
+        },
+        "logo_big": {
+            "1x": asset_root + '/games/destiny2/logo/logo_big@1x.png',
+            "1.5x": asset_root + '/games/destiny2/logo/logo_big@1_5x.png',
+            "2x": asset_root + '/games/destiny2/logo/logo_big@2x.png',
+        },
+        "logo_mini": {
+            "1x": asset_root + '/games/destiny2/logo/logo_mini@1x.png',
+            "1.5x": asset_root + '/games/destiny2/logo/logo_mini@1_5x.png',
+            "2x": asset_root + '/games/destiny2/logo/logo_mini@2x.png',
+        },
+    },
 }
 
 class ResponsiveAsset extends React.Component {
