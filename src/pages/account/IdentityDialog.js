@@ -32,6 +32,9 @@ const styles = theme => ({
     successText: {
       height: '20px',
       color: theme.palette.custom.teal
+    },
+    resetInfo: {
+      marginBottom: theme.spacing.unit * 2
     }
 })
 
@@ -73,7 +76,7 @@ class IdentityDialog extends React.Component {
                 }}
                 type="password"
                 disabled={this.props.ui.identity.actionPending}
-                helperText={<a href="#" onClick={this.props.openForgottenPasswordReset}>Forgot password?</a>}
+                helperText={this.props.ui.identity.error == "Password reset successfully." ? "" : <a href="#" onClick={this.props.openForgottenPasswordReset}>Forgot password?</a>}
               />
             </div>
             <Typography variant="body1" className={this.props.ui.identity.error == "Password reset successfully." ? classes.successText : classes.errorText}>{this.props.ui.identity.error}</Typography>
@@ -265,6 +268,7 @@ class IdentityDialog extends React.Component {
           <DialogTitle>Reset Password</DialogTitle>
           <DialogContent className={classes.root}>
             <div>
+              <Typography className={classes.resetInfo}>Please check your email for a password reset token and enter it below.</Typography>
             <TextField
                 value={this.props.ui.identity.email}
                 label="Email"

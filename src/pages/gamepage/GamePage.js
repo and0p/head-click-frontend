@@ -343,7 +343,7 @@ class GamePage extends React.Component {
                         </div>
                     </Paper>
                 </Grid>
-            const MiscSettingsHTML = !this.state.game.hasOwnProperty("settings") ? <div/> :
+            const MiscSettingsHTML = !this.state.game.hasOwnProperty("settings") || Object.keys(this.state.game.settings).length == 0 ? <div/> :
                 /* MISC SETTINGS */
                 <Grid item xs={12}>
                     <Paper>

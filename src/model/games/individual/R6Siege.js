@@ -60,7 +60,6 @@ const getCm360ForSight = (gameSetting, configSetting, dpi, modifier, sight) => {
 }
 
 const getInfo = (settings, options) => {
-    console.log(options["Preferred Sight"])
     // Get base FOV from options
     let baseHFOV = getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, options["FOV"])
     let baseVFOV = options["FOV"]

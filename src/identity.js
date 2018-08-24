@@ -180,7 +180,7 @@ export const resetPassword = () => {
             store.dispatch({type: Symbols.RESET_RESPONSE, value: { text: response.data, code: response.status }})
         })
         .catch(error => {
-            store.dispatch({type: Symbols.RESET_RESPONSE, value: "Failed." })
+            store.dispatch({type: Symbols.RESET_RESPONSE, value: {code: 400, text: "Failed." }})
         })
 }
 

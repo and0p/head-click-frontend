@@ -2,6 +2,26 @@ import React from 'react';
 
 const asset_root = 'https://s3.amazonaws.com/head-click/public'
 
+const createGameAssets = gameAlias => {
+    return {
+        "logo": {
+            "1x": asset_root + '/games/' + gameAlias +'/logo/logo@1x.png',
+            "1.5x": asset_root + '/games/' + gameAlias +'/logo/logo@1_5x.png',
+            "2x": asset_root + '/games/' + gameAlias +'/logo/logo@2x.png',
+        },
+        "logo_big": {
+            "1x": asset_root + '/games/' + gameAlias +'/logo/logo_big@1x.png',
+            "1.5x": asset_root + '/games/' + gameAlias +'/logo/logo_big@1_5x.png',
+            "2x": asset_root + '/games/' + gameAlias +'/logo/logo_big@2x.png',
+        },
+        "logo_mini": {
+            "1x": asset_root + '/games/' + gameAlias +'/logo/logo_mini@1x.png',
+            "1.5x": asset_root + '/games/' + gameAlias +'/logo/logo_mini@1_5x.png',
+            "2x": asset_root + '/games/' + gameAlias +'/logo/logo_mini@2x.png',
+        },
+    }
+}
+
 const img = {
     "headclick": {
         "logo_small": {
@@ -89,125 +109,17 @@ const img = {
             "2x": asset_root + '/wizard/tryhard_mouse_movement@2x.png',
         },
     },
-    "overwatch": {
-        "logo": {
-            "1x": asset_root + '/games/overwatch/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/overwatch/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/overwatch/logo/logo@2x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/overwatch/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/overwatch/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/overwatch/logo/logo_big@2x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/overwatch/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/overwatch/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/overwatch/logo/logo_mini@2x.png',
-        },
-    },
-    "pubg": {
-        "logo": {
-            "1x": asset_root + '/games/pubg/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/pubg/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/pubg/logo/logo@2x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/pubg/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/pubg/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/pubg/logo/logo_big@2x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/pubg/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/pubg/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/pubg/logo/logo_mini@2x.png',
-        },
-    },
-    "r6siege": {
-        "logo": {
-            "1x": asset_root + '/games/r6siege/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/r6siege/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/r6siege/logo/logo@2x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/r6siege/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/r6siege/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/r6siege/logo/logo_big@2x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/r6siege/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/r6siege/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/r6siege/logo/logo_mini@2x.png',
-        },
-    },
-    "fortnite": {
-        "logo": {
-            "1x": asset_root + '/games/fortnite/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/fortnite/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/fortnite/logo/logo@2x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/fortnite/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/fortnite/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/fortnite/logo/logo_big@2x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/fortnite/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/fortnite/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/fortnite/logo/logo_mini@2x.png',
-        },
-    },
-    "csgo": {
-        "logo": {
-            "1x": asset_root + '/games/csgo/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/csgo/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/csgo/logo/logo@1_5x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/csgo/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/csgo/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/csgo/logo/logo_big@1_5x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/csgo/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/csgo/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/csgo/logo/logo_mini@1_5x.png',
-        },
-    },
-    "blackops4": {
-        "logo": {
-            "1x": asset_root + '/games/blackops4/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/blackops4/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/blackops4/logo/logo@2x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/blackops4/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/blackops4/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/blackops4/logo/logo_big@2x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/blackops4/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/blackops4/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/blackops4/logo/logo_mini@2x.png',
-        },
-    },
-    "destiny2": {
-        "logo": {
-            "1x": asset_root + '/games/destiny2/logo/logo@1x.png',
-            "1.5x": asset_root + '/games/destiny2/logo/logo@1_5x.png',
-            "2x": asset_root + '/games/destiny2/logo/logo@2x.png',
-        },
-        "logo_big": {
-            "1x": asset_root + '/games/destiny2/logo/logo_big@1x.png',
-            "1.5x": asset_root + '/games/destiny2/logo/logo_big@1_5x.png',
-            "2x": asset_root + '/games/destiny2/logo/logo_big@2x.png',
-        },
-        "logo_mini": {
-            "1x": asset_root + '/games/destiny2/logo/logo_mini@1x.png',
-            "1.5x": asset_root + '/games/destiny2/logo/logo_mini@1_5x.png',
-            "2x": asset_root + '/games/destiny2/logo/logo_mini@2x.png',
-        },
-    },
+    "overwatch": createGameAssets('overwatch'),
+    "pubg": createGameAssets('pubg'),
+    "r6siege": createGameAssets('r6siege'),
+    "fortnite": createGameAssets('fortnite'),
+    "csgo": createGameAssets('csgo'),
+    "destiny2": createGameAssets('destiny2'),
+    "blackops4": createGameAssets('blackops4'),
+    "cssource": createGameAssets('cssource'),
+    "rust": createGameAssets('rust'),
+    "rs2vietnam": createGameAssets('rs2vietnam'),
+    "battlefield1": createGameAssets('battlefield1'),
 }
 
 class ResponsiveAsset extends React.Component {

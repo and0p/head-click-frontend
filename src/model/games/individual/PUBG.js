@@ -57,13 +57,40 @@ const getCm360FromGameSettings = (dpi, gameSetting, fov) => {
 const getInfo = (settings, options) => {
     // Get the FOV from user Head Click options
     let fov = options["View"] == "First Person" ? options["FOV"] : 80
-    let vfov = getVFOVFromHorizontalFOV(16, 9, fov) // JSON fovs are hor+ assuming 16:9
+    let vfov = getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, fov) // JSON fovs are hor+ assuming 16:9
+    let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, fov)
+    let hipfireSensitivity = getSensitivity(idealCm360, settings.dpi.actual, fov)
     FOVs.General = fov
     FOVs.Vehicle = fov
     FOVs.Targetting = fov
     // Build the result, looping over views and respective FOVs
     let settingsJSON = []
     let outputJSON = []
+    settingsJSON.push({
+        name: 'Vertical Sensitivity Multiplier',
+        subtext: 'Settings ~ Control ~ Mouse',
+        value: "1.00"
+    })
+    settingsJSON.push({
+        name: 'General Sensitivity',
+        subtext: 'Settings ~ Control ~ Mouse',
+        value: hipfireSensitivity
+    })
+    settingsJSON.push({
+        name: 'Targetting Sensitivity',
+        subtext: 'Settings ~ Control ~ Mouse',
+        value: hipfireSensitivity
+    })
+    settingsJSON.push({
+        name: 'Iron-Sight Sensitivity',
+        subtext: 'Settings ~ Control ~ Mouse',
+        value: hipfireSensitivity
+    })
+    settingsJSON.push({
+        name: 'Custom Sensitivity Per Scope',
+        subtext: 'Settings ~ Control ~ Mouse',
+        value: "OFF"
+    })
     Object.keys(FOVs).map(key => {
         let thisFOV = FOVs[key]
         let thisVFOV = getVFOVFromHorizontalFOV(16, 9, thisFOV)
@@ -72,11 +99,11 @@ const getInfo = (settings, options) => {
         let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, thisFOV)
         let setting = getSensitivity(idealCm360, settings.dpi.actual, thisFOV)
         let output = getCm360FromGameSettings(settings.dpi.actual, setting, thisFOV)
-        settingsJSON.push({
-            name: 'Sensitivity - ' + key,
-            subtext: 'Settings ~ Control ~ Mouse',
-            value: setting
-        })
+        // settingsJSON.push({
+        //     name: 'Sensitivity - ' + key,
+        //     subtext: 'Settings ~ Control ~ Mouse',
+        //     value: setting
+        // })
         outputJSON.push({
             name: key == "Scoping" ? "ADS" : key,
             alias: aliases[key],
@@ -87,13 +114,6 @@ const getInfo = (settings, options) => {
             ideal: idealCm360,
             variance: normalizeLowPercentage(idealCm360 / output - 1) * 100
         })
-    })
-    settingsJSON.push({
-        name: "Vertical Sens. Multiplier",
-        subtext: 'Settings ~ Control ~ Mouse',
-        icon: 'videocam',
-        value: 1.00,
-        color: 'blue'
     })
     if(options["View"] == "First Person")
         settingsJSON.push({

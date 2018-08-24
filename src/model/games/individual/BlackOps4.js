@@ -62,7 +62,7 @@ const getInfo = (settings, options) => {
             },
             {
                 name: "ADS Field of View",
-                subtext: 'Settings ~ Gameplay ~ General ~ Field of View ~ Show More',
+                subtext: 'Settings ~ Gameplay ~ General ~ Field of View',
                 icon: 'videocam',
                 value: "Affected",
                 color: 'blue'
@@ -75,7 +75,7 @@ const getInfo = (settings, options) => {
                 name: "Hip Fire",
                 alias: "Hip Fire",
                 fov: options["FOV"],
-                vfov: getVFOVFromHorizontalFOV(16, 9, options["FOV"]),
+                vfov: getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, options["FOV"]),
                 zoom: 1,
                 cm360: outputHipFire,
                 ideal: ideal,
@@ -85,7 +85,7 @@ const getInfo = (settings, options) => {
                 name: "Iron Sights",
                 alias: "Iron Sights",
                 fov: options["FOV"] / 1.10,
-                vfov: getVFOVFromHorizontalFOV(16, 9, options["FOV"] * 1.10),
+                vfov: getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, options["FOV"] * 1.10),
                 zoom: 1.10,
                 cm360: outputHipFire * 1.10,
                 ideal: ideal * 1.10,

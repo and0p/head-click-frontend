@@ -556,6 +556,7 @@ function uiReducer (state = initialState, action) {
                     }
             })
         case Symbols.RESET_RESPONSE:
+            console.log(action)
             if(action.value.code == 200)
                 return update(state, {
                     ui: {
