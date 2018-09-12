@@ -104,34 +104,6 @@ const Fortnite = {
     alias: "fortnite",
     hasLogo: false,
     type: "average",
-    math: {
-        fov: {
-            min: 60,
-            max: 90,
-            default: 90,
-            recommended: 90,
-            horizontal: true,
-            basedOnSD: false
-        },
-        sensitivity: {
-            min: 1,
-            max: 25,
-            default: 10,
-            linear: true,   // scale: 1 instead?
-            multiplier: 1,
-            affectedByResolution: false,
-            affectedByFov: false,
-            rawInput: true,
-            accelerationPossible: false,
-            accelerationDefault: false,
-            yaw: 0.022
-        },
-        recommended: {
-            ideal: 34,
-            min: 15,
-            max: 46
-        }
-    },
     infoFunction: getInfo,
     settings: {
         "Video": [

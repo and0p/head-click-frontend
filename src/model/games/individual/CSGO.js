@@ -53,6 +53,10 @@ const getSensitivity = (desiredCm360, dpi) => {
     return getRounded(clamp(baseDots / desiredDots, minSensitivity, maxSensitivity), 2)
 }
 
+const getOutput = (sensitivity, dpi, options) => {
+    return baseDots / sensitivity / settings.dpi.actual * 2.54
+}
+
 const getInfo = (settings, options) => {
     // Build the result, looping over views and respective FOVs
     let outputJSON = []
@@ -154,6 +158,7 @@ const CSGO = {
         ]
     },
     infoFunction: getInfo,
+    outputFunction: getOutput,
     overrides: {
         cm360: true,
         dpi: true,

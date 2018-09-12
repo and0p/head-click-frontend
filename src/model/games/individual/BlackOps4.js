@@ -1,16 +1,12 @@
 import React from 'react'
-import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV, getVFOVFromHorizontalFOV } from '../../../math'
+import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV, getVFOVFromHorizontalFOV, getLinearSensitivity } from '../../../math'
 
-let baseHipDots = 54496
-let minSensitivity = 0.01
-let maxSensitivity = 100
-let idealFOV = 106
-let widowFOV = 38
-let zoomModifier = 50
-
-const getSensitivity = (ideal, settings) => {
-    return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / ideal), minSensitivity, maxSensitivity), 2)
-}
+// Lowest (non-zero) allowed setting for sensitivity, and the dots to rotate 360 at it
+let baseSetting = 1, baseDots = 54496
+// Minimum and maximum sensitivity settings allowed by game
+let minSens = 0.01, maxSens = 100
+// Minimum and maximum field-of-view settings allowed by game
+let minFOV = 80, maxFOV = 103
 
 const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
     let result = settings.dpi.actual / 2.54
@@ -20,9 +16,9 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 }
 
 const getInfo = (settings, options) => {
-    let ideal = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
-    let sensitivity = clamp(getSensitivity(ideal, settings), minSensitivity, maxSensitivity)
-    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
+    let desiredCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
+    let sensitivity = getLinearSensitivity(baseDots, baseSetting, desiredCm360, settings.dpi.actual, minSens, maxSens, 2)
+    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseDots)
     return {
         settings: [
             {
@@ -78,8 +74,8 @@ const getInfo = (settings, options) => {
                 vfov: getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, options["FOV"]),
                 zoom: 1,
                 cm360: outputHipFire,
-                ideal: ideal,
-                variance: normalizeLowPercentage(ideal / outputHipFire) - 1,
+                ideal: desiredCm360,
+                variance: normalizeLowPercentage(desiredCm360 / outputHipFire) - 1,
             },
             {
                 name: "Iron Sights",
@@ -88,8 +84,8 @@ const getInfo = (settings, options) => {
                 vfov: getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, options["FOV"] * 1.10),
                 zoom: 1.10,
                 cm360: outputHipFire * 1.10,
-                ideal: ideal * 1.10,
-                variance: normalizeLowPercentage(ideal * 1.10 / outputHipFire * 1.10) - 1
+                ideal: desiredCm360 * 1.10,
+                variance: normalizeLowPercentage(desiredCm360 * 1.10 / outputHipFire * 1.10) - 1
             }
         ]
     }
@@ -101,34 +97,6 @@ const BlackOps4 = {
         alias: "blackops4",
         hasLogo: true,
         type: "average",
-        math: {
-            fov: {
-                min: 50,
-                max: 103,
-                default: 103,
-                recommended: 103,
-                horizontal: true,
-                basedOnSD: false
-            },
-            sensitivity: {
-                min: 1,
-                max: 25,
-                default: 10,
-                linear: true,   // scale: 1 instead
-                multiplier: (10/3),
-                affectedByResolution: false,
-                affectedByFov: false,
-                rawInput: true,
-                accelerationPossible: true,
-                accelerationDefault: false,
-                yaw: 0.022
-            },
-            recommended: {
-                ideal: 34,
-                min: 15,
-                max: 46
-            }
-        },
         infoFunction: getInfo,
         settings: {
             "Graphics": [
@@ -161,11 +129,6 @@ const BlackOps4 = {
                     critical: false
                 },
             ],
-        },
-        overrides: {
-            cm360: true,
-            dpi: true,
-            resolution: false
         },
         options: [
             {

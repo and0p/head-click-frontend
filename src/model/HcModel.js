@@ -8,10 +8,13 @@ import monitorData, {customMonitor as custmon} from './monitors/MonitorData'
 // Export game list as Game objects
 export const games = []
 export const gamesAlphabetically = []
+export const gamesWithOutputFunctions = []
 for(var i in gameData) {
     let game = new Game(gameData[i])
     games[gameData[i].alias] = game
     gamesAlphabetically.push(game)
+    if (game.hasOwnProperty("outputFunction"))
+        gamesWithOutputFunctions.push(game)
 }
 
 export const gamesByPopularity = []

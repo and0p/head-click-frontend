@@ -1,16 +1,12 @@
 import React from 'react'
-import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV, getVFOVFromHorizontalFOV } from '../../../math'
+import { getRounded, normalizeLowPercentage, getIdealCm360AtFOV, getVFOVFromHorizontalFOV, getLinearSensitivity } from '../../../math'
 
-let baseHipDots = 54545
-let minSensitivity = 1
-let maxSensitivity = 100
-let idealFOV = 106
-let widowFOV = 38
-let zoomModifier = 50
-
-const getSensitivity = (ideal, settings) => {
-    return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / ideal), minSensitivity, maxSensitivity), 2)
-}
+// Lowest (non-zero) allowed setting for sensitivity, and the dots to rotate 360 at it
+let baseSetting = 1, baseDots = 54545.00
+// Minimum and maximum sensitivity settings allowed by game
+let minSens = 1, maxSens = 100
+// Minimum and maximum field-of-view settings allowed by game
+let minFOV = 55, maxFOV = 105
 
 const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
     let result = settings.dpi.actual / 2.54
@@ -20,16 +16,16 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 }
 
 const getInfo = (settings, options) => {
-    let ideal = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
-    let sensitivity = getRounded(clamp(getSensitivity(ideal, settings), minSensitivity, maxSensitivity), 0)
-    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
+    let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
+    let sensitivity = getLinearSensitivity(baseDots, baseSetting, idealCm360, settings.dpi.actual, minSens, maxSens, 0)
+    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseDots)
     return {
         settings: [
             {
                 name: 'Look Sensitivity',
                 subtext: 'Settings ~ Controls ~ Mouse',
                 icon: 'settings_ethernet',
-                value: getRounded(sensitivity, 2),
+                value: sensitivity,
                 color: 'purple'
             },
             {
@@ -63,8 +59,8 @@ const getInfo = (settings, options) => {
                 vfov: getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, options["FOV"]),
                 zoom: 1,
                 cm360: outputHipFire,
-                ideal: ideal,
-                variance: normalizeLowPercentage(ideal / outputHipFire - 1) * 100,
+                ideal: idealCm360,
+                variance: normalizeLowPercentage(idealCm360 / outputHipFire - 1) * 100,
             },
             {
                 name: "Iron Sights",
@@ -73,8 +69,8 @@ const getInfo = (settings, options) => {
                 vfov: getVFOVFromHorizontalFOV(settings.monitor.width, settings.monitor.height, options["FOV"] * 1.4),
                 zoom: 1.40,
                 cm360: outputHipFire * 1.40,
-                ideal: ideal * 1.40,
-                variance: normalizeLowPercentage(ideal / outputHipFire - 1) * 100,
+                ideal: idealCm360 * 1.40,
+                variance: normalizeLowPercentage(idealCm360 / outputHipFire - 1) * 100,
             }
         ]
     }

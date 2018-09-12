@@ -1,17 +1,12 @@
 import React from 'react'
-import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV } from '../../../math'
+import { getRounded, normalizeLowPercentage, clamp, getIdealCm360AtFOV, getLinearSensitivity } from '../../../math'
 
-let baseHipDots = 54543
-let baseWidowDots = 181819
-let minSensitivity = 1
-let maxSensitivity = 100
-let idealFOV = 103
-let widowFOV = 38
-let zoomModifier = 50
-
-const getSensitivity = (ideal, settings) => {
-    return getRounded(clamp((baseHipDots / (settings.dpi.actual / 2.54) / ideal), minSensitivity, maxSensitivity), 2)
-}
+// Lowest (non-zero) allowed setting for sensitivity, and the dots to rotate 360 at it
+let baseSetting = 1, baseDots = 54543
+// Minimum and maximum sensitivity settings allowed by game
+let minSens = 1, maxSens = 100
+// Minimum and maximum field-of-view settings allowed by game
+let minFOV = 80, maxFOV = 103
 
 const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
     let result = settings.dpi.actual / 2.54
@@ -21,9 +16,9 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 }
 
 const getInfo = (settings, options) => {
-    let ideal = getIdealCm360AtFOV(settings.sensitivity.actual, 103, "hor+")
-    let sensitivity = clamp(getSensitivity(ideal, settings), minSensitivity, maxSensitivity)
-    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseHipDots)
+    let desiredCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, 103, "hor+")
+    let sensitivity = getLinearSensitivity(baseDots, baseSetting, desiredCm360, settings.dpi.actual, minSens, maxSens, 2)
+    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseDots)
     let outputWidow = outputHipFire * 2
     return {
         settings: [
@@ -38,14 +33,14 @@ const getInfo = (settings, options) => {
                 name: 'Widowmaker Zoom',
                 subtext: 'Settings ~ Controls ~ Hero',
                 icon: 'settings_ethernet',
-                value: zoomModifier,
+                value: 50,
                 color: 'purple'
             },
             {
                 name: 'Ana Zoom',
                 subtext: 'Settings ~ Controls ~ Hero',
                 icon: 'settings_ethernet',
-                value: zoomModifier,
+                value: 50,
                 color: 'purple'
             },
             {
@@ -65,8 +60,8 @@ const getInfo = (settings, options) => {
                 vfov: 0,
                 zoom: 1,
                 cm360: outputHipFire,
-                ideal: ideal,
-                variance: normalizeLowPercentage(ideal / outputHipFire - 1) * 100,
+                ideal: desiredCm360,
+                variance: normalizeLowPercentage(desiredCm360 / outputHipFire - 1) * 100
             },
             {
                 name: "Ana / Widowmaker",
@@ -75,8 +70,8 @@ const getInfo = (settings, options) => {
                 vfov: 0,
                 zoom: 2.02,
                 cm360: outputWidow,
-                ideal: ideal * 2.02,
-                variance: normalizeLowPercentage((ideal * 2.02) / outputWidow - 1) * 100
+                ideal: desiredCm360 * 2.02,
+                variance: normalizeLowPercentage((desiredCm360 * 2.02) / outputWidow - 1) * 100
             }
         ]
     }
@@ -88,34 +83,6 @@ const Overwatch = {
         alias: "overwatch",
         hasLogo: true,
         type: "average",
-        math: {
-            fov: {
-                min: 50,
-                max: 103,
-                default: 103,
-                recommended: 103,
-                horizontal: true,
-                basedOnSD: false
-            },
-            sensitivity: {
-                min: 1,
-                max: 25,
-                default: 10,
-                linear: true,   // scale: 1 instead
-                multiplier: (10/3),
-                affectedByResolution: false,
-                affectedByFov: false,
-                rawInput: true,
-                accelerationPossible: true,
-                accelerationDefault: false,
-                yaw: 0.022
-            },
-            recommended: {
-                ideal: 34,
-                min: 15,
-                max: 46
-            }
-        },
         infoFunction: getInfo,
         settings: {
             "Display": [
@@ -166,11 +133,6 @@ const Overwatch = {
                     critical: false
                 }
             ],
-        },
-        overrides: {
-            cm360: true,
-            dpi: true,
-            resolution: false
         },
         options: []
 }

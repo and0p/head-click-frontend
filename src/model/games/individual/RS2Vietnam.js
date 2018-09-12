@@ -121,6 +121,24 @@ export const RS2Vietnam = {
     type: "tactical",
     infoFunction: getInfo,
     settings: {
+        "Gameplay": [
+            {
+                text: "Enable Manual Bolt Action",
+                value: "ON",
+                note: false,
+                info: "Makes rangefinding easier by letting you watch bullet land before animation starts.",
+                critical: false
+            }
+        ],
+        "Video": [
+            {
+                text: "Vsync",
+                value: "OFF",
+                note: false,
+                info: "Disable for performance boost and lag reduction, if your computer isn't powerful enough.",
+                critical: true
+            }
+        ]
     },
     options: [
         {

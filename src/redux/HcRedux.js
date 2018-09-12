@@ -1,5 +1,5 @@
 // Redux imports
-import { applyMiddleware, combineReducers, createStore, compose } from 'redux';
+import { applyMiddleware, combineReducers, createStore, compose } from 'redux'
 import reduceReducers from 'reduce-reducers'
 import { persistStore, persistReducer, createTransform  } from 'redux-persist'
 import { createBrowserHistory } from 'history'
@@ -8,7 +8,7 @@ import storage from 'redux-persist/lib/storage'
 // HC import
 import * as Symbols from './HcSymbols'
 import { games, mice, monitors, customMonitor } from '../model/HcModel'
-import update from 'immutability-helper';
+import update from 'immutability-helper'
 import { validateProfile } from './Validation'
 import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle, checkPassword } from '../util'
 import { clamp } from '../math'
@@ -94,6 +94,10 @@ const initialState = {
             aliasBeingChanged: false
         },
         editingProfile: false,
+        calculator: {
+            open: false,
+            selectedGame: null
+        },
         drawerOpenOnMobile: false,
         mobileMenuOpen: false,
         selectedMenuItem: Symbols.HOME_MENU,
