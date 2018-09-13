@@ -13,7 +13,6 @@ let baseDots = 16364;    // at sensitivity 1.0
 let baseVFOV = 73.74
 let minSensitivity = 0.01;
 let maxSensitivity = 7.5;
-let idealFOV = 90;
 
 let sights = {
     Hip: {
@@ -53,15 +52,10 @@ const getSensitivity = (desiredCm360, dpi) => {
     return getRounded(clamp(baseDots / desiredDots, minSensitivity, maxSensitivity), 2)
 }
 
-const getOutput = (sensitivity, dpi, options) => {
-    return baseDots / sensitivity / settings.dpi.actual * 2.54
-}
-
 const getInfo = (settings, options) => {
     // Build the result, looping over views and respective FOVs
     let outputJSON = []
     let sensitivity = getSensitivity(settings.sensitivity.actual, settings.dpi.actual)
-    let output = (baseDots / sensitivity) / settings.dpi.actual * 2.54
     Object.keys(sights).map(key => {
         let sight = sights[key]
         let output = (baseDots * sight.zoomMod / sensitivity) / settings.dpi.actual * 2.54
@@ -109,36 +103,8 @@ const CSGO = {
     name: "Counter-Strike: Global Offensive",
     shortName: "CS:GO",
     alias: "csgo",
-    hasLogo: false,
+    hasLogo: true,
     type: "tactical",
-    math: {
-        fov: {
-            min: 60,
-            max: 90,
-            default: 90,
-            recommended: 90,
-            horizontal: true,
-            basedOnSD: false
-        },
-        sensitivity: {
-            min: 1,
-            max: 25,
-            default: 10,
-            linear: true,   // scale: 1 instead?
-            multiplier: 1,
-            affectedByResolution: false,
-            affectedByFov: false,
-            rawInput: true,
-            accelerationPossible: false,
-            accelerationDefault: false,
-            yaw: 0.022
-        },
-        recommended: {
-            ideal: 34,
-            min: 15,
-            max: 46
-        }
-    },
     settings: {
         "Video Settings": [
             {
@@ -152,13 +118,13 @@ const CSGO = {
                 text: "Motion Blur",
                 value: "Disabled",
                 note: false,
-                info: "Makes scanning and target acquisition more easiler.",
+                info: "Makes scanning and target acquisition easier.",
                 critical: false
             }
         ]
     },
     infoFunction: getInfo,
-    outputFunction: getOutput,
+    outputFunction: (sensitivity, dpi, options) => getRounded(baseDots / sensitivity / dpi * 2.54, 2),
     overrides: {
         cm360: true,
         dpi: true,

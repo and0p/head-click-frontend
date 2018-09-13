@@ -95,8 +95,7 @@ const initialState = {
         },
         editingProfile: false,
         calculator: {
-            open: false,
-            selectedGame: null
+            open: true,
         },
         drawerOpenOnMobile: false,
         mobileMenuOpen: false,

@@ -23,6 +23,7 @@ import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
 import Alert from './components/Alert'
 import IdentityDialog from './pages/account/IdentityDialog'
+import CalculationDialog from './components/CalculationDialog'
 
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
@@ -60,6 +61,7 @@ class App extends React.Component {
               <Route exact path="/stats" component={Stats} />
               <Route path="/game/:name" component={GamePage} />
               <IdentityDialog />
+              <CalculationDialog />
             </MaterialRoot>
             <Alert />
           </MuiThemeProvider>
