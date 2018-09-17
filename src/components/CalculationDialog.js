@@ -21,6 +21,7 @@ import withMobileDialog from '@material-ui/core/withMobileDialog'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import GameOption from '../pages/gamepage/components/GameOption'
+import Icon from '@material-ui/core/Icon'
 import { games, gamesWithOutputFunctions } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
 import copy from '../copy'
@@ -53,24 +54,38 @@ const styles = theme => ({
     },
     outputCaption: { 
         lineHeight: "1.8em"
+    },
+    comparisonSection: {
+        marginTop: theme.spacing.unit * 2,
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    comparisonInput: {
+        width: "150px"
+    },
+    swapIcon: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit * 2,
+        color: "white"
     }
 })
 
 class CalculationDialog extends React.Component {
     constructor(props) {
         super(props)
+        let game = props.initialGame
         this.state = {
             dpi: props.dpi,
-            sensitivity: "N/A",
-            cm360: null,
-            selectedGame: null,
-            options: null
+            sensitivity: game != null ? game.defaultSensitivity : "N/A",
+            cm360: game != null ? game.getCm360(game, props.dpi, game.options) : "N/A",
+            selectedGame: game,
+            options: game != null ? game.options : null
         }
     }
 
     calculateCm360 = (game, sensitivity, dpi) => {
         if (game != null && sensitivity >= 0 && sensitivity != "" && dpi >= 0 && dpi != "")
-            return game.outputFunction(sensitivity, dpi, [])
+            return game.getCm360(sensitivity, dpi, null)
         else
             return "N/A"
     }
@@ -101,6 +116,19 @@ class CalculationDialog extends React.Component {
         })
     }
 
+    updateCm360 = event => {
+        let sensitivity = 0
+        let cm360 = parseFloat(event.target.value)
+        if(this.state.selectedGame != null && this.state.dpi >= 0 && this.state.dpi != "" && cm360 > 0 && isNumber(cm360))
+            sensitivity = this.state.selectedGame.getSensitivity(parseFloat(event.target.value), this.state.dpi, null)
+        else
+            sensitivity = "N/A"
+        this.setState({
+            cm360: event.target.value,
+            sensitivity: sensitivity
+        })
+    }
+
     render() {
         const { classes, theme, fullScreen } = this.props
         const { selectedGame, dpi, sensitivity, cm360 } = this.state 
@@ -125,6 +153,30 @@ class CalculationDialog extends React.Component {
             <div className={classes.outputSection}>
                 <Typography variant="subheading">Output: {cm360} {!isNaN(cm360) && copy["en"].technical.cm360}</Typography>
                 <Typography variant="caption" className={classes.outputCaption}>Recommended: {this.props.recommendedSensitivity} {copy["en"].technical.cm360}</Typography>
+            </div>
+        )
+
+        const comparisonSection = (
+            <div className={classes.comparisonSection}>
+                <TextField
+                    value={sensitivity}
+                    label="In-Game Sensitivity"
+                    className={classes.comparisonInput}
+                    onChange={this.updateSensitivity}
+                    InputLabelProps= {{
+                        shrink: true
+                    }}
+                />
+                <Icon className={classes.swapIcon}>swap_horiz</Icon>
+                <TextField
+                    value={cm360}
+                    label="Output cm/360°"
+                    className={classes.comparisonInput}
+                    onChange={this.updateCm360}
+                    InputLabelProps= {{
+                        shrink: true
+                    }}
+                />
             </div>
         )
 
@@ -163,15 +215,14 @@ class CalculationDialog extends React.Component {
                             onChange={this.updateDPI}
                         />
                         {/* HIDDEN UNTIL GAME SELECTED */}
-                        {selectedGame != null && gameFormSection }
-                        {selectedGame != null && outputSection }
+                        {selectedGame != null && comparisonSection }
                     </form>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
-                    Cancel
+                <Button onClick={this.props.close} color="primary">
+                    Close
                 </Button>
-                <Button onClick={this.handleClose} color="primary" disabled={isNaN(this.state.sensitivity)}>
+                <Button onClick={() => this.props.apply(cm360, dpi)} color="primary" disabled={isNaN(cm360) || cm360 > 100000}>
                     Apply to profile
                 </Button>
                 </DialogActions>
@@ -182,15 +233,23 @@ class CalculationDialog extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
+        settings: state.profile.settings,
         dpi: state.profile.settings.dpi.actual,
         open: state.ui.calculator.open,
-        recommendedSensitivity: state.profile.settings.sensitivity.recommended
+        recommendedSensitivity: state.profile.settings.sensitivity.recommended,
+        initialGame: state.ui.calculator.initialGame
     }
   }
   
   const mapDispatchToProps = dispatch => {
     return {
-        
+        apply: (sensitivity, dpi) => dispatch({
+            type: Symbols.APPLY_CALCULATOR,
+            value: { sensitivity, dpi }
+          }),
+        close: () => dispatch({
+            type: Symbols.CLOSE_CALCULATOR,
+          }),
     }
   }
   

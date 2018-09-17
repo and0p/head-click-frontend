@@ -47,7 +47,7 @@ let sights = {
     }
 }
 
-const getSensitivity = (desiredCm360, dpi) => {
+const getSensitivity = (desiredCm360, dpi, options) => {
     let desiredDots = desiredCm360 / 2.54 * dpi
     return getRounded(clamp(baseDots / desiredDots, minSensitivity, maxSensitivity), 2)
 }
@@ -55,7 +55,7 @@ const getSensitivity = (desiredCm360, dpi) => {
 const getInfo = (settings, options) => {
     // Build the result, looping over views and respective FOVs
     let outputJSON = []
-    let sensitivity = getSensitivity(settings.sensitivity.actual, settings.dpi.actual)
+    let sensitivity = getSensitivity(settings.sensitivity.actual, settings.dpi.actual, null)
     Object.keys(sights).map(key => {
         let sight = sights[key]
         let output = (baseDots * sight.zoomMod / sensitivity) / settings.dpi.actual * 2.54
@@ -124,7 +124,8 @@ const CSGO = {
         ]
     },
     infoFunction: getInfo,
-    outputFunction: (sensitivity, dpi, options) => getRounded(baseDots / sensitivity / dpi * 2.54, 2),
+    getSensitivity: getSensitivity,
+    getCm360: (sensitivity, dpi, options) => getRounded(baseDots / sensitivity / dpi * 2.54, 2),
     defaultSensitivity: 1,
     sensitivityDecimalPoints: 2,
     overrides: {

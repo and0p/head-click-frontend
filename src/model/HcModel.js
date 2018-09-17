@@ -13,7 +13,7 @@ for(var i in gameData) {
     let game = new Game(gameData[i])
     games[gameData[i].alias] = game
     gamesAlphabetically.push(game)
-    if (game.hasOwnProperty("outputFunction"))
+    if (game.hasOwnProperty("getCm360") && game.hasOwnProperty("getSensitivity"))
         gamesWithOutputFunctions.push(game)
 }
 

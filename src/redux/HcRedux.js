@@ -96,6 +96,7 @@ const initialState = {
         editingProfile: false,
         calculator: {
             open: true,
+            initialGame: null
         },
         drawerOpenOnMobile: false,
         mobileMenuOpen: false,
@@ -299,6 +300,24 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             }
+            else
+                return state
+        case Symbols.APPLY_CALCULATOR:
+            // {sensitivity, dpi}
+            let sensitivity = action.value.sensitivity, dpi = action.value.dpi
+            if(!isNaN(sensitivity) && sensitivity > 0 && !isNaN(dpi) && dpi > 0)
+                return update(state, {
+                    profile: {
+                        settings: {
+                            sensitivity: {
+                                actual: { $set: sensitivity }
+                            },
+                            dpi: {
+                                actual: { $set: dpi }
+                            }
+                        },
+                    }
+                })
             else
                 return state
         case Symbols.SET_GAME_OVERRIDE:
@@ -521,6 +540,31 @@ function wizardReducer (state = initialState, action) {
 
 function uiReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.OPEN_CALCULATOR:
+            return update(state, {
+                ui: {
+                    calculator: {
+                        open: { $set: true },
+                        initalGame: { $set: action.value }
+                    }
+                }
+            })
+        case Symbols.APPLY_CALCULATOR:
+            return update(state, {
+                ui: {
+                    calculator: {
+                        open: { $set: false }
+                    }
+                }
+            })
+        case Symbols.CLOSE_CALCULATOR:
+            return update(state, {
+                ui: {
+                    calculator: {
+                        open: { $set: false }
+                    }
+                }
+            })
         case Symbols.OPEN_SIDEBAR:
             return update(state, {
                 ui: {
