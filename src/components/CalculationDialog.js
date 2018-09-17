@@ -23,14 +23,15 @@ import MenuItem from '@material-ui/core/MenuItem'
 import GameOption from '../pages/gamepage/components/GameOption'
 import { games, gamesWithOutputFunctions } from '../model/HcModel'
 import * as Symbols from '../redux/HcSymbols'
+import copy from '../copy'
 import { isNumber } from 'util';
 
 const styles = theme => ({
     root: {
     },
     container: {
-        display: 'flex',
-        flexWrap: 'wrap',
+        //display: 'flex',
+        //flexWrap: 'wrap',
     },
     gameSelect: {
         minWidth: '350px'
@@ -40,12 +41,18 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
         //minWidth: '250px'
     },
+    descriptionText: {
+        marginBottom: theme.spacing.unit * 2
+    },
     helperText: {
         color: theme.palette.custom.teal
     },
     outputSection: {
         marginTop: theme.spacing.unit * 2,
         clear: "both"
+    },
+    outputCaption: { 
+        lineHeight: "1.8em"
     }
 })
 
@@ -54,7 +61,7 @@ class CalculationDialog extends React.Component {
         super(props)
         this.state = {
             dpi: props.dpi,
-            sensitivity: 1,
+            sensitivity: "N/A",
             cm360: null,
             selectedGame: null,
             options: null
@@ -62,7 +69,7 @@ class CalculationDialog extends React.Component {
     }
 
     calculateCm360 = (game, sensitivity, dpi) => {
-        if (game != null && sensitivity >= 0 && dpi >= 0)
+        if (game != null && sensitivity >= 0 && sensitivity != "" && dpi >= 0 && dpi != "")
             return game.outputFunction(sensitivity, dpi, [])
         else
             return "N/A"
@@ -70,7 +77,7 @@ class CalculationDialog extends React.Component {
 
     selectGame = event => {
         let game = games[event.target.value]
-        let cm360 = this.calculateCm360(game, this.state.sensitivity, this.state.dpi)
+        let cm360 = this.calculateCm360(game, game.defaultSensitivity, this.state.dpi)
         this.setState({
             selectedGame: game,
             sensitivity: game.defaultSensitivity,
@@ -116,7 +123,8 @@ class CalculationDialog extends React.Component {
 
         const outputSection = (
             <div className={classes.outputSection}>
-                <Typography variant="title">Output: {cm360}</Typography>                
+                <Typography variant="subheading">Output: {cm360} {!isNaN(cm360) && copy["en"].technical.cm360}</Typography>
+                <Typography variant="caption" className={classes.outputCaption}>Recommended: {this.props.recommendedSensitivity} {copy["en"].technical.cm360}</Typography>
             </div>
         )
 
@@ -131,7 +139,9 @@ class CalculationDialog extends React.Component {
                 <DialogTitle>Get Sensitivity from Game Settings</DialogTitle>
                 <DialogContent>
                     {/* DESCRIPTION */}
-
+                    {/* <DialogContentText>
+                        {copy["en"].technical.calculator.description}
+                    </DialogContentText> */}
                     <form className={classes.container}>
                     {/* GAME SELECT */}
                         <FormControl className={classes.input}>
@@ -157,6 +167,14 @@ class CalculationDialog extends React.Component {
                         {selectedGame != null && outputSection }
                     </form>
                 </DialogContent>
+                <DialogActions>
+                <Button onClick={this.handleClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={this.handleClose} color="primary" disabled={isNaN(this.state.sensitivity)}>
+                    Apply to profile
+                </Button>
+                </DialogActions>
             </Dialog>
         )
     }
@@ -166,11 +184,13 @@ const mapStateToProps = (state) => {
     return {
         dpi: state.profile.settings.dpi.actual,
         open: state.ui.calculator.open,
+        recommendedSensitivity: state.profile.settings.sensitivity.recommended
     }
   }
   
   const mapDispatchToProps = dispatch => {
     return {
+        
     }
   }
   

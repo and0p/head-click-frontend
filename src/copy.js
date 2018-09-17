@@ -9,7 +9,10 @@ const linkIcon = <Icon style={{fontSize:"1em"}}>open_in_new</Icon>
 const copy = {
     en: {
         technical: {
-            cm360: "cm/360°"
+            cm360: "cm/360°",
+            calculator: {
+                description: "Select a game below and enter the DPI and sensitivity settings you play it with to find out what your hipfire cm/360° is."
+            }
         },
         splash: {
             tagline: "One sensitivity for all your games",
