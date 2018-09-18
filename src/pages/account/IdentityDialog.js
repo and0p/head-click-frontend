@@ -14,7 +14,11 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography'
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox'
 // Misc imports
+import copy from '../../copy'
 import { login, register, requestResetToken, resetPassword } from '../../identity'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -35,6 +39,9 @@ const styles = theme => ({
     },
     resetInfo: {
       marginBottom: theme.spacing.unit * 2
+    },
+    emailConsent: {
+      marginTop: theme.spacing.unit * 2
     }
 })
 
@@ -55,7 +62,6 @@ class IdentityDialog extends React.Component {
         >
           <DialogTitle>Log In</DialogTitle>
           <DialogContent className={classes.root}>
-            <div>
               <TextField
                 value={this.props.ui.identity.email}
                 label="Email"
@@ -78,7 +84,6 @@ class IdentityDialog extends React.Component {
                 disabled={this.props.ui.identity.actionPending}
                 helperText={this.props.ui.identity.error == "Password reset successfully." ? "" : <a href="#" onClick={this.props.openForgottenPasswordReset}>Forgot password?</a>}
               />
-            </div>
             <Typography variant="body1" className={this.props.ui.identity.error == "Password reset successfully." ? classes.successText : classes.errorText}>{this.props.ui.identity.error}</Typography>
           </DialogContent>
           {this.props.ui.identity.dialogFunction == "RESET" && <div/>}
@@ -86,7 +91,7 @@ class IdentityDialog extends React.Component {
             <Button onClick={this.props.closeDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={() => login(this.props.ui.identity.email, this.props.ui.identity.password)} variant="contained" color="primary" autoFocus>
+            <Button onClick={() => login(this.props.ui.identity.email, this.props.ui.identity.password)} variant="contained" color="secondary" autoFocus>
               Log In
             </Button>
           </DialogActions>
@@ -106,7 +111,6 @@ class IdentityDialog extends React.Component {
         >
           <DialogTitle>Sign Up</DialogTitle>
           <DialogContent className={classes.root}>
-            <div>
               <TextField
                 value={this.props.ui.identity.email}
                 label="Email"
@@ -140,14 +144,26 @@ class IdentityDialog extends React.Component {
                 type="password"
                 disabled={this.props.ui.identity.actionPending}
               />
-            </div>
-            <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>
+              {this.props.ui.identity.error != "" && <Typography variant="body1" className={classes.errorText}>{this.props.ui.identity.error}</Typography>}
+              <FormGroup row className={classes.emailConsent}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.props.emailConsent}
+                      onChange={(event) => this.props.toggleEmailConsent()}
+                      value="emailConsent"
+                    />
+                  }
+                  label={copy["en"].common.emailConsent}
+                />
+              </FormGroup>
+            <Typography>{copy["en"].common.termsOfService}</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.closeDialog} color="primary">
               Cancel
             </Button>
-            <Button onClick={() => register()} variant="contained" color="primary" autoFocus disabled={!this.props.ui.identity.ready}>
+            <Button onClick={() => register()} variant="contained" color="secondary" autoFocus disabled={!this.props.ui.identity.ready}>
               Sign Up
             </Button>
           </DialogActions>
@@ -336,7 +352,8 @@ class IdentityDialog extends React.Component {
 const mapStateToProps = (state) => {
   return {
     identity: state.identity,
-    ui: state.ui
+    ui: state.ui,
+    emailConsent: state.identity.emailConsent
   }
 }
 
@@ -356,6 +373,9 @@ const mapDispatchToProps = dispatch => {
     openForgottenPasswordReset: () => dispatch({
         type: Symbols.SET_ID_FUNCTION,
         value: "RESET_PASSWORD_1"
+    }),
+    toggleEmailConsent: () => dispatch({
+      type: Symbols.TOGGLE_EMAIL_CONSENT
     })
   }
 }

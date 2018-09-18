@@ -24,10 +24,11 @@ import styles from './index.css'
 import PrivacyAlert from './components/PrivacyAlert'
 import IdentityDialog from './pages/account/IdentityDialog'
 import CalculationDialog from './components/CalculationDialog'
+import Axios from 'axios';
 
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
-  console.log(store.getState())
+  //console.log(store.getState())
 })
 
 const homeComponent = state => {
@@ -74,3 +75,4 @@ class App extends React.Component {
 }
 
 render(<App/>, document.querySelector('#app'));
+Axios.get("https://api.head.click/check_for_updates")

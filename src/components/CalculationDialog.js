@@ -75,7 +75,7 @@ class CalculationDialog extends React.Component {
         super(props)
         let game = props.initialGame
         this.state = {
-            dpi: props.dpi,
+            dpi: props.settings.dpi.actual,
             sensitivity: game != null ? game.defaultSensitivity : "N/A",
             cm360: game != null ? game.getCm360(game, props.dpi, game.options) : "N/A",
             selectedGame: game,
@@ -85,7 +85,8 @@ class CalculationDialog extends React.Component {
 
     reopened = () => {
         this.setState({
-            selectedGame: this.props.initialGame
+            selectedGame: this.props.initialGame,
+            dpi: this.props.settings.dpi.actual
         })
     }
 
@@ -147,6 +148,7 @@ class CalculationDialog extends React.Component {
                     label="In-Game Sensitivity"
                     className={classes.input}
                     onChange={this.updateSensitivity}
+                    onClose={this.props.close}
                     disabled={!selectedGame}
                     InputLabelProps= {{
                         shrink: true
@@ -240,7 +242,6 @@ class CalculationDialog extends React.Component {
 const mapStateToProps = (state) => {
     return {
         settings: state.profile.settings,
-        dpi: state.profile.settings.dpi.actual,
         open: state.ui.calculator.open,
         recommendedSensitivity: state.profile.settings.sensitivity.recommended,
         initialGame: state.ui.calculator.initialGame,

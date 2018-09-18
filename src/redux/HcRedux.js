@@ -112,7 +112,8 @@ const initialState = {
         lastModified: 0,
         lastSaveAttempt: 0,
         lastSaveSuccess: 0,
-        acceptedPrivacyPolicy: false
+        acceptedPrivacyPolicy: false,
+        emailConsent: true
     }
 }
 
@@ -976,6 +977,12 @@ function identityReducer (state = initialState, action)  {
             return update(state, {
                 identity: {
                     acceptedPrivacyPolicy: { $set: true }
+                }
+            })
+        case Symbols.TOGGLE_EMAIL_CONSENT:
+            return update(state, {
+                identity: {
+                    emailConsent: { $set: !state.identity.emailConsent }
                 }
             })
         case Symbols.LOGOUT: 

@@ -16,7 +16,9 @@ const copy = {
             apply: "Apply",
             applyAndContinune: "Apply & Continue",
             cancel: "Cancel",
-            privacy: <span>This site requires anonymous cookies and various 3rd-party services to function properly. To continue using Head Click, you must consent to our <a href="https://s3.amazonaws.com/head-click/public/documents/cookie_policy.html" target="_blank">cookie</a> and <a href="https://s3.amazonaws.com/head-click/public/documents/privacy_policy.html" target="_blank">privacy</a> policies.</span>
+            privacy: <span>This site requires anonymous cookies and various 3rd-party services to function properly. To continue using Head Click, you must consent to our <a href="https://s3.amazonaws.com/head-click/public/documents/cookie_policy.html" target="_blank">cookie</a> and <a href="https://s3.amazonaws.com/head-click/public/documents/privacy_policy.html" target="_blank">privacy</a> policies.</span>,
+            termsOfService: <span>By signing up you agree to our <a href="https://s3.amazonaws.com/head-click/public/documents/terms_of_service.html" target="_blank">terms of service</a> and <a href="https://s3.amazonaws.com/head-click/public/documents/cookie_policy.html" target="_blank">cookie policies</a>.</span>,
+            emailConsent: "Send me product news and updates."
         },
         technical: {
             cm360: "cm/360°",

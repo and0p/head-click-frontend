@@ -19,7 +19,7 @@ export const register = () => {
     // Dispatch that we're starting a request
     store.dispatch({ type: Symbols.ID_ACTION_STARTED })
     // Send request
-    axios.post(apiHost + '/register', { email: options.email, password: options.password, profile: saveProfileTransform(state.profile) })
+    axios.post(apiHost + '/register', { email: options.email, password: options.password, profile: saveProfileTransform(state.profile), emailConsent: identity.emailConsent == true })
         .then(response => {
             store.dispatch(
                 {
