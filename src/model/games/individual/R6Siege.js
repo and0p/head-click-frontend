@@ -159,6 +159,8 @@ export const R6Siege = {
         }
     },
     infoFunction: getInfo,
+    // getSensitivity: (desiredCm360, dpi, options) => getRounded(1, 0),
+    // getCm360: (sensitivity, dpi, options) => getRounded(1, 1),
     settings: {
     },
     options: [

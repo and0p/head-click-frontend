@@ -95,7 +95,7 @@ const initialState = {
         },
         editingProfile: false,
         calculator: {
-            open: true,
+            open: false,
             initialGame: null
         },
         drawerOpenOnMobile: false,
@@ -111,7 +111,8 @@ const initialState = {
         jwt: "",
         lastModified: 0,
         lastSaveAttempt: 0,
-        lastSaveSuccess: 0
+        lastSaveSuccess: 0,
+        acceptedPrivacyPolicy: false
     }
 }
 
@@ -545,7 +546,7 @@ function uiReducer (state = initialState, action) {
                 ui: {
                     calculator: {
                         open: { $set: true },
-                        initalGame: { $set: action.value }
+                        initialGame: { $set: action.value != undefined ? action.value : null  }
                     }
                 }
             })
@@ -971,8 +972,19 @@ function identityReducer (state = initialState, action)  {
                     alias: { $set: action.value }
                 }
             })
+        case Symbols.ACCEPT_PRIVACY_POLICY:
+            return update(state, {
+                identity: {
+                    acceptedPrivacyPolicy: { $set: true }
+                }
+            })
         case Symbols.LOGOUT: 
-            return initialState
+            // Reset the site's state, except for privacy policy acceptance
+            return update(initialState, {
+                identity: {
+                    acceptedPrivacyPolicy: { $set: state.identity.acceptedPrivacyPolicy }
+                }
+            })
         default:
             return state
     }

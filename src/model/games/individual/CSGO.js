@@ -125,7 +125,7 @@ const CSGO = {
     },
     infoFunction: getInfo,
     getSensitivity: getSensitivity,
-    getCm360: (sensitivity, dpi, options) => getRounded(baseDots / sensitivity / dpi * 2.54, 2),
+    getCm360: (sensitivity, dpi, options) => getRounded(baseDots / sensitivity / dpi * 2.54, 1),
     defaultSensitivity: 1,
     sensitivityDecimalPoints: 2,
     overrides: {

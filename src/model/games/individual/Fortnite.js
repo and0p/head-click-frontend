@@ -1,4 +1,4 @@
-import { getRounded, getVFOVFromHorizontalFOV, getIdealCm360AtFOV, normalizeLowPercentage, clamp } from '../../../math'
+import { getRounded, getVFOVFromHorizontalFOV, getIdealCm360AtFOV, normalizeLowPercentage, clamp, getLinearSensitivity } from '../../../math'
 import React from 'react'
 
 let baseDots = 64805;
@@ -36,7 +36,8 @@ let sights = {
 }
 
 const getSensitivity = (idealCm360, dpi) => {
-    return getRounded(clamp(sights.Hip.dots / (dpi / 2.54) / idealCm360 / 100, 0.01, 1), 3)
+    return getLinearSensitivity(baseDots, 0.01, idealCm360, dpi, 0.01, 1, 3)
+    //return getRounded(clamp(sights.Hip.dots / (dpi / 2.54) / idealCm360 / 100, 0.01, 1), 3)
 }
 
 const getCm360FromGameSettings = (gameSetting, dpi, sight) => {
@@ -105,6 +106,10 @@ const Fortnite = {
     hasLogo: false,
     type: "average",
     infoFunction: getInfo,
+    getSensitivity: (desiredCm360, dpi, options) => getSensitivity(desiredCm360, dpi),
+    getCm360: (sensitivity, dpi, options) => getRounded(getCm360FromGameSettings(sensitivity, dpi, sights.Hip), 1),
+    defaultSensitivity: 0.25,
+    sensitivityDecimalPoints: 2,
     settings: {
         "Video": [
             {

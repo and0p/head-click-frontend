@@ -83,6 +83,12 @@ class CalculationDialog extends React.Component {
         }
     }
 
+    reopened = () => {
+        this.setState({
+            selectedGame: this.props.initialGame
+        })
+    }
+
     calculateCm360 = (game, sensitivity, dpi) => {
         if (game != null && sensitivity >= 0 && sensitivity != "" && dpi >= 0 && dpi != "")
             return game.getCm360(sensitivity, dpi, null)
@@ -186,7 +192,7 @@ class CalculationDialog extends React.Component {
                 open={this.props.open}
                 aria-labelledby="edit-profile"
                 className={classes.root}
-                //onEnter={this.reopened}
+                onEnter={this.reopened}
             >
                 <DialogTitle>Get Sensitivity from Game Settings</DialogTitle>
                 <DialogContent>
@@ -237,7 +243,8 @@ const mapStateToProps = (state) => {
         dpi: state.profile.settings.dpi.actual,
         open: state.ui.calculator.open,
         recommendedSensitivity: state.profile.settings.sensitivity.recommended,
-        initialGame: state.ui.calculator.initialGame
+        initialGame: state.ui.calculator.initialGame,
+        ownedGames: state.profile.ownedGames
     }
   }
   

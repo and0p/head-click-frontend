@@ -8,11 +8,18 @@ const linkIcon = <Icon style={{fontSize:"1em"}}>open_in_new</Icon>
 
 const copy = {
     en: {
+        common: {
+            cm360: "cm/360°",
+            accept: "Accept",
+            personalAccept: "I accept",
+            acceptAndContinune: "Accept & Continue",
+            apply: "Apply",
+            applyAndContinune: "Apply & Continue",
+            cancel: "Cancel",
+            privacy: <span>This site requires anonymous cookies and various 3rd-party services to function properly. To continue using Head Click, you must consent to our <a href="https://s3.amazonaws.com/head-click/public/documents/cookie_policy.html" target="_blank">cookie</a> and <a href="https://s3.amazonaws.com/head-click/public/documents/privacy_policy.html" target="_blank">privacy</a> policies.</span>
+        },
         technical: {
             cm360: "cm/360°",
-            calculator: {
-                description: "Select a game below and enter the DPI and sensitivity settings you play it with to find out what your hipfire cm/360° is."
-            }
         },
         splash: {
             tagline: "One sensitivity for all your games",
@@ -58,15 +65,16 @@ const copy = {
                     headline: "We've assigned you a sensitivity of ",
                     points: [
                         {
-                            primary: "This is roughly how many centimeters you'll move your mouse to rotate 360 degrees in a game.",
-                            secondary: 'Also known as ' + cm360 + '. When zoomed in, or playing a game with a more narrow field of view, your actual ' + cm360 + ' should adjust correspondingly.'
+                            primary: "Also known as " + cm360 + ", this number represents how many centimeters you'll move your mouse to rotate 360 degrees in a game.",
+                            secondary: 'When zoomed in, or playing a game with a more narrow field of view, your actual ' + cm360 + ' should adjust correspondingly.'
                         },
-                    ]
+                    ],
+                    button: "Help me find my current sensitivity"
                 }
             },
             outro: {
                 headline: "Good to go.",
-                subheader: <span>Your profile is all set up!<br/><br/>Here's a brief overview of how to use Head Click:</span>,
+                subheader: <span>Welcome to the Head Click beta! Your profile is all set up.<br/><br/>A proper tutorial is in the works. For now, here's a simple overview of how to use Head Click:</span>,
                 tips: [
                     <span>Make sure your DPI and resolution match your profile. <ul><li>Edit your profile from the dashboard if needed with the <Icon style={{fontSize:"1em"}}>create</Icon> icon.</li><li>Your profile is how we generate your in-game settings, so it needs to be accurate.</li></ul></span>,
                     "Select a game from the sidebar.",

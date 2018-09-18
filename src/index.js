@@ -21,7 +21,7 @@ import SelectGames from './pages/selectgames/SelectGames.js'
 import Stats from './pages/stats/Stats.js'
 import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
-import Alert from './components/Alert'
+import PrivacyAlert from './components/PrivacyAlert'
 import IdentityDialog from './pages/account/IdentityDialog'
 import CalculationDialog from './components/CalculationDialog'
 
@@ -59,11 +59,12 @@ class App extends React.Component {
               <Route exact path="/wizard" component={Wizard} />
               <Route exact path="/browse_games" component={SelectGames} />
               <Route exact path="/stats" component={Stats} />
+              <Route exact path="/user/:user" component={Stats} />
               <Route path="/game/:name" component={GamePage} />
-              <IdentityDialog />
-              <CalculationDialog />
             </MaterialRoot>
-            <Alert />
+            <IdentityDialog />
+            <CalculationDialog />
+            <PrivacyAlert />
           </MuiThemeProvider>
         </ConnectedRouter>
       </PersistGate>

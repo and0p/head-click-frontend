@@ -6,9 +6,11 @@ import { withStyles } from '@material-ui/core/styles'
 import { defaultPageCSS } from '../../../theme'
 import classNames from 'classnames'
 import ReactFitText from 'react-fittext'
+import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography';
 import copy from '../../../copy'
 import constants from '../../../constants'
+import * as Symbols from '../../../redux/HcSymbols'
 import Grid from '@material-ui/core/Grid'
 
 const styles = theme => ({
@@ -78,13 +80,16 @@ const styles = theme => ({
         zIndex: 100,
         display: "table-cell",
         verticalAlign: "middle"
+    },
+    button: {
+        marginTop: theme.spacing.unit * 2
     }
 });
 
 const Assignment = props => {
-    const { classes, theme } = props
-    let thisCopy = props.version == "dpi" ? copy["en"].wizard.assignment.dpi : copy["en"].wizard.assignment.sensitivity
-    let assignment = props.version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
+    const { classes, theme, version } = props
+    let thisCopy = version == "dpi" ? copy["en"].wizard.assignment.dpi : copy["en"].wizard.assignment.sensitivity
+    let assignment = version == "dpi" ? props.profile.settings.dpi.recommended : props.profile.settings.sensitivity.recommended
     return (
     <div className={classes.wizardPageRoot}>
         <div className={classes.innerRoot}>
@@ -114,6 +119,7 @@ const Assignment = props => {
                     <Typography variant="body1" className={classes.subtle}>
                         {point.secondary}
                     </Typography>
+                    {version == "sensitivity" && <Button onClick={props.openCalculator} className={classes.button} variant="contained" color="primary">{thisCopy.button}</Button>}
                 </div>
                 )}
             </div>
@@ -130,6 +136,9 @@ const mapStateToProps = (state) => {
   
 const mapDispatchToProps = dispatch => {
     return {
+        openCalculator: () => dispatch({
+            type: Symbols.OPEN_CALCULATOR,
+          }),
     }
 }
 

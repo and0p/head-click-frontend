@@ -8,8 +8,8 @@ let minSens = 1, maxSens = 100
 // Minimum and maximum field-of-view settings allowed by game
 let minFOV = 55, maxFOV = 105
 
-const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
-    let result = settings.dpi.actual / 2.54
+const getCm360FromGameSettings = (dpi, gameSetting, baseDots) => {
+    let result = dpi / 2.54
     result = baseDots / result
     result /= gameSetting
     return result
@@ -18,7 +18,7 @@ const getCm360FromGameSettings = (settings, gameSetting, baseDots) => {
 const getInfo = (settings, options) => {
     let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
     let sensitivity = getLinearSensitivity(baseDots, baseSetting, idealCm360, settings.dpi.actual, minSens, maxSens, 0)
-    let outputHipFire = getCm360FromGameSettings(settings, sensitivity, baseDots)
+    let outputHipFire = getCm360FromGameSettings(settings.dpi.actual, sensitivity, baseDots)
     return {
         settings: [
             {
@@ -111,6 +111,10 @@ const Destiny2 = {
             }
         },
         infoFunction: getInfo,
+        getSensitivity: (desiredCm360, dpi, options) => getRounded(getLinearSensitivity(baseDots, baseSetting, desiredCm360, dpi, minSens, maxSens, 2), 0),
+        getCm360: (sensitivity, dpi, options) => getRounded(getCm360FromGameSettings(dpi, sensitivity, baseDots), 1),
+        defaultSensitivity: 5,
+        sensitivityDecimalPoints: 0,
         settings: {
             "Video": [
                 {

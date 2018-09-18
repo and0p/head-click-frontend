@@ -3,22 +3,22 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
+import { defaultPageCSS } from '../../theme'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
-    root: {
-      flexGrow: 1
-    }
+  ...defaultPageCSS
 })
 
 const Stats = props => {
-    return(
-      <div>
-        <Typography variant="display1" gutterBottom>Stats</Typography>
-        <Typography variant="headline">Coming Soon</Typography>
-      </div>
-    )
+  const { classes, theme } = props
+
+  return(
+    <div className={classes.root}>
+      <Typography variant="display1" gutterBottom>Page coming soon.</Typography>
+    </div>
+  )
 }
 
 const mapStateToProps = (state) => {
