@@ -36,7 +36,7 @@ let sights = {
 }
 
 const getSensitivity = (idealCm360, dpi) => {
-    return getLinearSensitivity(baseDots, 0.01, idealCm360, dpi, 0.01, 1, 3)
+    return getLinearSensitivity(baseDots, 0.01, idealCm360, dpi, 0.01, 1, 3, 100)
     //return getRounded(clamp(sights.Hip.dots / (dpi / 2.54) / idealCm360 / 100, 0.01, 1), 3)
 }
 
@@ -93,8 +93,8 @@ const getInfo = (settings, options) => {
                 <li>You can no longer set it within the config file, as it's now stored in the cloud.</li>
                 <li>The setting can be controlled one digit more finely than is displayed.</li>
             </ul>
-            To elaborate on the second point, although the settings menu only shows mouse sensitivity rounded to two digits, ie 0.01 or 0.45, there's a hidden third digit that makes a big difference. If you drag the slider, you may notice that there are 5-10 pixels you need to move it (depending on resolution) before the visible value changes. These pixels actually make a difference.<p/>
-            A blog post on managing this is incoming. For now, just try to pay attention to the range you can move the slider between two visible values, and leave it roughly where the third digit would be. For example, if the settings above indicate 0.050, slide along 0.04 until the pixel it flips over to 0.050. If you have 0.055, try to land it between 0.05 and 0.06. Alternatively, consider using a lower DPI, which will minimize the effect of the discrepency.
+            To elaborate on the second point: Although the settings menu only shows mouse sensitivity rounded to two digits, ie 0.01 or 0.45, you can actually adjust it more finely. If you drag the slider, you may notice that there are 5-10 pixels you need to move it (depending on your resolution) before the visible value changes. These pixels actually make a difference.<p/>
+            A blog post on managing this is incoming. For now, just try to pay attention to the range you can move the slider between two visible values, and leave it roughly where the third digit would be. For example, if the settings above indicate 0.050, slide along 0.04 until the pixel it flips over to 0.05. If you have 0.055, try to land it between 0.05 and 0.06. Alternatively, consider using a lower DPI for this game via the OVERRIDE option above, which will minimize the effect of the discrepency.
         </span>
     }
 }

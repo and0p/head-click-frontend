@@ -2,6 +2,7 @@ import {
     getRounded,
     normalizeLowPercentage,
     clamp,
+    
     getPercentageOfBaseFOV,
     getIdealCm360AtFOV,
     getVFOVFromHorizontalFOV,
@@ -9,7 +10,7 @@ import {
     baseHFOV 
 } from '../../../math'
 
-let baseDots = 12960;
+let baseDots = 12960 / 0.87;
 let minSensitivity = 0;
 let maxSensitivity = 100;
 let idealFOV = 90;

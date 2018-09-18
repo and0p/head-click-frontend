@@ -28,7 +28,7 @@ export const getVFOVFromHorizontalFOV = (width, height, hfov) => {
     return toDegrees(2 * Math.atan(Math.tan(toRadians(hfov) / 2) * (height / width)))
 }
 
-export const getLinearSensitivity = (baseDots, baseSetting, desiredCm360, dpi, min, max, decimalCount)  => {
+export const getLinearSensitivity = (baseDots, baseSetting, desiredCm360, dpi, min, max, decimalCount, divisor = 1)  => {
     // Get the desired dots, which is the desired cm360 / centimeters-per-inch * the user's DPI
     let desiredDots = desiredCm360 / 2.54 * dpi
     // Normalize the number of dots per 360 at the game's lowest setting to 1.0
@@ -37,7 +37,7 @@ export const getLinearSensitivity = (baseDots, baseSetting, desiredCm360, dpi, m
     // Get the exact, ideal in-game sensitivity
     let sensitivity = baseDots / desiredDots
     // Clamp to the allowable range and round up to allowed accuracy
-    return getRounded(clamp(sensitivity, min, max), decimalCount)
+    return getRounded(clamp(sensitivity / divisor, min, max), decimalCount)
 }
 
 export const getLinearOutput = (baseDots, baseSetting, userSetting, dpi) => {

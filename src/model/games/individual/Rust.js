@@ -18,8 +18,8 @@ const getOutput = (sensitivity, fovDots, settings) => {
 // Main function to get settings/output, based on user's profile/options
 const getInfo = (settings, options) => {
     let fov = options["FOV"]
-    let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "hor+")
-    let sensitivity = getLinearSensitivity(baseDots, 0.01, idealCm360, settings.dpi.actual, minSens, maxSens, 2, settings)
+    let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, options["FOV"], "vertical")
+    let sensitivity = getLinearSensitivity(baseDots, 0.01, idealCm360, settings.dpi.actual, minSens, maxSens, 2)
     let output = getOutput(sensitivity, baseDots, settings)
     let settingsJSON = [
         {
@@ -50,9 +50,9 @@ const getInfo = (settings, options) => {
             name: "ADS",
             fov: getHorPlusFromVerticalFOV(settings.monitor.width, settings.monitor.height, options["FOV"] / 1.1),
             vfov: options["FOV"] / 1.1,
-            zoom: getRounded(1, 2),
-            cm360: getOutput(sensitivity, 3686, settings),
-            ideal: getIdealCm360AtFOV(settings.sensitivity.actual, 97, "hor+"),
+            zoom: getRounded(1.1, 2),
+            cm360: output * 1.1,
+            ideal: idealCm360 * 1.1,
             variance: normalizeLowPercentage(idealCm360 / output - 1) * 10
         },
     ]

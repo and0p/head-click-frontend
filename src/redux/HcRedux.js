@@ -454,6 +454,12 @@ function profileReducer (state = initialState, action) {
 
 function wizardReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.APPLY_CALCULATOR:
+            return update(state, {
+                wizard: {
+                    activePage: { $set: state.wizard.activePage + 1 },
+                }
+            })
         case Symbols.SELECT_MONITOR:
                 return update(state, {
                     wizard: {
