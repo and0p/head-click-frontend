@@ -70,12 +70,6 @@ const getInfo = (settings, options) => {
             value: options["FOV"],
             important: true
         },
-        {
-            name: 'Field of View',
-            subtext: 'Settings ~ Player View & HUD',
-            value: options["FOV"],
-            important: true
-        },
     ]
     let outputJSON = [
         {
