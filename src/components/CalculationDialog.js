@@ -221,6 +221,9 @@ class CalculationDialog extends React.Component {
                             label="DPI"
                             className={classes.input}
                             onChange={this.updateDPI}
+                            InputLabelProps= {{
+                                shrink: true
+                            }}
                         />
                         {/* HIDDEN UNTIL GAME SELECTED */}
                         {selectedGame != null && comparisonSection }
