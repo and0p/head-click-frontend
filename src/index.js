@@ -24,7 +24,8 @@ import styles from './index.css'
 import PrivacyAlert from './components/PrivacyAlert'
 import IdentityDialog from './pages/account/IdentityDialog'
 import CalculationDialog from './components/CalculationDialog'
-import Axios from 'axios';
+import Axios from 'axios'
+import ManualConfiguration from './pages/manual_configuration/ManualConfiguration'
 
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
@@ -61,6 +62,7 @@ class App extends React.Component {
               <Route exact path="/browse_games" component={SelectGames} />
               <Route exact path="/stats" component={Stats} />
               <Route exact path="/user/:user" component={Stats} />
+              <Route exact path="/manual-configuration" component={ManualConfiguration} />
               <Route path="/game/:name" component={GamePage} />
             </MaterialRoot>
             <IdentityDialog />

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
-import { monitors, monitorsFlat } from '../../../model/HcModel'
+import { monitors, monitorsFlat, monitorsTechnical } from '../../../model/HcModel'
 import { defaultPageCSS } from '../../../theme'
 import classNames from 'classnames'
 import Typography from '@material-ui/core/Typography'
@@ -18,7 +18,7 @@ import Button from '@material-ui/core/Button'
 import ResponsiveAsset from '../../../assets'
 import TextField from '@material-ui/core/TextField'
 import * as Symbols from '../../../redux/HcSymbols'
-import { isValid } from '../../../util' 
+import { isValid } from '../../../util'
 import ReactFitText from 'react-fittext'
 
 const styles = theme => ({
@@ -56,18 +56,6 @@ const styles = theme => ({
         color: "#888888"
     }
 });
-
-const MonitorButton = (props) => (
-    <Grid item xs={4} sm={3}>
-        <Button 
-            onClick={props.selectMonitor}
-            key={props.monitor.name}
-            className={props.selected ? props.classes.monitorButtonSelected : props.classes.monitorButton }
-        >
-            <Typography variant="subheading">{props.hasOwnProperty("nameOverride") ? props.nameOverride : props.monitor.name}</Typography>
-        </Button>
-    </Grid>
-)
 
 class MonitorSelect extends React.Component {
     constructor(props) {
@@ -158,15 +146,13 @@ class MonitorSelect extends React.Component {
                                     >   
                                         {/* "ALL" selected */}
                                         {this.state.aspectRatio == "all" &&
-                                        Object.keys(monitors).map((ratio) => (
-                                            Object.keys(monitors[ratio]).map((monitor) => (
-                                                <MenuItem value={monitor}>{monitor}</MenuItem>
-                                            ))
-                                        ))}
+                                            Object.keys(monitorsTechnical).map(key => (
+                                                    <MenuItem value={monitorsTechnical[key].name}>{key}</MenuItem>
+                                            ))}
                                         {/* SPECIFIC ASPECT RATIO */}
                                         {monitors.hasOwnProperty(this.state.aspectRatio) && 
                                         Object.keys(monitors[this.state.aspectRatio]).map(monitor => (
-                                            <MenuItem value={monitor}>{monitor}</MenuItem>
+                                            <MenuItem value={monitor}>{monitors[this.state.aspectRatio][monitor].technicalName}</MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>
@@ -236,14 +222,6 @@ const mapDispatchToProps = dispatch => {
         selectMonitor: monitor => dispatch({
             type: Symbols.SELECT_MONITOR,
             value: monitor
-        }),
-        selectRefreshRate: refreshRate => dispatch({
-            type: Symbols.SELECT_REFRESH_RATE,
-            value: refreshRate
-        }),
-        expandCategory: category => dispatch({
-            type: Symbols.EXPAND_MONITOR_SECTION,
-            value: category
         }),
         updateCustomWidth: value => dispatch({
           type: Symbols.SET_CUSTOM_MONITOR_WIDTH,

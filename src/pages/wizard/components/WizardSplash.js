@@ -4,10 +4,13 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import { defaultPageCSS } from '../../../theme'
+import { Link } from "react-router-dom";
 import copy from '../../../copy'
 import ReactFitText from 'react-fittext'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
+import * as Symbols from '../../../redux/HcSymbols'
 
 const styles = theme => ({
     ...defaultPageCSS,
@@ -16,6 +19,18 @@ const styles = theme => ({
         color: '#FFFFFF',
         marginBottom: theme.spacing.unit * 4
     },
+    buttonSection: {
+        [theme.breakpoints.up('md')]: {
+            marginTop: theme.spacing.unit * 8
+        },
+    },
+    buttonContainer: {
+        textAlign: "center"
+    },
+    button: {
+        marginTop: theme.spacing.unit * 2,
+        minWidth: "220px"
+    }
 });
 
 class WizardSplash extends React.Component {
@@ -34,12 +49,36 @@ class WizardSplash extends React.Component {
                             <li>{copy["en"].wizard.intro.question1}</li>
                             <li>{copy["en"].wizard.intro.question2}</li>
                         </ul>
-                        {copy["en"].wizard.intro.questionLink}
+                        {/* {copy["en"].wizard.intro.questionLink} */}
                     </Typography>
+                    <Grid container spacing={16} className={classes.buttonSection}>
+                        <Grid item xs={12} md={6} className={classes.buttonContainer}>
+                            <Button onClick={this.props.nextPage} className={classes.button} variant="contained" color="primary">Start the wizard</Button>
+                        </Grid>
+                        <Grid item xs={12} md={6} className={classes.buttonContainer}>
+                            <Button component={Link} to="/manual-configuration" className={classes.button} variant="outlined">Enter details manually</Button>
+                        </Grid>
+                    </Grid>
                 </div>
             </div>
         )
     }
 }
 
-export default withStyles(styles)(WizardSplash)
+const mapStateToProps = (state) => {
+    return {
+    }
+  }
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+        nextPage: () => dispatch({
+            type: Symbols.WIZARD_NEXT,
+        }),
+    }
+  }
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(WizardSplash))

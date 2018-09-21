@@ -7,7 +7,7 @@ import { connectRouter, routerMiddleware } from 'connected-react-router'
 import storage from 'redux-persist/lib/storage'
 // HC import
 import * as Symbols from './HcSymbols'
-import { games, mice, monitors, customMonitor } from '../model/HcModel'
+import { games, mice, monitors, monitorsFlat, customMonitor } from '../model/HcModel'
 import update from 'immutability-helper'
 import { validateProfile } from './Validation'
 import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle, checkPassword } from '../util'
@@ -120,6 +120,34 @@ const initialState = {
 // Reducers
 function profileReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.CREATE_PROFILE_MANUALLY:
+            console.log(state)
+            let customMonitor = {
+                width: action.payload.customWidth,
+                height: action.payload.customHeight,
+                name: action.payload.customWidth + "x" + action.payload.customHeight,
+                recommendedDpi: clamp(400 * Math.ceil(((action.payload.customHeight - 600) / 400)), 400, 6400)
+            }
+            let usingCustomMonitor = action.payload.aspectRatio === "custom"
+            let monitor = usingCustomMonitor ? customMonitor : action.payload.monitor
+            return update(state, {
+                profile: {
+                    settings: {
+                        sensitivity: {
+                            actual: { $set: action.payload.sensitivity },
+                            recommended: { $set: 35 }
+                        },
+                        dpi: {
+                            actual: { $set: action.payload.dpi },
+                            recommended: { $set: monitor.recommendedDpi }
+                        },
+                        monitor: { $set: monitor },
+                        usingCustomMonitor: { $set: action.payload.aspectRatio === "custom" },
+                        customMonitor: { $set: customMonitor }
+                    },
+                    ready: { $set: true }
+                }
+            })
         case Symbols.SELECT_MOUSEPAD_SIZE: {
             return update(state, {
                 profile: {
@@ -454,6 +482,13 @@ function profileReducer (state = initialState, action) {
 
 function wizardReducer (state = initialState, action) {
     switch(action.type) {
+        case Symbols.CREATE_PROFILE_MANUALLY:
+            return update(state, {
+                wizard: {
+                    activePage: { $set: 6 },
+                    wizardCompleted: { $set: true }
+                }
+            })
         case Symbols.APPLY_CALCULATOR:
             return update(state, {
                 wizard: {

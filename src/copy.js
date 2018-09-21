@@ -86,6 +86,21 @@ const copy = {
                 ]
             }
         },
+        manualConfiguration: {
+            headline: "Manual Configuration",
+            resolution: {
+                header: "Monitor Resolution",
+                info: <span>Please select your full desktop monitor resolution. <a href="https://blog.head.click/monitor_resolution/" target="_blank">More info {linkIcon}</a>.</span>,
+            },
+            dpi: {
+                header: "Mouse DPI",
+                info: <span>Enter your preferred mouse DPI. <a href="https://blog.head.click/dpi_for_gaming" target="_blank">More info {linkIcon}</a>.</span>,
+            },
+            sensitivity: {
+                header: "Sensitivity",//https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/
+                info: <span>Enter how many centimeters you want to move your mouse to rotate 360 degrees. <a href="https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/" target="_blank">More info {linkIcon}</a>.</span>,
+            }
+        },
         misc: {
             versionWarning: <span>Welcome to the Head Click beta! This site is a work-in-progress, so please excuse any bugs or missing features. You can read more about ongoing development <a href="https://blog.head.click/beta" target="_blank">here{linkIcon}</a>. Please consider taking a few moments to fill out our <a href="https://goo.gl/forms/3RLy7AaEZrsYAozz2" target="_blank">user experience survery{linkIcon}</a></span>
         }

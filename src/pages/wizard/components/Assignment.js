@@ -119,7 +119,7 @@ const Assignment = props => {
                     <Typography variant="body1" className={classes.subtle}>
                         {point.secondary}
                     </Typography>
-                    {version == "sensitivity" && <Button onClick={props.openCalculator} className={classes.button} variant="contained" color="primary">{thisCopy.button}</Button>}
+                    {version == "sensitivity" && <Button onClick={props.openCalculator} className={classes.button} variant="outlined" color="primary">{thisCopy.button}</Button>}
                 </div>
                 )}
             </div>
