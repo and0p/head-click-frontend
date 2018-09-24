@@ -62,7 +62,8 @@ const initialState = {
         monitorConcern: false,
         monitorSelected: false,
         gamePagesRevealed: 1,
-        monitorsExpanded: { "4:3":false, "16:9": false, "16:10":false, "21:9": true }
+        monitorsExpanded: { "4:3":false, "16:9": false, "16:10":false, "21:9": true },
+        manual: false
     },
     ui: {
         contentComponent: null,

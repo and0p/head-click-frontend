@@ -75,7 +75,7 @@ class CalculationDialog extends React.Component {
         super(props)
         let game = props.initialGame
         this.state = {
-            dpi: props.settings.dpi.actual,
+            dpi: props.dpi,
             sensitivity: game != null ? game.defaultSensitivity : "N/A",
             cm360: game != null ? game.getCm360(game, props.dpi, game.options) : "N/A",
             selectedGame: game,
@@ -136,6 +136,13 @@ class CalculationDialog extends React.Component {
         })
     }
 
+    accept = () => {
+        if(this.props.hasOwnProperty("acceptFunction"))
+            this.props.acceptFunction(this.state.cm360, this.state.dpi)
+        else
+            this.props.apply(this.state.cm360, this.state.dpi)
+    }
+
     render() {
         const { classes, theme, fullScreen } = this.props
         const { selectedGame, dpi, sensitivity, cm360 } = this.state 
@@ -148,7 +155,7 @@ class CalculationDialog extends React.Component {
                     label="In-Game Sensitivity"
                     className={classes.input}
                     onChange={this.updateSensitivity}
-                    onClose={this.props.close}
+                    onClose={this.props.closeFunction}
                     disabled={!selectedGame}
                     InputLabelProps= {{
                         shrink: true
@@ -187,7 +194,7 @@ class CalculationDialog extends React.Component {
                 />
             </div>
         )
-
+        console.log(this.props)
         return(
             <Dialog
                 fullScreen={fullScreen}
@@ -230,10 +237,10 @@ class CalculationDialog extends React.Component {
                     </form>
                 </DialogContent>
                 <DialogActions>
-                <Button onClick={this.props.close} color="primary">
+                <Button onClick={this.props.closeFunction} color="primary">
                     Close
                 </Button>
-                <Button onClick={() => this.props.apply(cm360, dpi)} color="primary" disabled={isNaN(cm360) || cm360 > 100000}>
+                <Button onClick={() => this.accept(cm360, dpi)} color="primary" disabled={isNaN(cm360) || cm360 > 100000}>
                     Apply to profile
                 </Button>
                 </DialogActions>
@@ -245,7 +252,6 @@ class CalculationDialog extends React.Component {
 const mapStateToProps = (state) => {
     return {
         settings: state.profile.settings,
-        open: state.ui.calculator.open,
         recommendedSensitivity: state.profile.settings.sensitivity.recommended,
         initialGame: state.ui.calculator.initialGame,
         ownedGames: state.profile.ownedGames

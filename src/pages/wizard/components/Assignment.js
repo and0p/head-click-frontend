@@ -107,20 +107,19 @@ const Assignment = props => {
                     </ReactFitText>
                     </span>
             </div>
-            <Typography variant="body1" className={classNames(classes.subtle, classes.center)} gutterBottom>
+            {/* <Typography variant="body1" className={classNames(classes.subtle, classes.center)} gutterBottom>
                 (You can change this at any time from the dashboard.)
-            </Typography>
+            </Typography> */}
             <div className={classes.hookSection}>
                 {thisCopy.points.map(point => 
-                <div className={classes.hook}>
-                    <Typography variant="subheading" className={classes.subheader} gutterBottom>
-                        {point.primary}
-                    </Typography>
-                    <Typography variant="body1" className={classes.subtle}>
-                        {point.secondary}
-                    </Typography>
-                    {version == "sensitivity" && <Button onClick={props.openCalculator} className={classes.button} variant="outlined" color="primary">{thisCopy.button}</Button>}
-                </div>
+                    <div className={classes.hook}>
+                        <Typography variant="subheading" className={classes.subheader} gutterBottom>
+                            {point.primary}
+                        </Typography>
+                        <Typography variant="body1" className={classes.subtle}>
+                            {point.secondary}
+                        </Typography>
+                    </div>
                 )}
             </div>
         </div>

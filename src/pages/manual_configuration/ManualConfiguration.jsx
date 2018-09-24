@@ -21,6 +21,7 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import Paper from '@material-ui/core/Paper'
 import { isValid } from '../../util'
 import { push } from 'connected-react-router'
+import CalculationDialog from '../../components/CalculationDialog'
 import { getRounded } from '../../math'
 import * as Symbols from '../../redux/HcSymbols'
 
@@ -88,6 +89,7 @@ class ManualConfiguration extends React.Component {
             aspectRatio: "all",
             customWidth: 1920,
             customHeight: 1080,
+            calculatorOpen: false,
             valid: {
                 sensitivity: true,
                 dpi: true,
@@ -99,23 +101,42 @@ class ManualConfiguration extends React.Component {
             }
         }
     }
-
+    
     handleChange = field => event => {
         let value = event.target.value, valid = true
         // Make sure the new state is acceptable
         if((field == "sensitivity" || field == "dpi" || field == "customWidth" || field == "customHeight") && parseFloat(value) == NaN || value <= 0)
             valid = false
-        let allValid = { ...this.state.valid, [field]: valid }
+            let allValid = { ...this.state.valid, [field]: valid }
         if((field == "aspectRatio" && value != "custom") || this.state.aspectRatio != "custom")
-            allValid.overall = allValid.sensitivity && allValid.dpi
+        allValid.overall = allValid.sensitivity && allValid.dpi
         else
             allValid.overall = allValid.sensitivity && allValid.dpi && this.state.allValid.customWidth && allValid.customHeight
-        this.setState({ [field]: value, valid: allValid })
+            this.setState({ [field]: value, valid: allValid })
+    }
+    
+    createProfile = () => {
+        this.props.createProfile(this.state)
+    }
+    
+    applyCalculation = (sensitivity, dpi) => {
+        this.setState({
+            sensitivity: sensitivity,
+            dpi: dpi,
+            calculatorOpen: false
+        })
     }
 
-    createProfile = () => {
-        console.log(this.state)
-        this.props.createProfile(this.state)
+    openCalculator = () => {
+        this.setState({
+            calculatorOpen: true
+        })
+    }
+
+    closeCalculator = () => {
+        this.setState({
+            calculatorOpen: false
+        })
     }
 
     render() {
@@ -258,6 +279,7 @@ class ManualConfiguration extends React.Component {
                                 onChange={this.handleChange("sensitivity")}
                                 error={!this.state.valid.sensitivity}
                             />
+                            <Button color="primary" onClick={this.openCalculator}>Find my current sensitivity</Button>
                         </div>
                     </Paper>
                     <Grid container spacing={16} className={classes.selectionArea}>
@@ -273,6 +295,7 @@ class ManualConfiguration extends React.Component {
                     </Grid>
 
                 </div>
+                <CalculationDialog open={this.state.calculatorOpen} acceptFunction={this.applyCalculation} closeFunction={this.closeCalculator} dpi={parseFloat(this.state.dpi)} />
             </div>
         )
     }

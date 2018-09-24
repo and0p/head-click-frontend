@@ -50,7 +50,7 @@ class Wizard extends React.Component {
                 page = <Assignment version="dpi" />
                 break
             case 3:
-                page = <div><GameSelect /></div>
+                page = <React.Fragment><GameSelect /></React.Fragment>
                 break
             case 4:
                 page = <MiscSelect />

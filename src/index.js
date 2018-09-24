@@ -23,7 +23,6 @@ import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
 import PrivacyAlert from './components/PrivacyAlert'
 import IdentityDialog from './pages/account/IdentityDialog'
-import CalculationDialog from './components/CalculationDialog'
 import Axios from 'axios'
 import ManualConfiguration from './pages/manual_configuration/ManualConfiguration'
 
@@ -66,7 +65,6 @@ class App extends React.Component {
               <Route path="/game/:name" component={GamePage} />
             </MaterialRoot>
             <IdentityDialog />
-            <CalculationDialog />
             <PrivacyAlert />
           </MuiThemeProvider>
         </ConnectedRouter>

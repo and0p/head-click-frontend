@@ -90,15 +90,15 @@ const copy = {
             headline: "Manual Configuration",
             resolution: {
                 header: "Monitor Resolution",
-                info: <span>Please select your full desktop monitor resolution. <a href="https://blog.head.click/monitor_resolution/" target="_blank">More info {linkIcon}</a>.</span>,
+                info: <span>Please select your full desktop monitor resolution. <a href="https://blog.head.click/monitor_resolution/" target="_blank">More info {linkIcon}</a></span>,
             },
             dpi: {
                 header: "Mouse DPI",
-                info: <span>Enter your preferred mouse DPI. <a href="https://blog.head.click/dpi_for_gaming" target="_blank">More info {linkIcon}</a>.</span>,
+                info: <span>Enter your preferred mouse DPI. <a href="https://blog.head.click/dpi_for_gaming" target="_blank">More info {linkIcon}</a></span>,
             },
             sensitivity: {
                 header: "Sensitivity",//https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/
-                info: <span>Enter how many centimeters you want to move your mouse to rotate 360 degrees. <a href="https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/" target="_blank">More info {linkIcon}</a>.</span>,
+                info: <span>Enter how many centimeters you want to move your mouse to rotate 360 degrees. <a href="https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/" target="_blank">More info {linkIcon}</a></span>,
             }
         },
         misc: {
