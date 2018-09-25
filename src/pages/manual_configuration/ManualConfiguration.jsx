@@ -85,7 +85,7 @@ class ManualConfiguration extends React.Component {
         this.state = {
             sensitivity: 35,
             dpi: 800,
-            monitor: monitors["16:9"]["1080p"],
+            monitor: monitors["16:9"]["1080p"].name,
             aspectRatio: "all",
             customWidth: 1920,
             customHeight: 1080,
@@ -180,7 +180,7 @@ class ManualConfiguration extends React.Component {
                                     <FormControl className={classes.dropdown}>
                                         <InputLabel htmlFor="resolution">Resolution</InputLabel>
                                         <Select
-                                            value={this.state.monitor.name}
+                                            value={this.state.monitor}
                                             onChange={this.handleChange("monitor")}
                                             inputProps={{
                                             name: 'resolution',
@@ -195,7 +195,7 @@ class ManualConfiguration extends React.Component {
                                             {/* SPECIFIC ASPECT RATIO */}
                                             {monitors.hasOwnProperty(this.state.aspectRatio) && 
                                             Object.keys(monitors[this.state.aspectRatio]).map(monitor => (
-                                                <MenuItem value={monitor}>{monitors[this.state.aspectRatio][monitor].technicalName}</MenuItem>
+                                                <MenuItem value={monitors[this.state.aspectRatio][monitor].name}>{monitors[this.state.aspectRatio][monitor].technicalName}</MenuItem>
                                             ))}
                                         </Select>
                                     </FormControl>

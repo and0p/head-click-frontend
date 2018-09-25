@@ -401,7 +401,7 @@ class GamePage extends React.Component {
                     <Typography variant="display1" className={classes.headline} gutterBottom>
                         {this.state.game.name}
                     </Typography>
-                    {this.state.game.hasOwnProperty("getCm360") && <Button onClick={this.openCalculator} className={classes.calculatorButton} variant="outlined">Calculator</Button> }
+                    {/* {this.state.game.hasOwnProperty("getCm360") && <Button onClick={this.openCalculator} className={classes.calculatorButton} variant="outlined">Calculator</Button> } */}
                     <Grid container spacing={spacing} className={classes.rootGridContainer}>
                         <Grid item xs={12} xl={6}> {/* LEFT DIVISION */}
                             <Grid container spacing={spacing}>
@@ -571,12 +571,12 @@ class GamePage extends React.Component {
                             </Grid>
                         </Grid>
                     </Grid>
-                    {this.state.game.hasOwnProperty("getCm360") && <CalculationDialog 
+                    {/* {this.state.game.hasOwnProperty("getCm360") && <CalculationDialog 
                         open={this.state.calculatorOpen}
                         game={this.state.game}
                         closeFunction={this.closeCalculator}
                         dpi={this.props.profile.settings.dpi.actual}
-                    />}
+                    />} */}
                 </div>
             )
         }
