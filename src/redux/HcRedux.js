@@ -114,7 +114,8 @@ const initialState = {
         lastSaveAttempt: 0,
         lastSaveSuccess: 0,
         acceptedPrivacyPolicy: false,
-        emailConsent: true
+        emailConsent: true,
+        hasSeenTutorial: false
     }
 }
 
@@ -122,7 +123,6 @@ const initialState = {
 function profileReducer (state = initialState, action) {
     switch(action.type) {
         case Symbols.CREATE_PROFILE_MANUALLY:
-            console.log(state)
             let customMonitor = {
                 width: action.payload.customWidth,
                 height: action.payload.customHeight,
@@ -483,13 +483,6 @@ function profileReducer (state = initialState, action) {
 
 function wizardReducer (state = initialState, action) {
     switch(action.type) {
-        case Symbols.CREATE_PROFILE_MANUALLY:
-            return update(state, {
-                wizard: {
-                    activePage: { $set: 6 },
-                    wizardCompleted: { $set: true }
-                }
-            })
         case Symbols.APPLY_CALCULATOR:
             return update(state, {
                 wizard: {
@@ -647,7 +640,6 @@ function uiReducer (state = initialState, action) {
                     }
             })
         case Symbols.RESET_RESPONSE:
-            console.log(action)
             if(action.value.code == 200)
                 return update(state, {
                     ui: {
@@ -970,6 +962,12 @@ function identityReducer (state = initialState, action)  {
         case Symbols.UPDATE_GAME_OPTION: return update(state, { identity: { lastModified: { $set: Date.now() }}})
         case Symbols.SET_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
         case Symbols.UPDATE_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.DISMISS_TUTORIAL:
+            return update(state, {
+                identity: {
+                    hasSeenTutorial: { $set: true }
+                }
+            })
         case Symbols.LOGIN_SUCCESS:
             return update(state, {
                 identity: {
@@ -979,8 +977,9 @@ function identityReducer (state = initialState, action)  {
                     jwt: { $set: action.value.jwt },
                     loggedIn: { $set: true },
                     lastSaveSuccess: { $set: Date.now() },
-                    lastModified: { $set: 0 }
-                }
+                    lastModified: { $set: 0 },
+                    hasSeenTutorial: { $set: true }
+                },
             })
         case Symbols.SAVE_SUCCESS: 
             return update(state, {
@@ -1031,7 +1030,8 @@ function identityReducer (state = initialState, action)  {
             // Reset the site's state, except for privacy policy acceptance
             return update(initialState, {
                 identity: {
-                    acceptedPrivacyPolicy: { $set: state.identity.acceptedPrivacyPolicy }
+                    acceptedPrivacyPolicy: { $set: state.identity.acceptedPrivacyPolicy },
+                    hasSeenTutorial: { $set: false }
                 }
             })
         default:
@@ -1122,6 +1122,11 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 // Create a history of your choosing (we're using a browser history in this case)
 export const history = createBrowserHistory()
+history.listen((location, action) => {
+    window.scrollTo(0,0)
+    window.ga('set', 'page', location.pathname + location.search);
+    window.ga('send', 'pageview');
+  });
 // Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history)
 // Create store

@@ -42,7 +42,19 @@ const copy = {
             }
         },
         dashboard: {
-            tutorial: "Welcome to your dashboard!",
+            tutorial: {
+                header: "Welcome to the Head Click Beta!",
+                intro: "We're working on adding a full tutorial. In the meantime, here's a quick explainer on how to use the site:",
+                tips: [
+                    //<span>Make sure your DPI and resolution match your profile. <ul><li>Edit your profile from the dashboard if needed with the <Icon style={{fontSize:"1em"}}>create</Icon> icon.</li><li>Your profile is how we generate your in-game settings, so it needs to be accurate.</li></ul></span>,
+                    "Make sure your DPI and resolution match your profile.",
+                    "Select a game from the sidebar.",
+                    // "If the game has any options, set them according to your needs.",
+                    "Set the in-game settings to the ones we calculate for you.",
+                    "See how it feels! If you don't like it, change your sensitivity from the dashboard and try again."
+                ],
+                acceptButton: "Got it!"
+            },
         },
         wizard: {
             intro: {

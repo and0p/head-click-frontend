@@ -36,8 +36,6 @@ class AccountMenu extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
-        console.log("router?")
-        console.log(this.props)
         return (
         <div className={classes.root}>
             <IconButton

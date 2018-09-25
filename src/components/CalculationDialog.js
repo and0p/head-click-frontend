@@ -73,11 +73,13 @@ const styles = theme => ({
 class CalculationDialog extends React.Component {
     constructor(props) {
         super(props)
-        let game = props.initialGame
+        let game = props.game
+        let dpi = parseFloat(props.dpi)
+        console.log(props)
         this.state = {
-            dpi: props.dpi,
-            sensitivity: game != null ? game.defaultSensitivity : "N/A",
-            cm360: game != null ? game.getCm360(game, props.dpi, game.options) : "N/A",
+            dpi: dpi,
+            sensitivity: game != null ? parseFloat(game.defaultSensitivity) : "N/A",
+            cm360: game != null ? game.getCm360(game.defaultSensitivity, dpi, game.options) : "N/A",
             selectedGame: game,
             options: game != null ? game.options : null
         }
@@ -85,8 +87,8 @@ class CalculationDialog extends React.Component {
 
     reopened = () => {
         this.setState({
-            selectedGame: this.props.initialGame,
-            dpi: this.props.settings.dpi.actual
+            selectedGame: this.props.game,
+            dpi: parseFloat(this.props.dpi)
         })
     }
 
@@ -194,7 +196,6 @@ class CalculationDialog extends React.Component {
                 />
             </div>
         )
-        console.log(this.props)
         return(
             <Dialog
                 fullScreen={fullScreen}

@@ -79,9 +79,9 @@ const mapStateToProps = (state) => {
       profile: state.profile,
       activePage: state.wizard.activePage
     }
-  }
+}
   
-  const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
     return {
     }
 }

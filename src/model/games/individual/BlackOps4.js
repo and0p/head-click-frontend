@@ -152,7 +152,6 @@ const getInfo = (settings, options) => {
             variance: normalizeLowPercentage(idealCm360 / output - 1) * 100
         })
     })
-    console.log(outputJSON)
     return {
         settings: settingsJSON,
         output: outputJSON,

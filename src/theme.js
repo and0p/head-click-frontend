@@ -124,7 +124,8 @@ export const defaultPageCSS = {
     [theme.breakpoints.down('sm')]: {
       marginLeft: theme.spacing.unit
     },
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: theme.spacing.unit * 2,
+    float: "left"
   },
   wizardHeadline: {
     textAlign: "center",

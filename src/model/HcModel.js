@@ -39,6 +39,5 @@ Object.keys(monitors).map((ratioKey) => (
 ))
 export const monitorsTechnical = {}
 Object.keys(monitorsFlat).map(key => monitorsTechnical[monitorsFlat[key].technicalName] = monitorsFlat[key])
-console.log(monitorsTechnical)
 
 export const refreshRates = [ 60, 75, 100, 120, 144 ]

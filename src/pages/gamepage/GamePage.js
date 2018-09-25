@@ -27,6 +27,7 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import Button from '@material-ui/core/Button'
 import Icon from '@material-ui/core/Icon'
 import { defaultPageCSS } from '../../theme'
 // Recharts import
@@ -45,6 +46,7 @@ import BigValue from '../../components/BigValue'
 import InfoCard from '../../components/InfoCard'
 import ComingSoon from '../../components/ComingSoon'
 import MessageBox from '../../components/MessageBox'
+import CalculationDialog from '../../components/CalculationDialog'
 import * as Copy from '../../copy'
 
 const styles = theme => ({
@@ -166,6 +168,9 @@ const styles = theme => ({
     },
     specialEffect: {
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    },
+    calculatorButton: {
+        float: "right"
     }
 });
 
@@ -183,7 +188,7 @@ const tooltipValueReformat = (value, name, props) => getRounded(value, 2)
 class GamePage extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { gameAlias: this.props.match.params.name }
+        this.state = { gameAlias: this.props.match.params.name, calculatorOpen: false }
     }
 
     // Enable and disable animations based on whether or not we've recieved a new game
@@ -223,6 +228,14 @@ class GamePage extends React.Component {
         else
             ns.valid = false
         return ns
+    }
+
+    openCalculator = () => {
+        this.setState({ calculatorOpen: true })
+    }
+
+    closeCalculator = () => {
+        this.setState({ calculatorOpen: false })
     }
 
     toggleOverride = gameName => event => {
@@ -388,6 +401,7 @@ class GamePage extends React.Component {
                     <Typography variant="display1" className={classes.headline} gutterBottom>
                         {this.state.game.name}
                     </Typography>
+                    {this.state.game.hasOwnProperty("getCm360") && <Button onClick={this.openCalculator} className={classes.calculatorButton} variant="outlined">Calculator</Button> }
                     <Grid container spacing={spacing} className={classes.rootGridContainer}>
                         <Grid item xs={12} xl={6}> {/* LEFT DIVISION */}
                             <Grid container spacing={spacing}>
@@ -557,6 +571,12 @@ class GamePage extends React.Component {
                             </Grid>
                         </Grid>
                     </Grid>
+                    {this.state.game.hasOwnProperty("getCm360") && <CalculationDialog 
+                        open={this.state.calculatorOpen}
+                        game={this.state.game}
+                        closeFunction={this.closeCalculator}
+                        dpi={this.props.profile.settings.dpi.actual}
+                    />}
                 </div>
             )
         }

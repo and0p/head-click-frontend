@@ -211,7 +211,7 @@ class MaterialRoot extends React.Component {
         )}
         <SidebarButton 
         link="/browse_games"
-        icon="add_circle_outline"
+        icon="library_add"
         text="Browse Games"
         enabled={this.props.profile.ready}
         innerClick={() => { this.props.selectSidebarItem(0) }}

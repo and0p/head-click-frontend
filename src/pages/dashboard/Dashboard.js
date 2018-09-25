@@ -18,6 +18,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Icon from '@material-ui/core/Icon'
+import WelcomePopup from '../../components/WelcomePopup'
 import copy from '../../copy'
 import { verify, resendVerification } from '../../identity'
 import axios from 'axios'
@@ -395,6 +396,7 @@ class Dashboard extends React.Component {
                     </Grid>
                 </Grid>
                 <ProfileEditDialog />
+                <WelcomePopup open={!this.props.identity.hasSeenTutorial} dismissFunction={ this.props.dismissTutorial } />
             </div> 
         )
         else
@@ -420,6 +422,9 @@ const mapDispatchToProps = dispatch => {
         updateVerificationToken: (value) => dispatch({
             type: Symbols.SET_VERIFICATION_TOKEN,
             value: value 
+        }),
+        dismissTutorial: () => dispatch({
+            type: Symbols.DISMISS_TUTORIAL
         })
     }
 }

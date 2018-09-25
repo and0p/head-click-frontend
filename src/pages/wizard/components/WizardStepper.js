@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import * as Symbols from '../../../redux/HcSymbols'
 
 const drawerWidth = 240
+const lastPage = 5
 
 const styles = theme => ({
     desktopRoot: {
@@ -89,7 +90,7 @@ const styles = theme => ({
     }
 
     getNextText = () => {
-      if(this.props.activePage == 6)
+      if(this.props.activePage == lastPage)
         return "FINISH"
       else
         return "NEXT"
@@ -110,8 +111,6 @@ const styles = theme => ({
           return 3
         case 5:
           return 4
-        case 6:
-          return 4
         default:
           return 0
       }
@@ -131,7 +130,7 @@ const styles = theme => ({
               activeStep={this.props.activePage}
               className={classes.mobileRoot}
               nextButton={
-                <Button size="small" component={this.props.activePage == 6 ? Link : Button} to="/" style={this.props.activePage == 6 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
+                <Button size="small" component={this.props.activePage == lastPage ? Link : Button} to="/" style={this.props.activePage == lastPage ? {fontWeight: 400, color: "#FFFFFF"} : {}} color={this.props.activePage == lastPage ? "primary" : "neutral"} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>
@@ -172,7 +171,7 @@ const styles = theme => ({
                   <KeyboardArrowLeft />
                   BACK
                 </Button>
-                <Button size="small" component={this.props.activePage == 6 ? Link : Button} to="/" style={this.props.activePage == 6 ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
+                <Button size="small" component={this.props.activePage == lastPage ? Link : Button} to="/" style={this.props.activePage == lastPage ? {fontWeight: 400, color: "#FFFFFF"} : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
                   {this.getNextText()}
                   <KeyboardArrowRight />
                 </Button>
