@@ -521,13 +521,13 @@ function wizardReducer (state = initialState, action) {
                 // Set the next page
                 return update(state, {
                     wizard: {
-                        activePage: { $set: state.wizard.activePage + 1 },
+                        activePage: { $set: state.wizard.activePage === 5 ? 0 : state.wizard.activePage + 1 },
                         gamePagesRevealed: { $set: 1},
                         pagesReady: {
                             1: { $set: isValid(state.profile.settings.monitor) && state.profile.settings.monitor.usable },
                             3: { $set: state.profile.ownedGames.length > 0 }
                         },
-                        wizardCompleted: { $set: state.wizard.activePage == 5 }
+                        wizardCompleted: { $set: state.wizard.activePage === 5 }
                     }
                 })
             }
