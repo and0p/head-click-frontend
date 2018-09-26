@@ -19,18 +19,19 @@ const styles = theme => ({
         color: '#FFFFFF',
         marginBottom: theme.spacing.unit * 4
     },
-    buttonSection: {
-        [theme.breakpoints.up('md')]: {
+    buttonContainer: {        
+        [theme.breakpoints.down('sm')]: {
+            marginTop: theme.spacing.unit * 4
+        },
+        [theme.breakpoints.up('sm')]: {
             marginTop: theme.spacing.unit * 8
         },
-    },
-    buttonContainer: {
         textAlign: "center"
     },
     button: {
-        marginTop: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit,
         minWidth: "220px"
-    }
+    },
 });
 
 class WizardSplash extends React.Component {
@@ -51,14 +52,10 @@ class WizardSplash extends React.Component {
                         </ul>
                         {/* {copy["en"].wizard.intro.questionLink} */}
                     </Typography>
-                    <Grid container spacing={16} className={classes.buttonSection}>
-                        <Grid item xs={12} md={6} className={classes.buttonContainer}>
-                            <Button onClick={this.props.nextPage} className={classes.button} variant="contained" color="primary">Start the wizard</Button>
-                        </Grid>
-                        <Grid item xs={12} md={6} className={classes.buttonContainer}>
-                            <Button component={Link} to="/manual-configuration" className={classes.button} variant="outlined">Enter details manually</Button>
-                        </Grid>
-                    </Grid>
+                    <div className={classes.buttonContainer}>
+                        <Button onClick={this.props.nextPage} className={classes.button} variant="contained" color="primary">Start the wizard</Button>
+                        <Typography variant="caption" className={classes.manualText}>or <Link to="/manual-configuration">enter details manually</Link></Typography>
+                    </div>
                 </div>
             </div>
         )

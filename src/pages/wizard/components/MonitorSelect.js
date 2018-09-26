@@ -29,13 +29,11 @@ const styles = theme => ({
     image: {
         marginTop: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
+        height: "300px",
         maxWidth: "100%"
     },
     selectionArea: {
         marginTop: theme.spacing.unit * 4,
-    },
-    selectionSide: {
-      
     },
     dropdown: {
         width: "350px",

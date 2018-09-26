@@ -125,7 +125,6 @@ export const defaultPageCSS = {
       marginLeft: theme.spacing.unit
     },
     marginBottom: theme.spacing.unit * 2,
-    float: "left"
   },
   wizardHeadline: {
     textAlign: "center",
