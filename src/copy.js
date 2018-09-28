@@ -80,7 +80,7 @@ const copy = {
                     points: [
                         {
                             primary: "Also known as " + cm360 + ", this number represents how many centimeters you'll move your mouse to rotate 360 degrees in a game.",
-                            secondary: 'When zoomed in, or playing a game with a more narrow field of view, your actual ' + cm360 + ' should adjust correspondingly.'
+                            secondary: <span>For additional information, such as what professional players and popular streamers use, check out <a href="https://blog.head.click/mouse-sensitivity" target="_blank">this blog post {linkIcon}</a></span>,
                         },
                     ],
                     button: "Help me find my current sensitivity"
@@ -110,7 +110,7 @@ const copy = {
             },
             sensitivity: {
                 header: "Sensitivity",//https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/
-                info: <span>Enter how many centimeters you want to move your mouse to rotate 360 degrees. <a href="https://blog.head.click/p/26f1ef0a-ba4d-49b6-912f-1d84edfb131e/" target="_blank">More info {linkIcon}</a></span>,
+                info: <span>Enter how many centimeters you want to move your mouse to rotate 360 degrees. For help deciding what to use, check out <a href="https://blog.head.click/mouse-sensitivity/" target="_blank">this blog post {linkIcon}</a></span>,
             }
         },
         misc: {

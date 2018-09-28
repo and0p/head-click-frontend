@@ -90,29 +90,58 @@ class ManualConfiguration extends React.Component {
             customWidth: 1920,
             customHeight: 1080,
             calculatorOpen: false,
-            valid: {
+            validity: {
                 sensitivity: true,
                 dpi: true,
                 monitor: true,
-                aspectRatio: true,
-                customWidth: true,
-                customHeight: true,
                 overall: true
             }
         }
     }
-    
-    handleChange = field => event => {
-        let value = event.target.value, valid = true
-        // Make sure the new state is acceptable
-        if((field == "sensitivity" || field == "dpi" || field == "customWidth" || field == "customHeight") && parseFloat(value) == NaN || value <= 0)
-            valid = false
-            let allValid = { ...this.state.valid, [field]: valid }
-        if((field == "aspectRatio" && value != "custom") || this.state.aspectRatio != "custom")
-        allValid.overall = allValid.sensitivity && allValid.dpi
+
+    selectAspectRatio = event => {
+        let newState = { ...this.state, aspectRatio: event.target.value, monitor: null }
+        this.checkValidityAndUpdate(newState)
+    }
+
+    selectMonitor = event => {
+        let newState = { ...this.state, monitor: event.target.value }
+        this.checkValidityAndUpdate(newState)
+    }
+
+    changeDPI = event => {
+        let newState = { ...this.state, dpi: event.target.value }
+        this.checkValidityAndUpdate(newState)
+    }
+
+    changeSensitivity = event => {
+        let newState = { ...this.state, sensitivity: event.target.value }
+        this.checkValidityAndUpdate(newState)
+    }
+
+    changeCustomWidth = event => {
+        let newState = { ...this.state, customWidth: event.target.value }
+        this.checkValidityAndUpdate(newState)
+    }
+
+    changeCustomHeight = event => {
+        let newState = { ...this.state, customHeight: event.target.value }
+        this.checkValidityAndUpdate(newState)
+    }
+
+    checkValidityAndUpdate = newState => {
+        // Make sure monitor is not null
+        if(newState.aspectRatio === "custom")
+            newState.validity.monitor = !isNaN(newState.customHeight) && !isNaN(newState.customWidth) && newState.customHeight > 0 && newState.customWidth > 0
         else
-            allValid.overall = allValid.sensitivity && allValid.dpi && this.state.allValid.customWidth && allValid.customHeight
-            this.setState({ [field]: value, valid: allValid })
+            newState.validity.monitor = newState.monitor != null
+        // Make sure the DPI is valid
+        newState.validity.dpi = !isNaN(newState.dpi) && newState.dpi > 0
+        // Make sure the sensitivity is valid
+        newState.validity.sensitivity = !isNaN(newState.sensitivity) && newState.sensitivity > 0
+        // Get validity of all
+        newState.validity.overall = newState.validity.monitor && newState.validity.dpi && newState.validity.sensitivity
+        this.setState(newState)
     }
     
     createProfile = () => {
@@ -159,7 +188,7 @@ class ManualConfiguration extends React.Component {
                                     <InputLabel htmlFor="aspect-ratio">Aspect Ratio</InputLabel>
                                     <Select
                                         value={this.state.aspectRatio}
-                                        onChange={this.handleChange("aspectRatio")}
+                                        onChange={this.selectAspectRatio}
                                         inputProps={{
                                         name: 'aspect-ratio',
                                         id: 'aspect-ratio',
@@ -181,7 +210,7 @@ class ManualConfiguration extends React.Component {
                                         <InputLabel htmlFor="resolution">Resolution</InputLabel>
                                         <Select
                                             value={this.state.monitor}
-                                            onChange={this.handleChange("monitor")}
+                                            onChange={this.selectMonitor}
                                             inputProps={{
                                             name: 'resolution',
                                             id: 'resolution',
@@ -213,14 +242,14 @@ class ManualConfiguration extends React.Component {
                                             root: classes.resolutionAxisInputBox
                                             }
                                         }}
-                                        error={!this.state.valid.customWidth}
+                                        error={!this.state.validity.monitor}
                                         fullWidth
                                         className={classes.resolutionAxisInput}
                                         InputLabelProps={{
                                             shrink: true,
                                             className: classes.textFieldFormLabel,
                                         }}
-                                        onChange={this.handleChange("customWidth")}
+                                        onChange={this.changeCustomWidth}
                                         />
                                     </Grid>,
                                     <Grid item xs={6} sm={3}>
@@ -239,8 +268,8 @@ class ManualConfiguration extends React.Component {
                                             shrink: true,
                                             className: classes.textFieldFormLabel,
                                         }}
-                                        error={!this.state.valid.customHeight}
-                                        onChange={this.handleChange("customHeight")}
+                                        error={!this.state.validity.monitor}
+                                        onChange={this.changeCustomHeight}
                                         />
                                     </Grid>]
                             }
@@ -258,8 +287,8 @@ class ManualConfiguration extends React.Component {
                                 InputLabelProps={{
                                     shrink: true
                                 }}
-                                onChange={this.handleChange("dpi")}
-                                error={!this.state.valid.dpi}
+                                onChange={this.changeDPI}
+                                error={!this.state.validity.dpi}
                             />
                         </div>
                     </Paper>
@@ -276,8 +305,8 @@ class ManualConfiguration extends React.Component {
                                     shrink: true
                                 }}
                                 helperText={getRounded(this.state.sensitivity / 2.54, 1) + " inches"}
-                                onChange={this.handleChange("sensitivity")}
-                                error={!this.state.valid.sensitivity}
+                                onChange={this.changeSensitivity}
+                                error={!this.state.validity.sensitivity}
                             />
                             <Button color="primary" onClick={this.openCalculator}>Find my current sensitivity</Button>
                         </div>
@@ -288,7 +317,7 @@ class ManualConfiguration extends React.Component {
                                 <Button component={Link} to="/wizard" className={classes.button} variant="outlined">Back to Wizard</Button>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <Button className={classes.acceptButton} variant="contained" color="primary" onClick={this.createProfile} disabled={!this.state.valid.overall}>
+                                <Button className={classes.acceptButton} variant="contained" color="primary" onClick={this.createProfile} disabled={!this.state.validity.overall}>
                                     Create Profile
                                 </Button>
                             </Grid>
@@ -312,7 +341,9 @@ const mapStateToProps = (state) => {
   const mapDispatchToProps = dispatch => {
     return {
         createProfile: value => {
-            dispatch({type: Symbols.CREATE_PROFILE_MANUALLY,payload: value})
+            if(value.aspectRatio !== "custom")
+                value.monitor = monitorsFlat[value.monitor]
+            dispatch({type: Symbols.CREATE_PROFILE_MANUALLY, payload: value})
             dispatch(push('/'))
         }
     }
