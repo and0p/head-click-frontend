@@ -1,7 +1,7 @@
 // Redux imports
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux'
 import reduceReducers from 'reduce-reducers'
-import { persistStore, persistReducer, createTransform  } from 'redux-persist'
+import { persistStore, persistReducer, createTransform } from 'redux-persist'
 import { createBrowserHistory } from 'history'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import storage from 'redux-persist/lib/storage'
@@ -62,7 +62,7 @@ const initialState = {
         monitorConcern: false,
         monitorSelected: false,
         gamePagesRevealed: 1,
-        monitorsExpanded: { "4:3":false, "16:9": false, "16:10":false, "21:9": true },
+        monitorsExpanded: { "4:3": false, "16:9": false, "16:10": false, "21:9": true },
         manual: false
     },
     ui: {
@@ -79,7 +79,7 @@ const initialState = {
         identity: {
             dialogOpen: false,
             dialogFunction: "LOGIN",  // LOGIN, SIGNUP, RESET, NEWPASS
-            actionPending: false, 
+            actionPending: false,
             error: "",
             email: "",
             password: "",
@@ -120,8 +120,8 @@ const initialState = {
 }
 
 // Reducers
-function profileReducer (state = initialState, action) {
-    switch(action.type) {
+function profileReducer(state = initialState, action) {
+    switch (action.type) {
         case Symbols.CREATE_PROFILE_MANUALLY:
             let customMonitor = {
                 width: action.payload.customWidth,
@@ -177,22 +177,21 @@ function profileReducer (state = initialState, action) {
             })
         }
         case Symbols.SELECT_MONITOR:
-            if(action.value != null)
-            {
+            if (action.value != null) {
                 // Update dpi if still doing wizard
                 let newMouseDpi = state.profile.settings.dpi
-                if(!state.wizard.wizardCompleted) {
+                if (!state.wizard.wizardCompleted) {
                     newMouseDpi = action.value.recommendedDpi
                 }
                 return update(state, {
                     profile: {
                         settings: {
                             monitor: { $set: action.value },
-                            dpi: { 
+                            dpi: {
                                 actual: { $set: newMouseDpi },
-                                recommended: {$set: newMouseDpi }
+                                recommended: { $set: newMouseDpi }
                             },
-                            usingCustomMonitor: {$set: action.value === state.profile.customMonitor }
+                            usingCustomMonitor: { $set: action.value === state.profile.customMonitor }
                         },
                     }
                 })
@@ -201,24 +200,24 @@ function profileReducer (state = initialState, action) {
                 return state;
             }
         case Symbols.SELECT_REFRESH_RATE:
-            if(action.value != null)
+            if (action.value != null)
                 return update(state, {
                     profile: {
                         refreshRate: { $set: action.value },
-                        
+
                     }
                 })
             else return state
         case Symbols.TOGGLE_GAME:
-            if(isValid(action.value) && games.hasOwnProperty(action.value.alias)) {
+            if (isValid(action.value) && games.hasOwnProperty(action.value.alias)) {
                 // See if we have this game already
                 let index = state.profile.ownedGames.indexOf(action.value.alias)
-                if(index > -1) {
+                if (index > -1) {
                     // Remove game
                     return update(state, {
                         profile: {
                             ownedGames: { $splice: [[index, 1]] },
-                            
+
                         }
                     })
                 }
@@ -227,18 +226,17 @@ function profileReducer (state = initialState, action) {
                     return update(state, {
                         profile: {
                             ownedGames: { $push: [action.value.alias] },
-                            options: { 
+                            options: {
                                 [action.value.alias]: { $set: action.value.getDefaultOptions() }
                             },
-                            
+
                         }
                     })
                 }
             }
             else return state
         case Symbols.WIZARD_NEXT:
-            if(state.wizard.activePage == 4)
-            {
+            if (state.wizard.activePage == 4) {
                 let recommendedSensitivity = recommendSensitivity(state.profile)
                 return update(state, {
                     profile: {
@@ -253,8 +251,7 @@ function profileReducer (state = initialState, action) {
                     }
                 })
             }
-            else if (state.wizard.activePage == 3)
-            {
+            else if (state.wizard.activePage == 3) {
                 let recommendedGamePace = getTypicalGameStyle(state.profile)
                 return update(state, {
                     profile: {
@@ -265,15 +262,14 @@ function profileReducer (state = initialState, action) {
                 })
             }
             else if (state.wizard.activePage == 5 && state.wizard.pagesReady[5])
-            return update(state, {
-                profile: {
-                    ready: { $set: true }
-                }
-            })
+                return update(state, {
+                    profile: {
+                        ready: { $set: true }
+                    }
+                })
             return state
         case Symbols.SAVE_PROFILE:
-            if(action.value != "undefined")
-            {
+            if (action.value != "undefined") {
                 return update(state, {
                     profile: {
                         settings: {
@@ -287,13 +283,13 @@ function profileReducer (state = initialState, action) {
                             usingCustomMonitor: { $set: action.value.monitor == action.value.customMonitor }
                         },
                         customMonitor: { $set: action.value.customMonitor },
-                        
+
                     }
                 })
             }
             return state
         case Symbols.SET_CUSTOM_MONITOR_WIDTH:
-            if(action.value != "undefined") {
+            if (action.value != "undefined") {
                 let cMonitor = {
                     ...state.profile.customMonitor,
                     name: action.value + "x" + state.profile.customMonitor.height,
@@ -313,7 +309,7 @@ function profileReducer (state = initialState, action) {
             else
                 return state
         case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
-            if(action.value != "undefined") {
+            if (action.value != "undefined") {
                 let cMonitor = {
                     ...state.profile.customMonitor,
                     name: state.profile.customMonitor.width + "x" + action.value,
@@ -323,11 +319,11 @@ function profileReducer (state = initialState, action) {
                 }
                 return update(state, {
                     profile: {
-                        customMonitor: { $set: cMonitor},
+                        customMonitor: { $set: cMonitor },
                         settings: {
                             monitor: { $set: state.profile.settings.usingCustomMonitor ? cMonitor : state.profile.settings.monitor }
                         },
-                        
+
                     }
                 })
             }
@@ -336,7 +332,7 @@ function profileReducer (state = initialState, action) {
         case Symbols.APPLY_CALCULATOR:
             // {sensitivity, dpi}
             let sensitivity = action.value.sensitivity, dpi = action.value.dpi
-            if(!isNaN(sensitivity) && sensitivity > 0 && !isNaN(dpi) && dpi > 0)
+            if (!isNaN(sensitivity) && sensitivity > 0 && !isNaN(dpi) && dpi > 0)
                 return update(state, {
                     profile: {
                         settings: {
@@ -352,15 +348,13 @@ function profileReducer (state = initialState, action) {
             else
                 return state
         case Symbols.SET_GAME_OVERRIDE:
-            if(isValid(action.value.gameName)) {
-                if(action.value.set)
-                {
+            if (isValid(action.value.gameName)) {
+                if (action.value.set) {
                     // If we haven't overriden game yet, give new overrides from current settings
-                    if(!state.profile.overrides.hasOwnProperty(action.value.gameName))
-                    {
+                    if (!state.profile.overrides.hasOwnProperty(action.value.gameName)) {
                         // See if a profile exists, and use a generic one otherwise
                         let overrides = {}
-                        if(state.profile.ready)
+                        if (state.profile.ready)
                             overrides = getOverrideFromSettings(state.profile.settings)
                         else
                             overrides = getOverrideFromSettings(null)
@@ -368,9 +362,9 @@ function profileReducer (state = initialState, action) {
                             profile: {
                                 gamesOverriden: { $push: [action.value.gameName] },
                                 overrides: {
-                                    [action.value.gameName]: {$set: overrides}
+                                    [action.value.gameName]: { $set: overrides }
                                 },
-                                
+
                             }
                         })
                     }
@@ -378,17 +372,16 @@ function profileReducer (state = initialState, action) {
                         return update(state, {
                             profile: {
                                 gamesOverriden: { $push: [action.value.gameName] },
-                                
+
                             }
                         })
                 }
-                else    
-                {
+                else {
                     // Find the index of that game
                     return update(state, {
                         profile: {
-                            gamesOverriden: { $set: state.profile.gamesOverriden.filter( (item) => item !== action.value.gameName) },
-                            
+                            gamesOverriden: { $set: state.profile.gamesOverriden.filter((item) => item !== action.value.gameName) },
+
                         }
                     })
                 }
@@ -396,57 +389,57 @@ function profileReducer (state = initialState, action) {
             else
                 return state
         case Symbols.UPDATE_GAME_OVERRIDE:
-            if(isValid(action.value.gameName)) {
-                if(action.value.override == 'cm360')
+            if (isValid(action.value.gameName)) {
+                if (action.value.override == 'cm360')
                     return update(state, {
                         profile: {
                             overrides: {
                                 [action.value.gameName]: {
                                     sensitivity: {
-                                        actual: {$set: action.value.value}
+                                        actual: { $set: action.value.value }
                                     }
                                 }
                             },
-                            
+
                         }
                     })
-                else if(action.value.override == 'dpi')
+                else if (action.value.override == 'dpi')
                     return update(state, {
                         profile: {
                             overrides: {
                                 [action.value.gameName]: {
                                     dpi: {
-                                        actual: {$set: action.value.value}
+                                        actual: { $set: action.value.value }
                                     }
                                 }
                             },
-                            
+
                         }
                     })
-                else if(action.value.override == 'resolutionx')
+                else if (action.value.override == 'resolutionx')
                     return update(state, {
                         profile: {
                             overrides: {
                                 [action.value.gameName]: {
                                     monitor: {
-                                        width: {$set: action.value.value}
+                                        width: { $set: action.value.value }
                                     }
                                 }
                             },
-                            
+
                         }
-                })
-                else if(action.value.override == 'resolutiony')
+                    })
+                else if (action.value.override == 'resolutiony')
                     return update(state, {
                         profile: {
                             overrides: {
                                 [action.value.gameName]: {
                                     monitor: {
-                                        height: {$set: action.value.value}
+                                        height: { $set: action.value.value }
                                     }
                                 }
                             },
-                            
+
                         }
                     })
                 else
@@ -456,21 +449,21 @@ function profileReducer (state = initialState, action) {
                 return state
         case Symbols.UPDATE_GAME_OPTION:
             // See if we have these options yet
-            if(!state.profile.options.hasOwnProperty(action.value.gameAlias))
+            if (!state.profile.options.hasOwnProperty(action.value.gameAlias))
                 state.profile.options[action.value.gameAlias] = games[action.value.gameAlias].getDefaultOptions()
             return update(state, {
                 profile: {
-                    options:{
+                    options: {
                         [action.value.gameAlias]: {
                             [action.value.optionName]: { $set: action.value.value }
                         }
                     },
-                    
+
                 }
             })
         case Symbols.LOGIN_SUCCESS:
             // TODO make sure profile is good
-            if(action.value.profile != null)
+            if (action.value.profile != null)
                 return update(state, {
                     profile: { $set: loadProfileTransform(action.value.profile) }
                 })
@@ -481,8 +474,8 @@ function profileReducer (state = initialState, action) {
     }
 }
 
-function wizardReducer (state = initialState, action) {
-    switch(action.type) {
+function wizardReducer(state = initialState, action) {
+    switch (action.type) {
         case Symbols.APPLY_CALCULATOR:
             return update(state, {
                 wizard: {
@@ -490,39 +483,39 @@ function wizardReducer (state = initialState, action) {
                 }
             })
         case Symbols.SELECT_MONITOR:
-                return update(state, {
-                    wizard: {
-                        pagesReady: {
-                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
-                        }
+            return update(state, {
+                wizard: {
+                    pagesReady: {
+                        1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
                     }
-                })
+                }
+            })
             return state
         case Symbols.SET_CUSTOM_MONITOR_WIDTH:
-                return update(state, {
-                    wizard: {
-                        pagesReady: {
-                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
-                        }
+            return update(state, {
+                wizard: {
+                    pagesReady: {
+                        1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
                     }
-                })
+                }
+            })
             return state
         case Symbols.SET_CUSTOM_MONITOR_HEIGHT:
-                return update(state, {
-                    wizard: {
-                        pagesReady: {
-                            1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
-                        }
+            return update(state, {
+                wizard: {
+                    pagesReady: {
+                        1: { $set: state.profile.settings.monitor != "undefined" && state.profile.settings.monitor.usable }
                     }
-                })
+                }
+            })
             return state
         case Symbols.WIZARD_NEXT:
-            if(state.wizard.pagesReady[state.wizard.activePage]) {
+            if (state.wizard.pagesReady[state.wizard.activePage]) {
                 // Set the next page
                 return update(state, {
                     wizard: {
                         activePage: { $set: state.wizard.activePage === 5 ? 0 : state.wizard.activePage + 1 },
-                        gamePagesRevealed: { $set: 1},
+                        gamePagesRevealed: { $set: 1 },
                         pagesReady: {
                             1: { $set: isValid(state.profile.settings.monitor) && state.profile.settings.monitor.usable },
                             3: { $set: state.profile.ownedGames.length > 0 }
@@ -534,22 +527,21 @@ function wizardReducer (state = initialState, action) {
             else
                 return state
         case Symbols.WIZARD_BACK:
-            if(state.wizard.activePage > 0) {
+            if (state.wizard.activePage > 0) {
                 return update(state, {
                     wizard: {
                         activePage: { $set: state.wizard.activePage - 1 },
-                        gamePagesRevealed: { $set: 1}
+                        gamePagesRevealed: { $set: 1 }
                     }
                 })
             }
         case Symbols.EXPAND_MONITOR_SECTION:
-            if(action.value != "undefined")
-            {
+            if (action.value != "undefined") {
                 let category = String(action.value)
                 return update(state, {
                     wizard: {
                         monitorsExpanded: {
-                            [category]: {$set: true}
+                            [category]: { $set: true }
                         }
                     }
                 })
@@ -563,26 +555,26 @@ function wizardReducer (state = initialState, action) {
                 }
             })
         case Symbols.TOGGLE_GAME:
-                return update(state, {
-                    wizard: {
-                        pagesReady: {
-                            3: { $set: state.profile.ownedGames.length > 0 }
-                        }
+            return update(state, {
+                wizard: {
+                    pagesReady: {
+                        3: { $set: state.profile.ownedGames.length > 0 }
                     }
-                })
+                }
+            })
         default:
             return state;
     }
 }
 
-function uiReducer (state = initialState, action) {
-    switch(action.type) {
+function uiReducer(state = initialState, action) {
+    switch (action.type) {
         case Symbols.OPEN_CALCULATOR:
             return update(state, {
                 ui: {
                     calculator: {
                         open: { $set: true },
-                        initialGame: { $set: action.value != undefined ? action.value : null  }
+                        initialGame: { $set: action.value != undefined ? action.value : null }
                     }
                 }
             })
@@ -623,7 +615,7 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.RESET_TOKEN_RESPONSE:
-            if(action.value.code == 200)
+            if (action.value.code == 200)
                 return update(state, {
                     ui: {
                         identity: {
@@ -638,15 +630,15 @@ function uiReducer (state = initialState, action) {
                             error: { $set: action.value.text }
                         }
                     }
-            })
+                })
         case Symbols.RESET_RESPONSE:
-            if(action.value.code == 200)
+            if (action.value.code == 200)
                 return update(state, {
                     ui: {
                         identity: {
                             dialogFunction: { $set: "LOGIN" },
                             password: { $set: "" },
-                            error: { $set: "Password reset successfully."}
+                            error: { $set: "Password reset successfully." }
                         }
                     }
                 })
@@ -657,22 +649,22 @@ function uiReducer (state = initialState, action) {
                             error: { $set: action.value.text }
                         }
                     }
-            })
+                })
         case Symbols.SELECT_SIDEBAR_ITEM:
             //if(!state.profile.ready)
-                return update(state, {
-                    ui: {
-                        mobileMenuOpen: { $set: false },
-                        selectedMenuItem: { $set: action.value},
-                        // alert: {
-                        //     open: { $set: true },
-                        //     text: { $set: "Please complete the wizard first!"}
-                        // }
-                    }
-                })
-            //     })
-            // else
-            //     return state
+            return update(state, {
+                ui: {
+                    mobileMenuOpen: { $set: false },
+                    selectedMenuItem: { $set: action.value },
+                    // alert: {
+                    //     open: { $set: true },
+                    //     text: { $set: "Please complete the wizard first!"}
+                    // }
+                }
+            })
+        //     })
+        // else
+        //     return state
         case Symbols.CLOSE_ALERT:
             return update(state, {
                 ui: {
@@ -682,28 +674,28 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.START_EDIT_PROFILE:
-        return update(state, {
-            ui: {
-                editingProfile: {$set: true}
-            }
-        })
+            return update(state, {
+                ui: {
+                    editingProfile: { $set: true }
+                }
+            })
         case Symbols.CANCEL_EDIT_PROFILE:
-        return update(state, {
-            ui: {
-                editingProfile: {$set: false}
-            }
-        })
+            return update(state, {
+                ui: {
+                    editingProfile: { $set: false }
+                }
+            })
         case Symbols.SAVE_PROFILE:
             return update(state, {
                 ui: {
-                    editingProfile: {$set: false}
+                    editingProfile: { $set: false }
                 }
             })
         case Symbols.SET_GAMEPAGE_SORT:
             return update(state, {
                 ui: {
                     gameSelect: {
-                        sort: {$set: action.value}
+                        sort: { $set: action.value }
                     }
                 }
             })
@@ -711,7 +703,7 @@ function uiReducer (state = initialState, action) {
             return update(state, {
                 ui: {
                     gameSelect: {
-                        filterQuery: {$set: action.value}
+                        filterQuery: { $set: action.value }
                     }
                 }
             })
@@ -728,7 +720,7 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.OPEN_ID_DIALOG:
-            if(isValid(action.value))
+            if (isValid(action.value))
                 return update(state, {
                     ui: {
                         identity: {
@@ -790,7 +782,7 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.SET_ID_FUNCTION:
-            if(action.value != "undefined")
+            if (action.value != "undefined")
                 return update(state, {
                     ui: {
                         identity: {
@@ -816,7 +808,7 @@ function uiReducer (state = initialState, action) {
             return update(state, {
                 ui: {
                     identity: {
-                        verificationFailure: { $set: "Verification failed."  },
+                        verificationFailure: { $set: "Verification failed." },
                         actionPending: { $set: false }
                     }
                 }
@@ -849,10 +841,9 @@ function uiReducer (state = initialState, action) {
                 }
             })
         case Symbols.SET_ID_FIELD:
-            if(isValid(action.value.field))
-            {
+            if (isValid(action.value.field)) {
                 // Check for issues in input
-                let j = { 
+                let j = {
                     email: state.ui.identity.email,
                     password: state.ui.identity.password,
                     passwordConfirmation: state.ui.identity.passwordConfirmation,
@@ -864,17 +855,17 @@ function uiReducer (state = initialState, action) {
                     error: state.ui.identity.error
                 }
                 j[action.value.field] = action.value.value
-                switch(state.ui.identity.dialogFunction) {
+                switch (state.ui.identity.dialogFunction) {
                     case "LOGIN":
                         j.ready = (j.email && j.password)
                         j.passwordsMatch = false
                         break
                     case "REGISTER":
                         j.passwordsMatch = j.password === j.passwordConfirmation
-                        j.passwordComplex =  checkPassword(j.password)
+                        j.passwordComplex = checkPassword(j.password)
                         j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex == "")
-                        if(j.password && j.passwordConfirmation)
-                            if(!j.passwordsMatch)
+                        if (j.password && j.passwordConfirmation)
+                            if (!j.passwordsMatch)
                                 j.error = "Passwords do not match."
                             else
                                 j.error = ""
@@ -886,8 +877,8 @@ function uiReducer (state = initialState, action) {
                         j.passwordsMatch = j.password === j.passwordConfirmation
                         j.passwordComplex = checkPassword(j.password)
                         j.ready = (j.email && j.password && j.passwordConfirmation && j.passwordsMatch && j.passwordComplex == "" && j.resetToken)
-                        if(j.passwordConfirmation)
-                            if(!j.passwordsMatch)
+                        if (j.passwordConfirmation)
+                            if (!j.passwordsMatch)
                                 j.error = "Passwords do not match."
                             else
                                 j.error = ""
@@ -910,8 +901,7 @@ function uiReducer (state = initialState, action) {
                     }
                 })
             }
-            else
-            {
+            else {
                 return state
             }
         case Symbols.CHANGE_ALIAS_START:
@@ -943,25 +933,25 @@ function uiReducer (state = initialState, action) {
     }
 }
 
-function identityReducer (state = initialState, action)  {
-    switch(action.type) {
+function identityReducer(state = initialState, action) {
+    switch (action.type) {
         // Update modified state based on profile changes
-        case Symbols.SELECT_SENSITIVITY: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SELECT_DPI: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SELECT_MONITOR: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SELECT_MOUSE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SELECT_REFRESH_RATE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SAVE_PROFILE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SET_CUSTOM_MONITOR_WIDTH: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SET_CUSTOM_MONITOR_HEIGHT: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.ADD_GAME: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.REMOVE_GAME: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.TOGGLE_GAME: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SET_GAMEPAGE_SORT: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SET_GAMEPAGE_FILTER: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.UPDATE_GAME_OPTION: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.SET_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
-        case Symbols.UPDATE_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() }}})
+        case Symbols.SELECT_SENSITIVITY: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SELECT_DPI: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SELECT_MONITOR: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SELECT_MOUSE: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SELECT_REFRESH_RATE: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SAVE_PROFILE: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SET_CUSTOM_MONITOR_WIDTH: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SET_CUSTOM_MONITOR_HEIGHT: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.ADD_GAME: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.REMOVE_GAME: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.TOGGLE_GAME: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SET_GAMEPAGE_SORT: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SET_GAMEPAGE_FILTER: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.UPDATE_GAME_OPTION: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.SET_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() } } })
+        case Symbols.UPDATE_GAME_OVERRIDE: return update(state, { identity: { lastModified: { $set: Date.now() } } })
         case Symbols.DISMISS_TUTORIAL:
             return update(state, {
                 identity: {
@@ -981,20 +971,20 @@ function identityReducer (state = initialState, action)  {
                     hasSeenTutorial: { $set: true }
                 },
             })
-        case Symbols.SAVE_SUCCESS: 
+        case Symbols.SAVE_SUCCESS:
             return update(state, {
                 identity: {
                     lastSaveSuccess: { $set: Date.now() }
                 }
             })
-        case Symbols.SAVE_FAIL: 
+        case Symbols.SAVE_FAIL:
             return update(state, {
                 identity: {
                     lastSaveAttempt: { $set: 0 },
                 }
             })
         case Symbols.ID_ACTION_STARTED:
-            if(action.value && action.value.type == "SAVE")
+            if (action.value && action.value.type == "SAVE")
                 return update(state, {
                     identity: {
                         lastSaveAttempt: { $set: Date.now() }
@@ -1026,7 +1016,7 @@ function identityReducer (state = initialState, action)  {
                     emailConsent: { $set: !state.identity.emailConsent }
                 }
             })
-        case Symbols.LOGOUT: 
+        case Symbols.LOGOUT:
             // Reset the site's state, except for privacy policy acceptance
             return update(initialState, {
                 identity: {
@@ -1056,8 +1046,8 @@ const rootReducer = reduceReducers(
  */
 
 export const saveProfileTransform = inboundState => {
-    if(inboundState.ready)
-        return { 
+    if (inboundState.ready)
+        return {
             ...inboundState,
             modified: false,
             settings: {
@@ -1070,8 +1060,7 @@ export const saveProfileTransform = inboundState => {
 }
 
 export const loadProfileTransform = outboundState => {
-    if(outboundState.ready)
-    {
+    if (outboundState.ready) {
         validateProfile(outboundState)
         let newState = {
             ...outboundState,
@@ -1089,20 +1078,18 @@ export const loadProfileTransform = outboundState => {
 
 // Transform owned games from objects to keys and back
 const HCTransform = createTransform(
-    (inboundState, key) => 
-    {
-        switch(key) {
+    (inboundState, key) => {
+        switch (key) {
             case 'profile':
-                return(saveProfileTransform(inboundState))
+                return (saveProfileTransform(inboundState))
             default:
                 return inboundState
         }
     },
-    (outboundState, key) => 
-    {
-        switch(key) {
+    (outboundState, key) => {
+        switch (key) {
             case 'profile':
-                return(loadProfileTransform(outboundState))
+                return (loadProfileTransform(outboundState))
             default:
                 return outboundState
         }
@@ -1123,21 +1110,23 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 // Create a history of your choosing (we're using a browser history in this case)
 export const history = createBrowserHistory()
 history.listen((location, action) => {
-    window.scrollTo(0,0)
-    window.ga('set', 'page', location.pathname + location.search);
-    window.ga('send', 'pageview');
-  });
+    window.scrollTo(0, 0)
+    if (window.ga && typeof window.ga === "function") {
+        window.ga('set', 'page', location.pathname + location.search);
+        window.ga('send', 'pageview');
+    }
+});
 // Build the middleware for intercepting and dispatching navigation actions
 const middleware = routerMiddleware(history)
 // Create store
 export const store = createStore(
-  connectRouter(history)(persistedReducer), // new root reducer with router state
-  initialState,
-  compose(
-    applyMiddleware(
-      routerMiddleware(history), // for dispatching history actions
-      // ... other middlewares ...
+    connectRouter(history)(persistedReducer), // new root reducer with router state
+    initialState,
+    compose(
+        applyMiddleware(
+            routerMiddleware(history), // for dispatching history actions
+            // ... other middlewares ...
+        ),
     ),
-  ),
 )
 export const persistor = persistStore(store)
