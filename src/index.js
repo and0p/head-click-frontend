@@ -4,8 +4,7 @@ import { render } from 'react-dom';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 // React router w/ redux
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { createBrowserHistory } from 'history'
+import { Route } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router'
 // Utility imports
 import { store, history, persistor } from './redux/HcRedux'
@@ -17,7 +16,7 @@ import Splash from './pages/splash/Splash'
 import Dashboard from './pages/dashboard/Dashboard'
 import MaterialRoot from './pages/materialroot/MaterialRoot'
 import GamePage from './pages/gamepage/GamePage'
-import SelectGames from './pages/selectgames/SelectGames.js'
+import BrowseGames from './pages/BrowseGames/BrowseGames'
 import Stats from './pages/stats/Stats.js'
 import Wizard from './pages/wizard/Wizard'
 import styles from './index.css'
@@ -28,11 +27,11 @@ import ManualConfiguration from './pages/manual_configuration/ManualConfiguratio
 
 // Subscribe console to state changes, while holding onto handle to unsub
 const unsubscribe = store.subscribe(() => {
-  //console.log(store.getState())
+  console.log(store.getState())
 })
 
 const homeComponent = state => {
-  if(state.profile.ready)
+  if (state.profile.ready)
     return <Dashboard />
   else
     return <Splash />
@@ -50,29 +49,29 @@ new BeforeUnload('Are you sure you want to leave without saving?', function () {
 class App extends React.Component {
 
   render() {
-    return(
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ConnectedRouter history={history}>
-          <MuiThemeProvider theme={theme}>
-            <MaterialRoot>
-              <Route exact path="/" render={() => homeComponent(store.getState())}/>
-              <Route exact path="/wizard" component={Wizard} />
-              <Route exact path="/browse_games" component={SelectGames} />
-              <Route exact path="/stats" component={Stats} />
-              <Route exact path="/user/:user" component={Stats} />
-              <Route exact path="/manual-configuration" component={ManualConfiguration} />
-              <Route path="/game/:name" component={GamePage} />
-            </MaterialRoot>
-            <IdentityDialog />
-            <PrivacyAlert />
-          </MuiThemeProvider>
-        </ConnectedRouter>
-      </PersistGate>
-    </Provider>
+    return (
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ConnectedRouter history={history}>
+            <MuiThemeProvider theme={theme}>
+              <MaterialRoot>
+                <Route exact path="/" render={() => homeComponent(store.getState())} />
+                <Route exact path="/wizard" component={Wizard} />
+                <Route exact path="/browse_games" component={BrowseGames} />
+                <Route exact path="/stats" component={Stats} />
+                <Route exact path="/user/:user" component={Stats} />
+                <Route exact path="/manual-configuration" component={ManualConfiguration} />
+                <Route path="/game/:name" component={GamePage} />
+              </MaterialRoot>
+              <IdentityDialog />
+              <PrivacyAlert />
+            </MuiThemeProvider>
+          </ConnectedRouter>
+        </PersistGate>
+      </Provider>
     );
   }
 }
 
-render(<App/>, document.querySelector('#app'));
+render(<App />, document.querySelector('#app'));
 Axios.get("https://api.head.click/check_for_updates")
