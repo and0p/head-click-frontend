@@ -651,20 +651,12 @@ function uiReducer(state = initialState, action) {
                     }
                 })
         case Symbols.SELECT_SIDEBAR_ITEM:
-            //if(!state.profile.ready)
             return update(state, {
                 ui: {
                     mobileMenuOpen: { $set: false },
                     selectedMenuItem: { $set: action.value },
-                    // alert: {
-                    //     open: { $set: true },
-                    //     text: { $set: "Please complete the wizard first!"}
-                    // }
                 }
             })
-        //     })
-        // else
-        //     return state
         case Symbols.CLOSE_ALERT:
             return update(state, {
                 ui: {
