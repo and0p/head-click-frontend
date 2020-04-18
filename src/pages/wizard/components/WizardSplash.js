@@ -19,7 +19,7 @@ const styles = theme => ({
         color: '#FFFFFF',
         marginBottom: theme.spacing.unit * 4
     },
-    buttonContainer: {        
+    buttonContainer: {
         [theme.breakpoints.down('sm')]: {
             marginTop: theme.spacing.unit * 4
         },
@@ -37,14 +37,14 @@ const styles = theme => ({
 class WizardSplash extends React.Component {
     render() {
         const { classes, theme } = this.props
-        return(
+        return (
             <div className={classes.wizardPageRoot}>
                 <div className={classes.innerRoot}>
                     <ReactFitText minFontSize={24} maxFontSize={36} compressor={1.5}>
                         <Typography variant="display2" className={classes.headline}>{copy["en"].wizard.intro.headline}</Typography>
                     </ReactFitText>
-                    <p><Typography variant = "subheading" className={classes.informationSection}>{copy["en"].wizard.intro.subheader}</Typography></p>
-                    <Typography variant = "subheading">
+                    <p><Typography variant="subheading" className={classes.informationSection}>{copy["en"].wizard.intro.subheader}</Typography></p>
+                    <Typography variant="subheading">
                         <span className={classes.informationSection}>{copy["en"].wizard.intro.questionOpening}</span>
                         <ul>
                             <li>{copy["en"].wizard.intro.question1}</li>
@@ -53,7 +53,7 @@ class WizardSplash extends React.Component {
                         {/* {copy["en"].wizard.intro.questionLink} */}
                     </Typography>
                     <div className={classes.buttonContainer}>
-                        <Button onClick={this.props.nextPage} className={classes.button} variant="contained" color="primary">Start the wizard</Button>
+                        <Button onClick={() => this.props.nextPage(this.props.profile, this.props.activePage)} className={classes.button} variant="contained" color="primary">Start the wizard</Button>
                         <Typography variant="caption" className={classes.manualText}>or <Link to="/manual-configuration">enter details manually</Link></Typography>
                     </div>
                 </div>
@@ -62,20 +62,23 @@ class WizardSplash extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
+const mapStateToProps = (state) => (
+    {
+        profile: state.profile,
+        activePage: state.wizard.activePage
     }
-  }
-  
-  const mapDispatchToProps = dispatch => {
+)
+
+const mapDispatchToProps = dispatch => {
     return {
-        nextPage: () => dispatch({
+        nextPage: (profile, currentPage) => dispatch({
             type: Symbols.WIZARD_NEXT,
+            value: { currentPage: currentPage, profile: profile }
         }),
     }
-  }
-  
-  export default connect(
+}
+
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-  )(withStyles(styles)(WizardSplash))
+)(withStyles(styles)(WizardSplash))
