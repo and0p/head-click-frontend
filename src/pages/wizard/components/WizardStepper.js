@@ -1,9 +1,6 @@
 import React from 'react';
-import { render } from 'react-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -13,6 +10,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import Hidden from '@material-ui/core/Hidden';
 import { Link } from "react-router-dom";
+import { profileHasValidMonitor } from '../../../util'
 import * as Symbols from '../../../redux/HcSymbols'
 
 const drawerWidth = 240
@@ -60,36 +58,27 @@ const styles = theme => ({
 class WizardStepper extends React.Component {
 
   isNextEnabled = () => {
-    if (this.props.pagesReady[this.props.activePage]) {
-      return true
-    }
-    else {
-      if (this.props.activePage === 3 && this.props.ownedGames > 0)
-        return true
-      else
-        return false
+    const { activePage, profile } = this.props
+    switch(activePage) {
+      case 1:
+        return profileHasValidMonitor(profile);
+      case 3:
+        return profile.ownedGames.length > 0
+      default:
+        return true;
     }
   }
 
   isBackEnabled = () => {
-    return true
-    // if(this.props.activePage > 0) {
-    //   return true
-    // }
-    // else {
-    //   return false
-    // }
+    return this.props.activePage > 0
   }
 
   handleNext = () => {
-    if (this.isNextEnabled()) {
-      this.props.nextPage(this.props.profile, this.props.activePage)
-    }
+    this.props.nextPage(this.props.activePage)
   }
 
   handleBack = () => {
-    if (this.isBackEnabled())
-      this.props.goBack(this.props.profile, this.props.activePage)
+    this.props.goBack(this.props.activePage)
   }
 
   getNextText = () => {
@@ -119,8 +108,9 @@ class WizardStepper extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props
-    const nextText = "Next" // Will eventually calculate as "finish"
+    const { classes } = this.props
+    const backEnabled = this.isBackEnabled()
+    const nextEnabled = this.isNextEnabled()
     return (
       <div>
         {/* Mobile stepper */}
@@ -132,13 +122,27 @@ class WizardStepper extends React.Component {
             activeStep={this.props.activePage}
             className={classes.mobileRoot}
             nextButton={
-              <Button size="small" component={this.props.activePage == lastPage ? Link : Button} to="/" style={this.props.activePage == lastPage ? { fontWeight: 400, color: "#FFFFFF" } : {}} color={this.props.activePage == lastPage ? "primary" : "neutral"} onClick={this.handleNext} disabled={!this.isNextEnabled()}>
+              <Button 
+                size="small"
+                component={this.props.activePage == lastPage ? Link : Button}
+                to="/"
+                style={this.props.activePage == lastPage ? { fontWeight: 400, color: "#FFFFFF" } : {}}
+                color={this.props.activePage == lastPage ? "primary" : "neutral"}
+                onClick={this.handleNext} 
+                disabled={!nextEnabled}
+              >
                 {this.getNextText()}
                 <KeyboardArrowRight />
               </Button>
             }
             backButton={
-              <Button size="small" component={this.props.activePage == 0 ? Link : Button} to="/" style={this.props.activePage == 0 ? { fontWeight: 400, color: "#FFFFFF" } : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()}>
+              <Button 
+                size="small"
+                component={this.props.activePage == 0 ? Link : Button}
+                to="/" style={this.props.activePage == 0 ? { fontWeight: 400, color: "#FFFFFF" } : {}}
+                onClick={this.handleBack}
+                disabled={!this.isBackEnabled()}
+              >
                 <KeyboardArrowLeft />
                   BACK
                 </Button>
@@ -169,11 +173,26 @@ class WizardStepper extends React.Component {
                 <StepLabel>Finish!</StepLabel>
               </Step>
             </Stepper>
-            <Button size="small" component={this.props.activePage == 0 ? Link : Button} to="/" style={this.props.activePage == 0 ? { fontWeight: 400, color: "#FFFFFF" } : {}} onClick={this.handleBack} disabled={!this.isBackEnabled()} className={classes.backButton}>
+            <Button 
+              size="small"
+              component={this.props.activePage == 0 ? Link : Button}
+              to="/"
+              style={this.props.activePage == 0 ? { fontWeight: 400, color: "#FFFFFF" } : {}}
+              onClick={this.handleBack}
+              disabled={!backEnabled}
+              className={classes.backButton}
+            >
               <KeyboardArrowLeft />
-                  BACK
-                </Button>
-            <Button size="small" component={this.props.activePage == lastPage ? Link : Button} to="/" style={this.props.activePage == lastPage ? { fontWeight: 400, color: "#FFFFFF" } : {}} onClick={this.handleNext} disabled={!this.isNextEnabled()} className={classes.nextButton}>
+              BACK
+            </Button>
+            <Button 
+              size="small"
+              component={this.props.activePage == lastPage ? Link : Button}
+              to="/" style={this.props.activePage == lastPage ? { fontWeight: 400, color: "#FFFFFF" } : {}}
+              onClick={this.handleNext}
+              disabled={!nextEnabled}
+              className={classes.nextButton}
+            >
               {this.getNextText()}
               <KeyboardArrowRight />
             </Button>
@@ -189,20 +208,18 @@ const mapStateToProps = (state) => {
     profile: state.profile,
     activePage: state.wizard.activePage,
     pagesReady: state.wizard.pagesReady,
-    monitorConcern: state.wizard.monitorConcern,
-    ownedGames: state.profile.ownedGames
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    nextPage: (profile, currentPage) => dispatch({
+    nextPage: (activePage) => dispatch({
       type: Symbols.WIZARD_NEXT,
-      value: { currentPage: currentPage, profile: profile }
+      value: activePage
     }),
-    goBack: (profile, currentPage) => dispatch({
+    goBack: (activePage) => dispatch({
       type: Symbols.WIZARD_BACK,
-      value: { currentPage: currentPage, profile: profile }
+      value: activePage
     })
   }
 }

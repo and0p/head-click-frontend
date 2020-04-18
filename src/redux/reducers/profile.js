@@ -158,7 +158,7 @@ export const profileReducer = (state = initialState, action) => {
       else return state
     case Symbols.WIZARD_NEXT:
       if (value == 4) {
-        let recommendedSensitivity = recommendSensitivity(state.profile)
+        let recommendedSensitivity = recommendSensitivity(state)
         return update(state, {
           settings: {
             sensitivity: {
@@ -171,7 +171,7 @@ export const profileReducer = (state = initialState, action) => {
         })
       }
       else if (value == 3) {
-        let recommendedGamePace = getTypicalGameStyle(state.profile)
+        let recommendedGamePace = getTypicalGameStyle(state)
         return update(state, {
           settings: {
             typicalGamePace: { $set: recommendedGamePace }

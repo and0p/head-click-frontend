@@ -1,6 +1,5 @@
 // Redux imports
 import { applyMiddleware, combineReducers, createStore, compose } from 'redux'
-import reduceReducers from 'reduce-reducers'
 import { persistStore, persistReducer, createTransform } from 'redux-persist'
 import { createBrowserHistory } from 'history'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
@@ -11,11 +10,7 @@ import wizardReducer from './reducers/wizard'
 import uiReducer from './reducers/ui'
 import identityReducer from './reducers/identity'
 // HC import
-import * as Symbols from './HcSymbols'
-import { games, mice, monitors, monitorsFlat, customMonitor } from '../model/HcModel'
-import update from 'immutability-helper'
-import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle, checkPassword } from '../util'
-import { clamp } from '../math'
+import { monitors } from '../model/HcModel'
 
 // Create a history of your choosing (we're using a browser history in this case)
 export const history = createBrowserHistory()
