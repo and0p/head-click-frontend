@@ -376,7 +376,8 @@ const mapStateToProps = (state) => {
     open: state.ui.mobileMenuOpen,
     profile: state.profile,
     identity: state.identity,
-    ui: state.ui
+    ui: state.ui,
+    router: state.router
   }
 }
 
@@ -399,6 +400,6 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default withRouter(
+export default 
   connect(mapStateToProps, mapDispatchToProps)(
-    withStyles(styles, { withTheme: true })(MaterialRoot)));
+    withStyles(styles, { withTheme: true })(MaterialRoot));

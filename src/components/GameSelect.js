@@ -93,12 +93,11 @@ class GameSelect extends React.Component {
 
   renderGameButton = game => {
     const { classes, link, push, ownedGames } = this.props
-    console.log(push)
     return (
       <Grid item xs={4} sm={3}>
         <ButtonBase
           to={'/wizard'}
-          onClick={link ? () => push('/game/' + game.alias) : () => this.props.toggleGame(game)}
+          onClick={link ? () => this.props.push('/game/' + game.alias) : () => this.props.toggleGame(game)}
           key={game.name}
           className={ownedGames.includes(game.alias) ? classes.gameButtonSelected : classes.gameButton}
           fullWidth={true}
@@ -112,6 +111,7 @@ class GameSelect extends React.Component {
 
   render() {
     const { classes, sort } = this.props;
+    console.log(this.props)
     let gameArray = gamesAlphabetically
     if (sort === "popularity")
       gameArray = gamesByPopularity
@@ -153,7 +153,7 @@ const mapDispatchToProps = dispatch => {
       type: Symbols.SET_GAMEPAGE_FILTER,
       value: value
     }),
-    push: push
+    push: url => dispatch(push(url))
   }
 }
 

@@ -28,7 +28,6 @@ const rootReducer = combineReducers({
     wizard: wizardReducer,
     ui: uiReducer,
     identity: identityReducer,
-    history: connectRouter(history)
 })
 
 /*

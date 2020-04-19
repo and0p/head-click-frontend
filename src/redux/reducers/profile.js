@@ -45,6 +45,7 @@ const initialState = {
 
 export const profileReducer = (state = initialState, action) => {
   const { value } = action
+  console.log(action)
   switch (action.type) {
     case Symbols.CREATE_PROFILE_MANUALLY:
       let customMonitor = {
