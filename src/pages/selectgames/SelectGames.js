@@ -11,10 +11,12 @@ const styles = theme => ({
 
 const SelectGames = props => {
     const { classes, theme } = props
-    return(
-        <div className={classes.root}><div className={classes.innerRoot}>
-            <GameSelect />
-        </div></div>
+    return (
+        <div className={classes.root}>
+            <div className={classes.innerRoot}>
+                <GameSelect />
+            </div>
+        </div>
     )
 }
 

@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import WizardStepper from './components/WizardStepper'
 import WizardSplash from './components/WizardSplash'
 import WizardOutro from './components/WizardOutro'
+import WizardGameSelect from './components/WizardGameSelect'
 import MonitorSelect from './components/MonitorSelect'
 import Assignment from './components/Assignment'
 import GameSelect from '../../components/GameSelect'
@@ -50,7 +51,7 @@ class Wizard extends React.Component {
                 page = <Assignment version="dpi" />
                 break
             case 3:
-                page = <React.Fragment><GameSelect /></React.Fragment>
+                page = <WizardGameSelect />
                 break
             case 4:
                 page = <MiscSelect />

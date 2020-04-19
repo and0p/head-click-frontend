@@ -23,7 +23,7 @@ import ReactFitText from 'react-fittext'
 
 const styles = theme => ({
     ...defaultPageCSS,
-    gridRoot : {
+    gridRoot: {
         flexGrow: 1,
     },
     image: {
@@ -49,7 +49,7 @@ const styles = theme => ({
         border: '1px solid #888888',
         paddingLeft: theme.spacing.unit,
         width: '100%'
-      },
+    },
     subtle: {
         color: "#888888"
     }
@@ -58,12 +58,12 @@ const styles = theme => ({
 class MonitorSelect extends React.Component {
     constructor(props) {
         super(props)
-        if(this.props.selectedMonitor == this.props.customMonitor && this.props.customMonitor != null)
+        if (this.props.selectedMonitor == this.props.customMonitor && this.props.customMonitor != null)
             this.state = {
                 aspectRatio: "custom"
             }
         else
-            this.state = { 
+            this.state = {
                 aspectRatio: this.props.selectedMonitor != null ? this.props.selectedMonitor.aspectRatio : "all"
             }
     }
@@ -75,7 +75,7 @@ class MonitorSelect extends React.Component {
     updateAspectRatio = event => {
         // Check if we're switching to custom, and select the custom monitor,
         // otherwise set the selected monitor to the first in that range, because why not?
-        if(event.target.value == "custom")
+        if (event.target.value == "custom")
             this.props.selectMonitor(this.props.customMonitor)
         else if (monitors.hasOwnProperty(event.target.value))
             this.props.selectMonitor(monitors[event.target.value][Object.keys(monitors[event.target.value])[0]])
@@ -85,18 +85,18 @@ class MonitorSelect extends React.Component {
     }
 
     updateCustomSize = axis => event => {
-        if(this.props.selectedMonitor === this.props.customMonitor) {
-          if(axis == "width")
-            this.props.updateCustomWidth(event.target.value)
-          if(axis == "height")
-            this.props.updateCustomHeight(event.target.value)
-          //this.setState({  })
+        if (this.props.selectedMonitor === this.props.customMonitor) {
+            if (axis == "width")
+                this.props.updateCustomWidth(event.target.value)
+            if (axis == "height")
+                this.props.updateCustomHeight(event.target.value)
+            //this.setState({  })
         }
     }
 
     render() {
         const { classes, theme } = this.props;
-        return(
+        return (
             <div className={classes.wizardPageRoot}><div className={classes.innerRoot}>
                 <div className={classes.section}>
                     {/* HEADLINE */}
@@ -117,8 +117,8 @@ class MonitorSelect extends React.Component {
                                     value={this.state.aspectRatio}
                                     onChange={this.updateAspectRatio}
                                     inputProps={{
-                                    name: 'aspect-ratio',
-                                    id: 'aspect-ratio',
+                                        name: 'aspect-ratio',
+                                        id: 'aspect-ratio',
                                     }}
                                 >
                                     <MenuItem value="all">All</MenuItem>
@@ -138,34 +138,34 @@ class MonitorSelect extends React.Component {
                                         value={this.props.selectedMonitor ? this.props.selectedMonitor.name : ""}
                                         onChange={this.updateMonitor}
                                         inputProps={{
-                                        name: 'resolution',
-                                        id: 'resolution',
+                                            name: 'resolution',
+                                            id: 'resolution',
                                         }}
-                                    >   
+                                    >
                                         {/* "ALL" selected */}
                                         {this.state.aspectRatio == "all" &&
                                             Object.keys(monitorsTechnical).map(key => (
-                                                    <MenuItem value={monitorsTechnical[key].name}>{key}</MenuItem>
+                                                <MenuItem value={monitorsTechnical[key].name}>{key}</MenuItem>
                                             ))}
                                         {/* SPECIFIC ASPECT RATIO */}
-                                        {monitors.hasOwnProperty(this.state.aspectRatio) && 
-                                        Object.keys(monitors[this.state.aspectRatio]).map(monitor => (
-                                            <MenuItem value={monitor}>{monitors[this.state.aspectRatio][monitor].technicalName}</MenuItem>
-                                        ))}
+                                        {monitors.hasOwnProperty(this.state.aspectRatio) &&
+                                            Object.keys(monitors[this.state.aspectRatio]).map(monitor => (
+                                                <MenuItem value={monitor}>{monitors[this.state.aspectRatio][monitor].technicalName}</MenuItem>
+                                            ))}
                                     </Select>
                                 </FormControl>
                             </Grid>
                         }
                         {/* CUSTOM RESOLUTION */}
                         {this.state.aspectRatio == "custom" && [
-                                <Grid item xs={6} sm={3}>
-                                    <TextField
+                            <Grid item xs={6} sm={3}>
+                                <TextField
                                     value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.width : "-"}
                                     label="Width"
                                     InputProps={{
                                         disableUnderline: true,
                                         classes: {
-                                        root: classes.resolutionAxisInputBox
+                                            root: classes.resolutionAxisInputBox
                                         }
                                     }}
                                     fullWidth
@@ -176,10 +176,10 @@ class MonitorSelect extends React.Component {
                                     }}
                                     disabled={this.props.selectedMonitor !== this.props.customMonitor}
                                     onChange={this.updateCustomSize("width")}
-                                    />
-                                </Grid>,
-                                <Grid item xs={6} sm={3}>
-                                    <TextField
+                                />
+                            </Grid>,
+                            <Grid item xs={6} sm={3}>
+                                <TextField
                                     value={isValid(this.props.selectedMonitor) ? this.props.selectedMonitor.height : "-"}
                                     label="Height"
                                     InputProps={{
@@ -196,8 +196,8 @@ class MonitorSelect extends React.Component {
                                     disabled={this.props.selectedMonitor !== this.props.customMonitor}
                                     fullWidth
                                     onChange={this.updateCustomSize("height")}
-                                    />
-                                </Grid>]
+                                />
+                            </Grid>]
                         }
                     </Grid>
                 </div>
@@ -214,20 +214,20 @@ const mapStateToProps = (state) => {
         expanded: state.wizard.monitorsExpanded
     }
 }
-  
+
 const mapDispatchToProps = dispatch => {
     return {
         selectMonitor: monitor => dispatch({
-            type: Symbols.SELECT_MONITOR,
+            type: Symbols.SELECT_MONITOR_WIZARD,
             value: monitor
         }),
         updateCustomWidth: value => dispatch({
-          type: Symbols.SET_CUSTOM_MONITOR_WIDTH,
-          value: value
+            type: Symbols.SET_CUSTOM_MONITOR_WIDTH,
+            value: value
         }),
         updateCustomHeight: value => dispatch({
-          type: Symbols.SET_CUSTOM_MONITOR_HEIGHT,
-          value: value
+            type: Symbols.SET_CUSTOM_MONITOR_HEIGHT,
+            value: value
         })
     }
 }

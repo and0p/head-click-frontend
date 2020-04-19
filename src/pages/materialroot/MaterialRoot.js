@@ -19,7 +19,7 @@ import * as Symbols from '../../redux/HcSymbols'
 import { withRouter } from "react-router-dom"
 import theme from '../../theme.js'
 // HC Imports
-import { games } from '../../model/HcModel'
+import { games, gamesByPopularity } from '../../model/HcModel'
 import MessageBox from '../../components/MessageBox'
 import SidebarButton from './components/SidebarButton'
 import AccountMenu from './components/AccountMenu'
@@ -30,6 +30,8 @@ import ResponsiveAsset from '../../assets'
 const drawerWidth = 240;
 const mobileAppBarHeight = '56px'
 const desktopAppBarHeight = '64px'
+
+const numberOfPopularGamesToShow = 5
 
 const styles = theme => ({
   root: {
@@ -189,68 +191,104 @@ class MaterialRoot extends React.Component {
     super(props);
   }
 
+  listPopularGamesNotInLibrary = (gamesInLibrary) => {
+    return gamesByPopularity
+      .filter(game => !gamesInLibrary.includes(game.alias))
+      .slice(0, numberOfPopularGamesToShow)
+  }
+
+  renderGameSidebarLink = (gameAlias) => {
+    const { profile, selectSidebarItem, classes } = this.props;
+    return (
+      <SidebarButton
+        link={"/game/" + gameAlias}
+        image={<ResponsiveAsset category={gameAlias} asset="logo_mini" className={classes.gameLogo} />}
+        text={games[gameAlias].shortName}
+        innerClick={() => selectSidebarItem(0)}
+        key={gameAlias}
+        enabled
+      />
+    )
+  }
+
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, profile, selectSidebarItem } = this.props;
     let canSave = false
-    if((!this.props.ui.actionPending && this.props.identity.lastModified > this.props.identity.lastSaveAttempt) ||
-        this.props.profile.ready && !this.props.identity.loggedIn)
+    if ((!this.props.ui.actionPending && this.props.identity.lastModified > this.props.identity.lastSaveAttempt) ||
+      this.props.profile.ready && !this.props.identity.loggedIn)
       canSave = true
+
     // Games list HTML
-    const sidebarGamesList = () => (
+    const popularGames = this.listPopularGamesNotInLibrary(profile.ownedGames)
+
+    const popularGameList = (
       <div>
-        <div className={classes.drawerCategory}><Typography variant="button">LIBRARY</Typography></div>
-        {this.props.profile.ownedGames.map((gameAlias) =>
-          <SidebarButton
-            link={"/game/" + gameAlias}
-            image={<ResponsiveAsset category={gameAlias} asset="logo_mini" className={classes.gameLogo} />}
-            text={games[gameAlias].shortName}
-            innerClick={() => { this.props.profile.ready ? this.props.selectSidebarItem(0) : {} }}
-            enabled={ this.props.profile.ready }
-            key={gameAlias}
-            />
-        )}
-        <SidebarButton 
-        link="/browse_games"
-        icon="library_add"
-        text="Browse Games"
-        enabled={this.props.profile.ready}
-        innerClick={() => { this.props.selectSidebarItem(0) }}
+        <div className={classes.drawerCategory}><Typography variant="button">POPULAR</Typography></div>
+        {popularGames.map((game) => this.renderGameSidebarLink(game.alias))}
+        <SidebarButton
+          link="/browse_games"
+          icon="library_books"
+          text="Browse All"
+          enabled
+          innerClick={() => { this.props.selectSidebarItem(0) }}
         />
+      </div>
+    )
+
+    const libraryGameList = (
+      <div>
+        <div className={classes.drawerCategory}><Typography variant="button">IN LIBRARY</Typography></div>
+        {profile.ownedGames.map((gameAlias) => this.renderGameSidebarLink(gameAlias))}
+        {/* If no games are added to the library, or the user is logged out, show different messages */}
+        {profile.ready && profile.ownedGames.length === 0 &&
+          <div className={classes.messageBox}>
+            <MessageBox>
+              Click the star icon to add games to your favorites.
+            </MessageBox>
+          </div>
+        }
+        {!profile.ready &&
+          <div className={classes.messageBox}>
+            <MessageBox>
+              Create a profile or log in to build your library.
+            </MessageBox>
+          </div>
+        }
       </div>
     )
 
     // Drawer HTML, used in both responsive and static
     const drawer = (
       <div>
-          <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
-            <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo} />
-            <Typography variant="body1" className={classes.versionLight}>beta</Typography>
-          </Paper>
-          <div className={classes.drawerContent}>
-            <SidebarButton 
-              link="/"
-              icon="home"
-              text={this.props.profile.ready ? "Dashboard" : "Welcome"}
-              enabled={true}
-              innerClick={() => { this.props.selectSidebarItem(0) }}
-              />
-            <SidebarButton 
-              link="/stats"
-              icon="insert_chart"
-              text="Stats"
-              enabled
-              innerClick={() => { this.props.selectSidebarItem(0) }}
-            />
-            <SidebarButton 
-              link="http://blog.head.click"
-              icon="subject"
-              text="Blog"
-              enabled={true}
-              //innerClick={() => { this.props.selectSidebarItem(0) }}
-            />
-            <Divider />
-            {this.props.profile.ready ? sidebarGamesList() : <div className={classes.messageBox}><MessageBox>Create a profile or log in to access the rest of the site.</MessageBox></div>}
-          </div>
+        <Paper elevation={4} className={classes.drawerHeader} onClick={this.props.closeSidebar}>
+          <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logo} />
+          <Typography variant="body1" className={classes.versionLight}>beta</Typography>
+        </Paper>
+        <div className={classes.drawerContent}>
+          <SidebarButton
+            link="/"
+            icon="home"
+            text={this.props.profile.ready ? "Dashboard" : "Welcome"}
+            enabled
+            innerClick={() => { this.props.selectSidebarItem(0) }}
+          />
+          <SidebarButton
+            link="/stats"
+            icon="insert_chart"
+            text="Stats"
+            enabled
+            innerClick={() => { this.props.selectSidebarItem(0) }}
+          />
+          <SidebarButton
+            link="http://blog.head.click"
+            icon="subject"
+            text="Blog"
+            enabled
+          />
+          <Divider />
+          {popularGameList}
+          {libraryGameList}
+        </div>
       </div>
     )
     return (
@@ -266,23 +304,23 @@ class MaterialRoot extends React.Component {
               <Icon>menu</Icon>
             </IconButton>
             <div className={classes.barLogoContainer}>
-            <Hidden mdUp>
+              <Hidden mdUp>
                 <ResponsiveAsset category="headclick" asset="logo_white" className={classes.logoMobile} />
                 <Typography variant="body2" className={classes.versionLight}>beta</Typography>
-            </Hidden>
+              </Hidden>
             </div>
-            {(!this.props.identity.loggedIn && !this.props.profile.ready) && 
+            {(!this.props.identity.loggedIn && !this.props.profile.ready) &&
               <Button className={classes.barButton} variant="contained" color="secondary" onClick={this.props.openLoginDialog}>Log in</Button>
             }
             {this.props.profile.ready &&
               <div>
-                <Button 
-                disabled={!canSave}
-                className={classes.saveButton}
-                variant="contained"
-                color="secondary"
-                onClick={save}>
-                  { this.props.ui.identity.actionPending ? <CircularProgress size={24} className={classes.saveProgress} /> : "Save" }
+                <Button
+                  disabled={!canSave}
+                  className={classes.saveButton}
+                  variant="contained"
+                  color="secondary"
+                  onClick={save}>
+                  {this.props.ui.identity.actionPending ? <CircularProgress size={24} className={classes.saveProgress} /> : "Save"}
                 </Button>
                 <AccountMenu />
               </div>
@@ -319,9 +357,9 @@ class MaterialRoot extends React.Component {
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-            <div className={classes.contentWrap}>
-              {this.props.children}
-            </div>
+          <div className={classes.contentWrap}>
+            {this.props.children}
+          </div>
         </main>
       </div>
     );
@@ -338,29 +376,30 @@ const mapStateToProps = (state) => {
     open: state.ui.mobileMenuOpen,
     profile: state.profile,
     identity: state.identity,
-    ui: state.ui
+    ui: state.ui,
+    router: state.router
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    selectSidebarItem : itemID => dispatch({
+    selectSidebarItem: itemID => dispatch({
       type: Symbols.SELECT_SIDEBAR_ITEM,
       value: itemID
     }),
-    openSidebar : () => dispatch({
+    openSidebar: () => dispatch({
       type: Symbols.OPEN_SIDEBAR
     }),
-    closeSidebar : () => dispatch({
+    closeSidebar: () => dispatch({
       type: Symbols.CLOSE_SIDEBAR
     }),
-    openLoginDialog : () => dispatch({
+    openLoginDialog: () => dispatch({
       type: Symbols.OPEN_ID_DIALOG,
       value: "LOGIN"
     })
   }
 }
 
-export default withRouter(
+export default 
   connect(mapStateToProps, mapDispatchToProps)(
-    withStyles(styles, { withTheme: true })(MaterialRoot)));
+    withStyles(styles, { withTheme: true })(MaterialRoot));
