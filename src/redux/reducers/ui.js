@@ -1,7 +1,6 @@
 import * as Symbols from '../HcSymbols'
-import { games, mice, monitors, monitorsFlat, customMonitor } from '../../model/HcModel'
-import { isValid, isInArray, getRecommendedDpi, getOverrideFromSettings, recommendSensitivity, getTypicalGameStyle, checkPassword } from '../../util'
-import { clamp } from '../../math'
+import { isValid, checkPassword } from '../../util'
+
 import update from 'immutability-helper'
 
 const initialState = {
@@ -249,18 +248,18 @@ const uiReducer = (state = initialState, action) => {
       if (isValid(action.value.field)) {
         // Check for issues in input
         let j = {
-          email: state.ui.identity.email,
-          password: state.ui.identity.password,
-          passwordConfirmation: state.ui.identity.passwordConfirmation,
-          oldPassword: state.ui.identity.oldPassword,
-          resetToken: state.ui.identity.resetToken,
+          email: state.identity.email,
+          password: state.identity.password,
+          passwordConfirmation: state.identity.passwordConfirmation,
+          oldPassword: state.identity.oldPassword,
+          resetToken: state.identity.resetToken,
           ready: false,
           passwordsMatch: false,
           passwordComplex: false,
-          error: state.ui.identity.error
+          error: state.identity.error
         }
         j[action.value.field] = action.value.value
-        switch (state.ui.identity.dialogFunction) {
+        switch (state.identity.dialogFunction) {
           case "LOGIN":
             j.ready = (j.email && j.password)
             j.passwordsMatch = false
