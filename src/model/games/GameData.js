@@ -7,6 +7,7 @@ import BlackOps4 from './individual/BlackOps4';
 import Destiny2 from './individual/Destiny2';
 import Battlefield1 from './individual/Battlefield1';
 import CSSource from './individual/CSSource';
+import Valorant from './individual/Valorant'
 import { RS2Vietnam } from './individual/RS2Vietnam';
 import { runInThisContext } from 'vm';
 import { Rust } from './individual/Rust';
@@ -22,15 +23,17 @@ const gameData = [
     Battlefield1,
     CSSource,
     RS2Vietnam,
-    Rust
+    Rust,
+    Valorant
 ]
 
 export const gameNamesByPopularity = [
+    "valorant",
     "fortnite",
-    "pubg",
     "overwatch",
     "csgo",
     "r6siege",
+    "pubg",
     "blackops4",
     "destiny2",
     "rust",
