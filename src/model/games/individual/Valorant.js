@@ -2,11 +2,11 @@ import {
   getRounded,
   normalizeLowPercentage,
   clamp,
-  getPercentageOfBaseFOV,
   getIdealCm360AtFOV,
   getVFOVFromHorizontalFOV,
   getHorPlusFromVerticalFOV,
-  baseHFOV
+  baseHFOV,
+  aspectRatioRelativeToWidescreen
 } from '../../../math'
 
 let baseDots = 513226;    // at sensitivity 0.001
@@ -57,21 +57,39 @@ const getInfo = (settings, options) => {
   let outputJSON = []
   let idealHip = getIdealCm360AtFOV(settings.sensitivity.actual, baseFov, 'hor+')
   let sensitivity = getSensitivity(idealHip, settings.dpi.actual)
+
+  // See if the user is using fill at a non-standard aspect ratio
+  let relativeAspect = aspectRatioRelativeToWidescreen(settings.monitor.width, settings.monitor.height)
+  let adjustedHFov = baseFov;
+  let adjustedVFov = getVFOVFromHorizontalFOV(16, 9, baseFov)
+  if (options["Aspect Ratio Method"] == "Fill") {
+    if (relativeAspect > 1) {
+      // 21:9, etc, cropping vfov
+      adjustedVFov /= relativeAspect
+    }
+    else if (relativeAspect < 1) {
+      // 4:3, etc, cropping hfov
+      adjustedHFov *= relativeAspect;
+    }
+  }
+
+  // Output each sight
   sights.map(sight => {
-    let fov = baseFov / sight.zoom
     let output = (baseDots * sight.zoom / sensitivity) / settings.dpi.actual * 2.54 / 100
-    let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, fov, 'hor+')
+    let idealCm360 = getIdealCm360AtFOV(settings.sensitivity.actual, baseFov / sight.zoom, 'hor+')
     outputJSON.push({
       name: sight.name,
       alias: sight.alias,
-      fov: fov,
-      vfov: getVFOVFromHorizontalFOV(16, 9, fov),
+      fov: adjustedHFov / sight.zoom,
+      vfov: adjustedVFov / sight.zoom,
       zoom: sight.zoom,
       cm360: output,
       ideal: idealCm360,
       variance: normalizeLowPercentage(idealCm360 / output - 1) * 100
     })
   })
+
+  // Output suggested settings, adding the aspect ratio if relevant
   let outputSettings = [
     {
       name: 'Sensitivity: Aim',
@@ -82,16 +100,16 @@ const getInfo = (settings, options) => {
       name: 'Scoped Sensitivity Multiplier',
       subtext: 'Settings ~ Mouse',
       value: 1.00
-    },      
+    },
   ]
-  // Add the aspect ratio if relevant
-  if(settings.monitor.height / settings.monitor.width != 0.5625) {
+  if (settings.monitor.height / settings.monitor.width != 0.5625) {
     outputSettings.push({
-      name: '"Aspect Ratio Method"',
+      name: 'Aspect Ratio Method',
       subtext: 'Settings ~ Video',
       value: options["Aspect Ratio Method"]
     })
   }
+
   return {
     settings: outputSettings,
     output: outputJSON
@@ -105,21 +123,23 @@ const Valorant = {
   hasLogo: true,
   type: "tactical",
   settings: {
-    "Video Settings": [
+    "Video - General": [
       {
-        text: "Wait for Vertical Sync",
-        value: "Disabled",
+        text: "Limit FPS Always",
+        value: "Off",
         note: false,
-        info: "Performance boost and lag reduction, unless your computer is powerful enough.",
+        info: "Aim and reaction times improve at higher FPS.",
         critical: true
       },
+    ],
+    "Video - Graphics Quality": [
       {
-        text: "Motion Blur",
-        value: "Disabled",
+        text: "VSync",
+        value: "Off",
         note: false,
-        info: "Makes scanning and target acquisition easier.",
-        critical: false
-      }
+        info: "Vsync improves graphical fidelity but hinders response time on all but the most powerful systems.",
+        critical: true
+      },
     ]
   },
   infoFunction: getInfo,
